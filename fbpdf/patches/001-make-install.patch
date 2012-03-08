@@ -1,0 +1,10 @@
+diff -Naur fbpdf-20111105/Makefile fbpdf-20111105-new/Makefile
+--- fbpdf-20111105/Makefile	2012-03-06 19:39:56.000000000 -0300
++++ fbpdf-20111105-new/Makefile	2012-03-07 16:46:29.000000000 -0300
+@@ -22,3 +22,6 @@
+ 	$(CC) -c $(CFLAGS) `pkg-config --cflags poppler-glib` $<
+ fbpdf2: fbpdf.o poppler.o draw.o
+ 	$(CC) -o $@ $^ $(LDFLAGS) `pkg-config --libs poppler-glib`
++
++install:
++	@echo 'nothing'
