@@ -1,0 +1,13 @@
+Index: cxxtools-2.0/src/atomicity.gcc.arm.cpp
+===================================================================
+--- cxxtools-2.0.orig/src/atomicity.gcc.arm.cpp	2012-03-16 23:04:47.000000000 +1100
++++ cxxtools-2.0/src/atomicity.gcc.arm.cpp	2012-03-16 23:04:59.000000000 +1100
+@@ -125,7 +125,7 @@
+                    : "=&r" (a), "=&r" (b)
+                    : "r" (&dest), "r" (exch), "r" (comp)
+                    : "cc", "memory");
+-    return a;
++    return (void*)a;
+ }
+ 
+ 
