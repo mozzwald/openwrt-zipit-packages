@@ -1,0 +1,33 @@
+*** faad2-2.7-orig//libfaad/common.h	2009-02-04 18:51:03.000000000 -0600
+--- faad2-2.7//libfaad/common.h	2012-02-06 09:24:51.109339777 -0600
+***************
+*** 65,76 ****
+  /* use double precision */
+  /* #define USE_DOUBLE_PRECISION */
+  /* use fixed point reals */
+! //#define FIXED_POINT
+  //#define BIG_IQ_TABLE
+  
+  /* Use if target platform has address generators with autoincrement */
+  //#define PREFER_POINTERS
+  
+  #ifdef _WIN32_WCE
+  #define FIXED_POINT
+  #endif
+--- 65,80 ----
+  /* use double precision */
+  /* #define USE_DOUBLE_PRECISION */
+  /* use fixed point reals */
+! #define FIXED_POINT
+  //#define BIG_IQ_TABLE
+  
+  /* Use if target platform has address generators with autoincrement */
+  //#define PREFER_POINTERS
+  
++ #ifdef _ARM_
++ #define FIXED_POINT
++ #endif
++ 
+  #ifdef _WIN32_WCE
+  #define FIXED_POINT
+  #endif
