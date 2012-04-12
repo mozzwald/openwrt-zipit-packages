@@ -1,0 +1,19 @@
+*** pianobar-2012.01.10-orig//Makefile	2012-02-05 18:58:10.362171511 -0600
+--- pianobar-2012.01.10/Makefile	2012-02-05 18:58:55.782763547 -0600
+***************
+*** 99,105 ****
+  		${LIBWAITRESS_HDR} ${LIBEZXML_OBJ} ${LIBEZXML_HDR}
+  	@echo "  LINK  $@"
+  	@${CC} ${CFLAGS} ${LDFLAGS} ${PIANOBAR_OBJ} ${LIBPIANO_OBJ} \
+! 			${LIBWAITRESS_OBJ} ${LIBEZXML_OBJ} -lao -lpthread -lm \
+  			${LIBFAAD_LDFLAGS} ${LIBMAD_LDFLAGS} ${LIBGNUTLS_LDFLAGS} -o $@
+  endif
+  
+--- 99,105 ----
+  		${LIBWAITRESS_HDR} ${LIBEZXML_OBJ} ${LIBEZXML_HDR}
+  	@echo "  LINK  $@"
+  	@${CC} ${CFLAGS} ${LDFLAGS} ${PIANOBAR_OBJ} ${LIBPIANO_OBJ} \
+! 			${LIBWAITRESS_OBJ} ${LIBEZXML_OBJ} -lz -lgcrypt -lgpg-error -lao -lpthread -lm \
+  			${LIBFAAD_LDFLAGS} ${LIBMAD_LDFLAGS} ${LIBGNUTLS_LDFLAGS} -o $@
+  endif
+  
