@@ -10,14 +10,14 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=emacs
 PKG_VERSION:=23.2
 # can probably be removed again after 23.2/3a debacle is over
-PKG_VERSION_RELEASE:=$(PKG_VERSION)a
+PKG_VERSION_RELEASE:=$(PKG_VERSION)b
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION_RELEASE).tar.gz
 PKG_SOURCE_URL:=ftp://ftp.fu-berlin.de/pub/gnu/emacs/ \
 	@GNU/emacs/
 
-PKG_MD5SUM:=981cd3764b71115835801b3f4ef081c1
+PKG_MD5SUM:=96a05f185ac32eccff7b06ba67808a80
 PKG_INSTALL:=1
 
 PKG_BUILD_PARALLEL:=1
