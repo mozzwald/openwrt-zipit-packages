@@ -1,0 +1,121 @@
+*** ./net_udp.c	1999-12-25 05:38:03.000000000 -0600
+--- ../chumby_quake/sdlquake-1.0.9/net_udp.c	2008-07-19 04:42:10.000000000 -0500
+***************
+*** 28,33 ****
+--- 28,34 ----
+  #include <sys/param.h>
+  #include <sys/ioctl.h>
+  #include <errno.h>
++ #include <arpa/inet.h>
+  
+  #ifdef __sun__
+  #include <sys/filio.h>
+***************
+*** 53,58 ****
+--- 54,106 ----
+  
+  //=============================================================================
+  
++ void my_gethostname(char *buffer, int length) {
++     FILE *hostname = fopen("/psp/hostname", "r");
++     int count=0;
++     int c;
++     if( !hostname ) {
++         perror("Unable to open hostname file");
++         buffer[0] = 0;
++         return;
++     }
++     while( (count+1 < length) && (EOF != (c = fgetc(hostname))) && (isalpha(c) || c == '.') ) {
++         buffer[count++] = c;
++     }
++     buffer[count] = 0;
++     fclose(hostname);
++     return;
++ }
++ 
++ struct hostent *my_gethostbyname(char *name) {
++     static struct hostent localent;
++     static struct in_addr myaddr;
++     static int *myaddr_ptr = &myaddr;
++     static char **addr_list = {&myaddr_ptr, NULL};
++     static char **alias_list = {NULL};
++     static char *ipaddr;
++ 
++     int ip_position = COM_CheckParm ("-netif");
++     if( !ip_position ) {
++         Con_DPrintf("No IP address specified, running without networking.  Specify with -netif [ipaddr].\n");
++         return NULL;
++     }
++     ipaddr = com_argv[ip_position+1];
++     if( NULL == ipaddr ) {
++         Con_DPrintf("You need to specify the IP address after -netif.  Running without networking.\n");
++         return NULL;
++     }
++     Con_DPrintf("Got IP address %s!\n", ipaddr);
++     inet_aton(ipaddr, &myaddr);
++ 
++     localent.h_addr_list = addr_list;
++     localent.h_length = 4;
++     localent.h_aliases = alias_list;
++     localent.h_name = name;
++     localent.h_addr = localent.h_addr_list[0];
++ 
++     return &localent;
++ }
++ 
+  int UDP_Init (void)
+  {
+  	struct hostent *local;
+***************
+*** 63,72 ****
+  	if (COM_CheckParm ("-noudp"))
+  		return -1;
+  
+  	// determine my name & address
+! 	gethostname(buff, MAXHOSTNAMELEN);
+! 	local = gethostbyname(buff);
+  	myAddr = *(int *)local->h_addr_list[0];
+  
+  	// if the quake hostname isn't set, set it to the machine name
+  	if (Q_strcmp(hostname.string, "UNNAMED") == 0)
+--- 111,127 ----
+  	if (COM_CheckParm ("-noudp"))
+  		return -1;
+  
++     Con_DPrintf("Determing hostname...\n");
+  	// determine my name & address
+! 	my_gethostname(buff, MAXHOSTNAMELEN);
+!     Con_DPrintf("Hostname is %s.  Getting IP address...\n", buff);
+! 	local = my_gethostbyname(buff);
+!     if( !local ) {
+!         return -1;
+!     }
+!     Con_DPrintf("Got it.  Looking at the h_addr_list...\n");
+  	myAddr = *(int *)local->h_addr_list[0];
++     Con_DPrintf("Got that, too.\n");
+  
+  	// if the quake hostname isn't set, set it to the machine name
+  	if (Q_strcmp(hostname.string, "UNNAMED") == 0)
+***************
+*** 75,80 ****
+--- 130,136 ----
+  		Cvar_Set ("hostname", buff);
+  	}
+  
++     Con_DPrintf("Done. Opening UDP control socket...\n");
+  	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
+  		Sys_Error("UDP_Init: Unable to open control socket\n");
+  
+***************
+*** 82,89 ****
+--- 138,147 ----
+  	((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
+  	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons(net_hostport);
+  
++     Con_DPrintf("Getting socket address...\n");
+  	UDP_GetSocketAddr (net_controlsocket, &addr);
+  	Q_strcpy(my_tcpip_address,  UDP_AddrToString (&addr));
++     Con_DPrintf("My IP address: %s\n", my_tcpip_address);
+  	colon = Q_strrchr (my_tcpip_address, ':');
+  	if (colon)
+  		*colon = 0;
