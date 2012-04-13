@@ -64,15 +64,16 @@ define Build/InstallDev
 		$(1)/usr/include/
 
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/build/release/libmupdf.a \
+	$(CP) -a \
+		$(PKG_BUILD_DIR)/build/release/lib*.so* \
 		$(1)/usr/lib/
-	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/build/release/libfitz.a \
+endef
+
+define Package/mupdf/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) -a \
+		$(PKG_BUILD_DIR)/build/release/lib*.so* \
 		$(1)/usr/lib/
-	$(INSTALL_DATA) \
-                $(PKG_BUILD_DIR)/build/release/libmuxps.a \
-                $(1)/usr/lib/
 endef
 
 define Package/mupdf-tools/install
