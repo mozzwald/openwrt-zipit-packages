@@ -35,8 +35,13 @@ TARGET_CFLAGS += -std=c99
 PREFIX="/usr"
 
 define Package/pianobar/install
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/usr/bin \
+		$(1)/usr/share/gmenu2x/skins/Default/icons \
+		$(1)/usr/share/gmenu2x/sections/applications
+
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/pianobar $(1)/usr/bin/
+	$(INSTALL_BIN) ./files/pianobar.png $(1)/usr/share/gmenu2x/skins/Default/icons
+	$(INSTALL_BIN) ./files/pianobar.gmenu $(1)/usr/share/gmenu2x/sections/applications
 endef
 
 $(eval $(call BuildPackage,pianobar))

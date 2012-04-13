@@ -1,0 +1,5 @@
+title=pianobar
+icon=skin:icons/pandora.png
+exec=/usr/bin/pianobar
+clock=416
+
