@@ -1,0 +1,24 @@
+diff -Naur fbpdf-20111105/doc.h fbpdf-20111105-new/doc.h
+--- fbpdf-20111105/doc.h	2012-03-06 19:39:56.000000000 -0300
++++ fbpdf-20111105-new/doc.h	2012-04-13 01:36:54.000000000 -0300
+@@ -1,5 +1,5 @@
+ /* framebuffer depth */
+-typedef unsigned int fbval_t;
++typedef unsigned short int fbval_t;
+ 
+ /* optimized version of fb_val() */
+ #define FB_VAL(r, g, b)	fb_val((r), (g), (b))
+diff -Naur fbpdf-20111105/fbpdf.c fbpdf-20111105-new/fbpdf.c
+--- fbpdf-20111105/fbpdf.c	2012-03-06 19:39:56.000000000 -0300
++++ fbpdf-20111105-new/fbpdf.c	2012-04-13 01:37:29.000000000 -0300
+@@ -22,8 +22,8 @@
+ #define CTRLKEY(x)		((x) - 96)
+ #define MAXWIDTH		2
+ #define MAXHEIGHT		3
+-#define PDFCOLS			(1 << 11)
+-#define PDFROWS			(1 << 12)
++#define PDFCOLS			(1 << 10)
++#define PDFROWS			(1 << 11)
+ 
+ static fbval_t pbuf[PDFROWS * PDFCOLS];
+ static struct doc *doc;

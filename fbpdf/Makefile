@@ -11,7 +11,6 @@ PKG_NAME:=fbpdf
 PKG_VERSION:=20111105
 PKG_REV:=829d4bcb8753b99948d5bfa346fb659ec38dad6c
 PKG_RELEASE:=1
-PKG_INSTALL:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REV).tar.gz
 PKG_SOURCE_URL:=git://repo.or.cz/fbpdf.git
@@ -28,7 +27,7 @@ define Package/fbpdf
   SUBMENU:=app
   TITLE:=fbpdf
   URL:=http://litcave.rudi.ir/
-#  DEPENDS:=+mupdf
+  DEPENDS:=+mupdf
 endef
 
 define Package/bridge/description
