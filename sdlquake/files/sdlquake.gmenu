@@ -1,0 +1,4 @@
+title=Quake I
+icon=skin:icons/quake.png
+exec=/usr/bin/runquake
+clock=416

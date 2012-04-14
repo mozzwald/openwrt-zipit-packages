@@ -1,0 +1,5 @@
+#!/bin/sh
+# Start sdlquake from /usr/games/sdlquake
+
+cd /usr/games/sdlquake
+/usr/bin/sdlquake -winsize 320 240
