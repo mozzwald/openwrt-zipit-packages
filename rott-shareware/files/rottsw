@@ -1,0 +1,5 @@
+#!/bin/sh
+# Start Rise of the Triad Shareware Version
+
+cd /usr/games/rottsw
+./rott

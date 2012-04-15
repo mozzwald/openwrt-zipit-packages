@@ -1,0 +1,4 @@
+title=Rise of the Triad
+icon=skin:icons/rott.png
+exec=/usr/bin/rottsw
+clock=416
