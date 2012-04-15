@@ -33,11 +33,6 @@ define Package/rott-shareware/description
 	SDL port of the PC 3D shooter Rise of the Triad - Shareware Version
 endef
 
-define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) /home/mozzwald/zipit/build/rott-zipit/* $(PKG_BUILD_DIR)
-endef
-
 define Package/rott-shareware/install
 	$(INSTALL_DIR) $(1)/usr/bin
 		$(INSTALL_BIN) ./files/rottsw $(1)/usr/bin
