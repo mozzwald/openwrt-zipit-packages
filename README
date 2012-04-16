@@ -10,10 +10,12 @@ How to add this feed to your OpenWrt buildroot:
 	cd $HOME/zipit/build/openwrt-buildroot
 	echo "src-link zipit_packages $HOME/zipit/build/openwrt-zipit-packages" >> feeds.conf
 
-3. Update the feeds
-	make package/symlinks
+3. Update the feeds in OpenWrt
+	make package/symlinks V=99
 
-Now you can use make menuconfig to add the new packages to your OpenWrt build.
+Now you can use make menuconfig to add the new packages to your OpenWrt build. You can pull any
+new changes from github by entering the feed directory and running 'git pull', then from your 
+OpenWrt directory run 'make package/symlinks V=99'
 
 --mozzwald--
 http://www.mozzwald.com
