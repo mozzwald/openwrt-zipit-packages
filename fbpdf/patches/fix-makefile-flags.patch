@@ -1,0 +1,13 @@
+diff -Naur fbpdf-20111105/Makefile fbpdf-20111105-new/Makefile
+--- fbpdf-20111105/Makefile	2012-04-14 13:50:29.000000000 -0300
++++ fbpdf-20111105-new/Makefile	2012-04-14 21:30:24.000000000 -0300
+@@ -1,7 +1,7 @@
+ PREFIX = .
+ CC = cc
+-CFLAGS = -Wall -O2 -I$(PREFIX)/include
+-LDFLAGS = -L$(PREFIX)/lib
++CFLAGS += -Wall -I$(PREFIX)/include
++LDFLAGS += -L$(PREFIX)/lib
+ 
+ all: fbpdf fbdjvu
+ %.o: %.c
