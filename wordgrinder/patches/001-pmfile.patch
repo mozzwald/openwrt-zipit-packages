@@ -1,0 +1,63 @@
+--- a/pmfile	2009-12-13 06:44:53.000000000 -0700
++++ b/pmfile	2010-09-14 22:36:03.000000000 -0600
+@@ -12,6 +12,9 @@
+ DATE = "13 December 2009"
+ VERSION = "0.3.3"
+ FILEFORMAT = 3
++STAGING_DIR = os.getenv("STAGING_DIR")
++CCOMPILER = os.getenv("TARGET_CC")
++LUAC = "cat %in% > %out%"
+ 
+ -----------------------------------------------------------------------------
+ -- User configurable settings start here!
+@@ -19,8 +22,8 @@
+ -- Where do you want WordGrinder installed? By default, it goes into your
+ -- home directory.
+ 
+-PREFIX = HOME
+--- PREFIX = "/usr/local"
++-- PREFIX = HOME
++PREFIX = "/usr/"
+ 
+ -- What build flags do you want to use? (Not including -g or -Os, which are
+ -- added later automatically.)
+@@ -36,6 +39,8 @@
+ 
+ CLIBRARIES = {
+ 	'm',
++	'crypt',
++	'dl',
+ }
+ 
+ CDEFINES = {
+@@ -45,8 +50,8 @@
+ }
+ 	
+ CINCLUDES = {
+-	"/usr/include/ncursesw",
+-	"/usr/include/lua5.1",
++	"%STAGING_DIR%/usr/include/ncursesw",
++	"%STAGING_DIR%/usr/include/",
+ 	"src/c"
+ }
+ 
+@@ -214,8 +219,8 @@
+ 	
+ 	CLIBRARIES = {
+ 		PARENT,
+-		'ncursesw',
+-		'lua5.1'
++		'%STAGING_DIR%/usr/lib/libncursesw.a',
++		'%STAGING_DIR%/usr/lib/liblua.a'
+ 	}
+ }
+ 
+@@ -246,7 +251,7 @@
+ 	
+ 	CLIBRARIES = {
+ 		PARENT,
+-		'ncursesw',
++		'%STAGING_DIR%/usr/lib/ncursesw.a',
+ 	},
+ 
+ 	install = pm.install("bin/wordgrinder-static")

@@ -1,0 +1,265 @@
+diff --git a/src/board.cpp b/src/board.cpp
+index 4b1888f..db17c0a 100644
+--- a/src/board.cpp
++++ b/src/board.cpp
+@@ -54,10 +54,6 @@ Board::Board(QWidget* parent)
+ 	m_done(false),
+ 	m_paused(false)
+ {
+-#if !defined(QTOPIA_PHONE)
+-	setMinimumSize(201, 401);
+-	setFocusPolicy(Qt::StrongFocus);
+-#endif
+ 	setFocus();
+ 
+ 	m_shift_timer = new QTimer(this);
+@@ -174,7 +170,7 @@ void Board::pauseGame()
+ 	}
+ 
+ 	update();
+-	emit showMessage(tr("<big><b>Paused</b></big><br>Click to resume playing."));
++        emit showMessage(tr("<big><b>Paused</b></big><br>Press P to resume playing."));
+ 
+ 	unsetCursor();
+ 	emit pauseAvailable(false);
+@@ -206,7 +202,20 @@ void Board::keyPressEvent(QKeyEvent* event)
+ 		return;
+ 
+ 	switch (event->key()) {
+-	case Qt::Key_Left:
++        case  Qt::Key_A:
++                m_piece->moveLeft();
++                break;
++        case Qt::Key_S:
++                m_piece->moveRight();
++                break;
++        case Qt::Key_K:
++                m_piece->rotate();
++                break;
++        case Qt::Key_Space:
++                m_piece->drop();
++                landPiece();
++                break;
++	case  Qt::Key_Left:
+ 		m_piece->moveLeft();
+ 		break;
+ 	case Qt::Key_Right:
+@@ -283,9 +292,9 @@ void Board::focusOutEvent(QFocusEvent*)
+ void Board::resizeEvent(QResizeEvent* event)
+ {
+ 	m_piece_size = qMin(event->size().width() / 10, event->size().height() / 20);
+-	int w = m_piece_size * 10 + 1;
+-	int h = m_piece_size * 20 + 1;
+-	m_background = QRect((width() - w) / 2, (height() - h) / 2, w, h);
++        int w = m_piece_size * 10 + 1;
++        int h = m_piece_size * 20 + 1;
++        m_background = QRect((width() - w) / 2, (height() - h) / 2, w, h);
+ 
+ 	QPainter painter;
+ 
+@@ -402,7 +411,7 @@ void Board::gameOver()
+ 	m_piece = 0;
+ 	m_done = true;
+ 	unsetCursor();
+-	emit showMessage(tr("<big><b>Game Over!</b></big><br>Click to start a new game."));
++        emit showMessage(tr("<big><b>Game Over!</b></big><br>Ctrl+N to start a new game."));
+ 	emit gameOver(m_level, m_removed_lines, m_score);
+ }
+ 
+@@ -495,11 +504,7 @@ QPixmap Board::renderPiece(int type) const
+ 			painter.drawRoundRect(piece[i].x * 20, piece[i].y * 20, 19, 19);
+ 		}
+ 	}
+-
+-#if defined(QTOPIA_PHONE)
+ 	result = result.scaled(30,50, Qt::KeepAspectRatio);
+-#endif
+-
+ 	return result;
+ }
+ 
+diff --git a/src/main.cpp b/src/main.cpp
+index bc3c73a..4d475ed 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -19,15 +19,11 @@
+ 
+ #include "window.h"
+ 
+-#if defined(QTOPIA_PHONE)
+-#include <QtopiaApplication>
+-QTOPIA_ADD_APPLICATION(QTOPIA_TARGET,Window)
+-QTOPIA_MAIN
+-#else
+-
+ #include <QApplication>
+-#include <QLocale>
+-#include <QTranslator>
++
++#if defined(Q_WS_QWS)
++#include <QtGui/QWSServer>
++#endif
+ 
+ int main(int argc, char** argv)
+ {
+@@ -35,18 +31,11 @@ int main(int argc, char** argv)
+ 	app.setApplicationName("Gottet");
+ 	app.setOrganizationDomain("gottcode.org");
+ 	app.setOrganizationName("GottCode");
+-
+-	QTranslator qt_translator;
+-	qt_translator.load("qt_" + QLocale::system().name());
+-	app.installTranslator(&qt_translator);
+-
+-	QTranslator gottet_translator;
+-	gottet_translator.load("gottet_" + QLocale::system().name());
+-	app.installTranslator(&gottet_translator);
+-
++        #if defined(Q_WS_QWS)
++            QWSServer::setCursorVisible(false);
++        #endif
+ 	Window window;
+ 	window.show();
+ 
+ 	return app.exec();
+ }
+-#endif
+diff --git a/src/window.cpp b/src/window.cpp
+index c691ae5..3af8c53 100644
+--- a/src/window.cpp
++++ b/src/window.cpp
+@@ -30,16 +30,11 @@
+ #include <QGridLayout>
+ #include <QLabel>
+ #include <QMenu>
++#include <QPushButton>
+ #include <QMessageBox>
+ #include <QPixmap>
+ #include <QSettings>
+ 
+-#if defined(QTOPIA_PHONE)
+-#include <QSoftMenuBar>
+-#else
+-#include <QMenuBar>
+-#endif
+-
+ /*****************************************************************************/
+ 
+ Window::Window(QWidget *parent, Qt::WindowFlags wf)
+@@ -53,11 +48,7 @@ Window::Window(QWidget *parent, Qt::WindowFlags wf)
+ 
+ 	// Create preview
+ 	m_preview = new QLabel(contents);
+-#if !defined(QTOPIA_PHONE)
+-	m_preview->setFixedSize(80, 100);
+-#else
+-	m_preview->setFixedSize(30, 40);
+-#endif
++        m_preview->setFixedSize(30, 40);
+ 	m_preview->setAutoFillBackground(true);
+ 	{
+ 		QPalette palette = m_preview->palette();
+@@ -99,7 +90,7 @@ Window::Window(QWidget *parent, Qt::WindowFlags wf)
+ 	connect(m_board, SIGNAL(gameStarted()), this, SLOT(newGame()));
+ 
+ 	// Create overlay message
+-	QLabel* message = new QLabel(tr("Click to start a new game."), contents);
++        QLabel* message = new QLabel(tr("Ctrl+N to start a new game."), contents);
+ 	message->setAttribute(Qt::WA_TransparentForMouseEvents);
+ 	message->setAlignment(Qt::AlignCenter);
+ 	message->setStyleSheet(
+@@ -117,19 +108,7 @@ Window::Window(QWidget *parent, Qt::WindowFlags wf)
+ 	connect(m_board, SIGNAL(hideMessage()), message, SLOT(clear()));
+ 
+ 	// Create menus
+-#if defined(QTOPIA_PHONE)
+-	QMenu* menu = QSoftMenuBar::menuFor(this);
+-	menu->addAction(tr("&About"), this, SLOT(about()));
+-	menu->addSeparator();
+-	menu->addAction(tr("&Scores"), m_score_board, SLOT(show()));
+-	menu->addSeparator();
+-	m_resume_action = menu->addAction(tr("&Resume"), m_board, SLOT(resumeGame()));
+-	m_resume_action->setVisible(false);
+-	m_pause_action = menu->addAction(tr("&Pause"), m_board, SLOT(pauseGame()));
+-	m_pause_action->setEnabled(false);
+-	QAction* action = menu->addAction(tr("&New Game"), m_board, SLOT(newGame()));
+-	connect(action, SIGNAL(triggered(bool)), this, SLOT(newGame()));
+-#else
++        /*
+ 	QMenu* menu = menuBar()->addMenu(tr("&Game"));
+ 	menu->addAction(tr("&New"), m_board, SLOT(newGame()), tr("Ctrl+N"));
+ 	m_pause_action = menu->addAction(tr("&Pause"), m_board, SLOT(pauseGame()), tr("P"));
+@@ -143,31 +122,56 @@ Window::Window(QWidget *parent, Qt::WindowFlags wf)
+ 	menu = menuBar()->addMenu(tr("&Help"));
+ 	menu->addAction(tr("&About"), this, SLOT(about()));
+ 	menu->addAction(tr("About &Qt"), qApp, SLOT(aboutQt()));
+-#endif
++        */
++        QPushButton* game_button = new QPushButton(this);
++        QMenu* game_menu = new QMenu(this);
++        game_menu->addAction(tr("&New"), m_board, SLOT(newGame()), tr("Ctrl+N"));
++        m_pause_action = game_menu->addAction(tr("&Pause"), m_board, SLOT(pauseGame()), tr("P"));
++        m_pause_action->setEnabled(false);
++        m_resume_action = game_menu->addAction(tr("&Resume"), m_board, SLOT(resumeGame()), tr("P"));
++        m_resume_action->setVisible(false);
++        game_menu->addSeparator();
++        game_menu->addAction(tr("&Scores"), m_score_board, SLOT(show()));
++        game_menu->addSeparator();
++        game_menu->addAction(tr("&Quit"), this, SLOT(close()), tr("Ctrl+Q"));
++        game_button->setText(tr("&Game"));
++        game_button->setMenu(game_menu);
++        game_button->setFocusPolicy(Qt::NoFocus);
++
++        QPushButton* help_button = new QPushButton(this);
++        QMenu* help_menu = new QMenu(this);
++        help_menu->addAction(tr("&About"), this, SLOT(about()));
++        help_menu->addAction(tr("About &Qt"), qApp, SLOT(aboutQt()));
++        help_button->setText(tr("&Help"));
++        help_button->setMenu(help_menu);
++        help_button->setFocusPolicy(Qt::NoFocus);
+ 
+ 	// Layout window
+ 	QGridLayout* layout = new QGridLayout(contents);
+-	layout->setMargin(12);
++        layout->setMargin(0);
+ 	layout->setSpacing(0);
+ 	layout->setColumnStretch(0, 1);
+-	layout->setColumnMinimumWidth(1, 12);
+-	layout->setRowStretch(11, 1);
+-	layout->setRowMinimumHeight(2, 24);
++        layout->setColumnMinimumWidth(1, 100);
++        layout->setRowStretch(11, 1);
++        layout->setRowMinimumHeight(2, 24);
+ 	layout->setRowMinimumHeight(5, 24);
+-	layout->setRowMinimumHeight(8, 24);
+-	layout->addWidget(m_board, 0, 0, 12, 1);
+-	layout->addWidget(message, 0, 0, 12, 1, Qt::AlignCenter);
+-	layout->addWidget(new QLabel(tr("Next Piece"), contents), 0, 2, 1, 1, Qt::AlignCenter);
+-	layout->addWidget(m_preview, 1, 2, Qt::AlignCenter);
+-	layout->addWidget(new QLabel(tr("Level"), contents), 3, 2, 1, 1, Qt::AlignCenter);
+-	layout->addWidget(m_level, 4, 2);
+-	layout->addWidget(new QLabel(tr("Removed Lines"), contents), 6, 2, 1, 1, Qt::AlignCenter);
+-	layout->addWidget(m_lines, 7, 2);
+-	layout->addWidget(new QLabel(tr("Score"), contents), 9, 2, 1, 1, Qt::AlignCenter);
+-	layout->addWidget(m_score, 10, 2);
++        layout->setRowMinimumHeight(8, 24);
++        layout->addWidget(m_board, 0, 0, 12, 1);
++        layout->addWidget(message, 0, 0, 12, 1, Qt::AlignCenter);
++        layout->addWidget(new QLabel(tr("Next Piece"), contents), 0, 1, 1, 1, Qt::AlignCenter);
++        layout->addWidget(m_preview, 1, 1, Qt::AlignCenter);
++        layout->addWidget(new QLabel(tr("Level"), contents), 3, 2, 1, 1, Qt::AlignCenter);
++        layout->addWidget(m_level, 4, 2);
++        layout->addWidget(new QLabel(tr("Removed Lines"), contents), 6, 2, 1, 1, Qt::AlignCenter);
++        layout->addWidget(m_lines, 7, 2);
++        layout->addWidget(new QLabel(tr("Score"), contents), 9, 2, 1, 1, Qt::AlignCenter);
++        layout->addWidget(m_score, 10, 2);
++        layout->addWidget(game_button, 0, 2);
++        layout->addWidget(help_button, 1, 2);
+ 
+ 	// Restore window
+-	restoreGeometry(QSettings().value("Geometry").toByteArray());
++        //restoreGeometry(QSettings().value("Geometry").toByteArray());
++        resize(320, 240);
+ }
+ 
+ /*****************************************************************************/

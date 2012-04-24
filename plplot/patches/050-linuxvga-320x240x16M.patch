@@ -1,0 +1,93 @@
+Index: plplot-5.9.7/drivers/linuxvga.c
+===================================================================
+--- plplot-5.9.7.orig/drivers/linuxvga.c	2011-01-30 19:15:09.000000000 +0100
++++ plplot-5.9.7/drivers/linuxvga.c	2011-01-30 19:17:08.000000000 +0100
+@@ -39,8 +39,8 @@
+ 
+ /* INDENT ON */
+ 
+-static PLINT vgax = 639;
+-static PLINT vgay = 479;
++static PLINT vgax = 319;
++static PLINT vgay = 239;
+ 
+ /* A flag to tell us whether we are in text or graphics mode */
+ 
+@@ -53,6 +53,7 @@
+ static int mode   = TEXT_MODE;
+ static int col    = 1;
+ static int totcol = 16;
++static int vgacol = 0;
+ 
+ #define CLEAN    0
+ #define DIRTY    1
+@@ -95,7 +96,7 @@
+ /* What kind of VGA mode one wants is set up here.
+  * It can be easyly made interactive! */
+ 
+-    mode = G640x480x16;         /* See <vga.h> for a list */
++    mode = G320x240x16M32;         /* See <vga.h> for a list */
+     if ( vga_hasmode( mode ) )
+         vga_setmode( mode );
+     else
+@@ -111,7 +112,7 @@
+ 
+     totcol = vga_getcolors();
+ 
+-    plP_setpxl( 2.5, 2.5 );       /* My best guess.  Seems to work okay. */
++    plP_setpxl( 1.0, 1.0 );
+     plP_setphy( 0, vgax, 0, vgay );
+ }
+ 
+@@ -163,6 +164,7 @@
+ 
+     /* vga_setmode(mode); */
+     vga_clear();                /* just clean it */
++    vga_setcolor(vgacol);       /* restore color (reset by vga_clear()) */
+ 
+     page_state = CLEAN;
+ }
+@@ -202,24 +204,34 @@
+ void
+ plD_state_vga( PLStream *pls, PLINT op )
+ {
++    int r, g, b;
++
+     switch ( op )
+     {
+     case PLSTATE_WIDTH:
+         break;
+ 
+     case PLSTATE_COLOR0:
+-        if ( pls->color )
++        if ( !pls->color )
+         {
+-            /* Maybe it would be wiser to use a set of 16 relevant colors only
+-             * and just fix it to black if col is exceeded 16.        */
+-
+-            col = ( pls->icol0 ) % totcol;        /* Color modulo # of colors
+-                                                   * avail */
+-            vga_setcolor( col );
++	   r = g = b = pls->icol0 ? 0xff : 0;
+         }
+-        break;
+-
++	else
++	{
++	   r = pls->curcolor.r, g = pls->curcolor.g, b = pls->curcolor.b;
++	}
++	vgacol = vga_setrgbcolor (r, g, b);
++	break;
+     case PLSTATE_COLOR1:
++        if ( !pls->color )
++        {
++	   r = g = b = pls->curcolor.r;
++        }
++	else
++	{
++	   r = pls->curcolor.r, g = pls->curcolor.g, b = pls->curcolor.b;
++	}
++	vgacol = vga_setrgbcolor( r, g, b );
+         break;
+     }
+ }

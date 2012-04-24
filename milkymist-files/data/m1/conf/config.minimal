@@ -1,0 +1,24 @@
+#
+# This file must be copied to .config in the OpenWrt root folder,
+# then run: yes "" | make oldconfig > /dev/null
+#
+
+CONFIG_TARGET_lm32=y
+CONFIG_TARGET_lm32_Default=y
+CONFIG_LINUX_3_0=y
+
+CONFIG_BIG_ENDIAN=y
+CONFIG_USES_EXT4=y
+CONFIG_NOMMU=y
+CONFIG_BINFMT_FLAT=y
+CONFIG_lm32=y
+
+CONFIG_TARGET_ROOTFS_EXT4FS=y
+CONFIG_TARGET_ROOTFS_PARTSIZE=4
+
+# CONFIG_BUILD_PATENTED is not set
+
+CONFIG_SDK=y
+
+CONFIG_BUSYBOX_CONFIG_NOMMU=y
+CONFIG_BUSYBOX_CONFIG_EXTRA_CFLAGS="-Wl,-elf2flt"

@@ -1,0 +1,22 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+	 NODE="/dev/input/uinput"
+	 if [ ! -e $NODE ]; then
+		  mknod $NODE c 10 223
+	 fi
+	 if ! lsmod | grep uinput &> /dev/null; then
+		  set -e
+		  insmod uinput
+		  set +e
+	 fi
+	 /usr/bin/z2mouse &
+}
+
+stop() {
+	 killall z2mouse 2> /dev/null
+}
+
+

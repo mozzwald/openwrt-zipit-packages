@@ -1,0 +1,13 @@
+Index: gnuplot-4.4.2/src/term.c
+===================================================================
+--- gnuplot-4.4.2.orig/src/term.c	2011-01-09 12:56:22.000000000 +0100
++++ gnuplot-4.4.2/src/term.c	2011-01-09 12:56:30.000000000 +0100
+@@ -1797,7 +1797,7 @@
+    LINUX_setup has failed, also if we are logged in by network */
+ #ifdef LINUXVGA
+ 	if (LINUX_graphics_allowed)
+-#ifdef VGAGL
++#if defined(VGAGL) && defined (THREEDKIT)
+ 	    term_name = "vgagl";
+ #else
+ 	    term_name = "linux";

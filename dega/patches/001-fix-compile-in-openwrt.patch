@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index 1d3265d..5211c5c 100755
+--- a/Makefile
++++ b/Makefile
+@@ -8,7 +8,7 @@ CC?=gcc
+ #CXX=g++
+ #CXX=icpc
+ 
+-CFLAGS= $(CFLAGS) $(OPTFLAGS) $(shell sdl-config --cflags) -Imast -Iz80
++CFLAGS:= $(CFLAGS) $(OPTFLAGS) $(shell sdl-config --cflags) -Imast -Iz80
+ 
+ Z80OBJ = z80/z80.o
+ MASTOBJ = mast/area.o mast/dpsg.o mast/draw.o mast/emu2413.o mast/frame.o mast/load.o mast/map.o mast/mast.o mast/mem.o mast/samp.o mast/snd.o mast/vgm.o mast/state.o mast/setup.o

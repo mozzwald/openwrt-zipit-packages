@@ -1,0 +1,96 @@
+diff -ur bsd-games-2.17-p/tetris/input.c bsd-games-2.17/tetris/input.c
+--- bsd-games-2.17-p/tetris/input.c	2010-11-14 21:46:54.909025861 +0300
++++ bsd-games-2.17/tetris/input.c	2010-11-14 21:48:17.830025444 +0300
+@@ -85,7 +85,7 @@
+ 		endtv = *tvp;
+ 		timeout = tvp->tv_sec * 1000 + tvp->tv_usec / 1000;
+ 	} else
+-		timeout = INFTIM;
++		timeout = -1;
+ again:
+ 	set[0].fd = STDIN_FILENO;
+ 	set[0].events = POLLIN;
+diff -ur bsd-games-2.17-p/tetris/pathnames.h.in bsd-games-2.17/tetris/pathnames.h.in
+--- bsd-games-2.17-p/tetris/pathnames.h.in	2010-11-14 21:46:54.908027310 +0300
++++ bsd-games-2.17/tetris/pathnames.h.in	2010-11-14 21:48:17.830025444 +0300
+@@ -34,4 +34,4 @@
+  *	@(#)pathnames.h	8.1 (Berkeley) 5/31/93
+  */
+ 
+-#define _PATH_SCOREFILE	"@tetris_scorefile@"
++#define _PATH_SCOREFILE	"/usr/share/games/tetris-bsd.scores"
+diff -ur bsd-games-2.17-p/tetris/screen.c bsd-games-2.17/tetris/screen.c
+--- bsd-games-2.17-p/tetris/screen.c	2010-11-14 21:46:54.908027310 +0300
++++ bsd-games-2.17/tetris/screen.c	2010-11-14 22:09:58.510150197 +0300
+@@ -73,7 +73,7 @@
+ extern char	PC, *BC, *UP;	/* tgoto requires globals: ugh! */
+ static char BCdefault[] = "\b";
+ #ifndef NCURSES_VERSION
+-short	ospeed;
++speed_t	ospeed;
+ #endif
+ 
+ static char
+@@ -287,6 +287,7 @@
+ 		stop("tcgetattr() fails");
+ 	newtt = oldtt;
+ 	newtt.c_lflag &= ~(ICANON|ECHO);
++#define OXTABS XTABS
+ 	newtt.c_oflag &= ~OXTABS;
+ 	newtt.c_cc[VMIN] = 1;
+ 	newtt.c_cc[VTIME] = 0;
+diff -ur bsd-games-2.17-p/tetris/shapes.c bsd-games-2.17/tetris/shapes.c
+--- bsd-games-2.17-p/tetris/shapes.c	2010-11-14 21:46:54.908027310 +0300
++++ bsd-games-2.17/tetris/shapes.c	2010-11-14 21:48:17.831024977 +0300
+@@ -83,7 +83,7 @@
+ 	const struct shape *shape;
+ 	int pos;
+ {
+-	int *o = shape->off;
++	const int *o = shape->off;
+ 
+ 	if (board[pos] || board[pos + *o++] || board[pos + *o++] ||
+ 	    board[pos + *o])
+@@ -100,7 +100,7 @@
+ 	const struct shape *shape;
+ 	int pos, onoff;
+ {
+-	int *o = shape->off;
++	const int *o = shape->off;
+ 
+ 	board[pos] = onoff;
+ 	board[pos + *o++] = onoff;
+diff -ur bsd-games-2.17-p/tetris/tetris.c bsd-games-2.17/tetris/tetris.c
+--- bsd-games-2.17-p/tetris/tetris.c	2010-11-14 21:46:54.909025861 +0300
++++ bsd-games-2.17/tetris/tetris.c	2010-11-14 22:15:43.958150419 +0300
+@@ -35,10 +35,10 @@
+  */
+ 
+ #include <sys/cdefs.h>
+-#ifndef lint
++/*#ifndef lint
+ __COPYRIGHT("@(#) Copyright (c) 1992, 1993\n\
+ 	The Regents of the University of California.  All rights reserved.\n");
+-#endif /* not lint */
++#endif*/ /* not lint */
+ 
+ /*
+  * Tetris (or however it is spelled).
+@@ -145,7 +145,7 @@
+ 		exit(1);
+ 	close(fd);
+ 
+-	keys = "jkl pq";
++	keys = "aks pq";
+ 
+ 	while ((ch = getopt(argc, argv, "k:l:ps")) != -1)
+ 		switch(ch) {
+@@ -194,7 +194,7 @@
+ 	}
+ 
+ 	sprintf(key_msg,
+-"%s - left   %s - rotate   %s - right   %s - drop   %s - pause   %s - quit",
++"%s:<- %s:rotate %s:-> %s:drop %s:pause %s:quit",
+ 		key_write[0], key_write[1], key_write[2], key_write[3],
+ 		key_write[4], key_write[5]);
+ 
