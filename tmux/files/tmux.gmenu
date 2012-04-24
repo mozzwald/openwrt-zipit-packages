@@ -1,0 +1,5 @@
+title=tmux
+icon=skin:icons/utilities-terminal.png
+exec=/usr/bin/tmuxl
+params=
+

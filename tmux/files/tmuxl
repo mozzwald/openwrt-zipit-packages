@@ -1,0 +1,12 @@
+#!/bin/sh
+# Attach to tmux if running
+
+tmux list-sessions
+if [ $? == 0 ]; then
+        # tmux is running, attach
+        tmux attach -t 0 -d
+else
+        # start new tmux session
+        tmux
+fi
+
