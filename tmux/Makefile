@@ -36,6 +36,8 @@ MAKE_FLAGS += \
 	PLATFORM="linux"
 
 define Package/tmux/install
+	$(INSTALL_DIR) $(1)/etc
+		$(INSTALL_BIN) ./files/tmux.conf $(1)/etc
 	$(INSTALL_DIR) $(1)/usr/bin
 		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/tmux $(1)/usr/bin/
 		$(INSTALL_BIN) ./files/tmuxl $(1)/usr/bin/
