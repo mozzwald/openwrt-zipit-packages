@@ -1,0 +1,23 @@
+diff -Naur PSP-Maps-2.2/Makefile.zipit PSP-Maps-2.2-new/Makefile.zipit
+--- PSP-Maps-2.2/Makefile.zipit	2012-05-04 00:41:15.000000000 -0300
++++ PSP-Maps-2.2-new/Makefile.zipit	2012-05-04 00:42:16.000000000 -0300
+@@ -1,12 +1,13 @@
+ #CFLAGS = -O2 -g
+-CFLAGS = -O2 -g -DGP2X -DZIPIT_Z2
+-SDLCONFIG = sdl-config
+-CURLCONFIG = curl-config
+-XMLCONFIG = xml2-config
+-LIBS = -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer -lpng -ljpeg -lcurl -lfreetype -lmpg123
++CFLAGS += -O2 -g -DGP2X -DZIPIT_Z2
++SDLCONFIG ?= sdl-config
++CURLCONFIG ?= curl-config
++XMLCONFIG ?= xml2-config
++LDFLAGS ?=
++LIBS = -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer -lpng -ljpeg -lcurl -lfreetype
+ 
+ pspmaps: pspmaps.c $(ICON) global.o kml.o tile.c io.c
+-	$(CC) $(CFLAGS) -o pspmaps$(EXT) pspmaps.c $(ICON) global.o kml.o $(LIBS) `$(CURLCONFIG) --cflags --libs` `$(SDLCONFIG) --cflags --libs` `$(XMLCONFIG) --libs`
++	$(CC) $(CFLAGS) -o pspmaps$(EXT) pspmaps.c $(ICON) global.o kml.o $(LIBS) `$(CURLCONFIG) --cflags --libs` `$(SDLCONFIG) --cflags --libs` `$(XMLCONFIG) --libs` $(LDFLAGS)
+ 
+ global.o: global.c global.h
+ 	$(CC) $(CFLAGS) -c global.c
