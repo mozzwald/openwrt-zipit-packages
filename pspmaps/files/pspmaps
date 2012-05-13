@@ -1,0 +1,12 @@
+cd /usr/share/pspmaps
+
+#loadkeys < /mnt/sd0/etc/links-keymap.map
+
+#load this if you want latin1.
+#loadkeys < /mnt/sd0/etc/eurolinks.map
+
+# Tell SDL to run pspmaps with buffered sALSA driver
+SDL_AUDIODRIVER=alsa SDL_NOMOUSE=1 SDL_VIDEO_FBCON_ROTATION="CCW" ./pspmaps
+
+#loadkeys < /mnt/sd0/etc/keymap.map
+
