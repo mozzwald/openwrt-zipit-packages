@@ -5,7 +5,7 @@ PKG_VERSION:=0.1
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/zipit-files/Default
+define Package/zipit-files
     MAINTAINER:="Angus Gratton" <gus@projectgus.com>
     TITLE:=ZipIt Z2 Files
     SECTION:=utils
