@@ -1,0 +1,25 @@
+From fbbc68adc755402809fd894c3a0666a4993e396e Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Thu, 24 May 2012 15:02:19 +0300
+Subject: [PATCH 2/3] curl: disable verify peer
+
+---
+ content/fetchers/curl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/content/fetchers/curl.c b/content/fetchers/curl.c
+index dab7d2b..c8f387a 100644
+--- a/content/fetchers/curl.c
++++ b/content/fetchers/curl.c
+@@ -626,7 +626,7 @@ fetch_curl_set_options(struct curl_fetch_info *f)
+ 		SETOPT(CURLOPT_PROXY, NULL);
+ 	}
+ 
+-	if (urldb_get_cert_permissions(nsurl_access(f->url))) {
++	if (1) { //urldb_get_cert_permissions(nsurl_access(f->url))) {
+ 		/* Disable certificate verification */
+ 		SETOPT(CURLOPT_SSL_VERIFYPEER, 0L);
+ 		SETOPT(CURLOPT_SSL_VERIFYHOST, 0L);
+-- 
+1.7.10.2
+

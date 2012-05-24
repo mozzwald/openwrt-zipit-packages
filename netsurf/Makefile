@@ -4,7 +4,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netsurf
-PKG_VERSION:=2.7
+PKG_VERSION:=2.9
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-src.tar.gz
@@ -23,7 +23,7 @@ define Package/netsurf
 	CATEGORY:=Network
 	TITLE:=netsurf
 	URL:=http://www.netsurf-browser.org/
-	DEPENDS:=+libsdl +libcss +libhubbub +libparserutils +libnsfb +libxml2 +libcurl +libfreetype +liberation-fonts-ttf +libopenssl $(ICONV_DEPENDS)
+	DEPENDS:=+libsdl +libcss +libhubbub +libparserutils +libnsfb +libnsgif +libnsbmp +libxml2 +libcurl +libfreetype +liberation-fonts-ttf $(ICONV_DEPENDS)
 endef
 
 define Package/netsurf/description

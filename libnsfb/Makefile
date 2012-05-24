@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libnsfb
-PKG_REV:=12672
+PKG_REV:=13930
 PKG_VERSION:=r$(PKG_REV)
 PKG_RELEASE:=1
 
