@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netsurf
 PKG_VERSION:=2.9
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-src.tar.gz
 PKG_SOURCE_URL:=http://www.netsurf-browser.org/downloads/releases/
@@ -33,8 +33,8 @@ endef
 MAKE_FLAGS += "TARGET=framebuffer" \
 			  "PREFIX=/usr"
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/SDL
-TARGET_LDFLAGS += -liconv -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
+TARGET_CFLAGS += $(ICONV_CFLAGS) -I$(STAGING_DIR)/usr/include/SDL
+TARGET_LDFLAGS += $(ICONV_LDFLAGS) -liconv -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
