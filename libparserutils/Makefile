@@ -2,13 +2,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libparserutils
 PKG_VERSION:=0.1.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-src.tar.gz
 PKG_SOURCE_URL:=http://www.netsurf-browser.org/projects/releases/
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/libparserutils
 	MAINTAINER:="Xiangfu Liu" <xiangfu@sharism.cc>
@@ -16,12 +17,15 @@ define Package/libparserutils
 	CATEGORY:=Libraries
 	TITLE:=LibParserUtils has some built-in charset converters
 	URL:=http://www.netsurf-browser.org/projects/libparserutils/
-	DEPENDS:=
+	DEPENDS:= $(ICONV_DEPENDS)
 endef
 
 define Package/libparserutils/description
 	LibParserUtils has the following built-in charset converters. UTF-8, UTF-16 (platform-native endian), ISO-8859-n, Windows-125n, US-ASCII.
 endef
+
+TARGET_CFLAGS += $(ICONV_CFLAGS)
+TARGET_LDFLAGS += $(ICONV_LDFLAGS)
 
 define Build/Compile
 	rm -rf $(PKG_INSTALL_DIR)
