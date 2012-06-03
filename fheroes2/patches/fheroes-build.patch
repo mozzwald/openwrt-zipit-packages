@@ -1,0 +1,53 @@
+Index: fheroes2/src/dist/Makefile
+===================================================================
+--- fheroes2/src/dist/Makefile	(revision 2861)
++++ fheroes2/src/dist/Makefile	(working copy)
+@@ -6,7 +6,10 @@
+ PREFIX := /usr/local
+ endif
+ 
++CFLAGS := $(CFLAGS) -DCONFIGURE_FHEROES2_LOCALEDIR=\"$(PREFIX)/share/fheroes2\"
++CFLAGS := $(CFLAGS) -DCONFIGURE_FHEROES2_DATA=\"$(PREFIX)/share/fheroes2\"
+ TARGET := fheroes2
++
+ LIBENGINE := ../engine/libengine.a
+ CFLAGS := $(CFLAGS) -I../engine
+ 
+@@ -15,10 +18,6 @@
+ CFLAGS := $(CFLAGS) -I../xmlccwrap
+ endif
+ 
+-ifdef PREFIX
+-CFLAGS := $(CFLAGS) -I$(PREFIX)/include
+-endif
+-
+ RES	:=
+ ICOFILE	:= ../../image/fheroes2_32x32.ico
+ 
+Index: fheroes2/src/fheroes2/dialog/dialog_selectfile.cpp
+===================================================================
+--- fheroes2/src/fheroes2/dialog/dialog_selectfile.cpp	(revision 2861)
++++ fheroes2/src/fheroes2/dialog/dialog_selectfile.cpp	(working copy)
+@@ -35,9 +35,7 @@
+ #include "world.h"
+ #include "dialog.h"
+ 
+-#if defined __SYMBIAN32__ || defined(ANDROID)
+ #include <unistd.h>
+-#endif
+ 
+ bool SelectFileListSimple(const std::string &, std::string &, bool);
+ void RedrawExtraInfo(const Point &, const std::string &, const std::string &);
+Index: fheroes2/Makefile
+===================================================================
+--- fheroes2/Makefile	(revision 2861)
++++ fheroes2/Makefile	(working copy)
+@@ -23,7 +23,7 @@
+ MAKE	:= make
+ 
+ all:
+-	$(MAKE) -C src WITH_AI=empty
++	$(MAKE) -C src WITH_AI=simple
+ 	@cp src/dist/$(TARGET) .
+ 
+ clean:
