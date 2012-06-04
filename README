@@ -1,22 +1,62 @@
-OpenWrt package feed for Zipit Z2 - http://github.com/mozzwald/openwrt-zipit-packages
+OpenWrt package feed for Zipit Z2
+
+# What is this?
+
+Packages for OpenWRT for ZipIt, a repository originally started by
+mozzwald. Includes many UI packages from Qi Hardware's "Ben Nanonote"
+OpenWRT package repository.
+
+Not all packages may build. Patches/contributions welcome. :)
+
+# About OpenWRT for Zipit
+
+Read more at:
+* http://mozzwald.com/
+* http://chainxor.org/openwrt-zipit/
+* http://anarsoul.blogspot.com
+
+# Binary Package Feed
+
+Nightly builds from this package feed can be found at
+http://chainxor.org/openwrt-zipit/snapshot/packages/
+
+To add the binary repository to an existing OpenWRT for ZipIt install,
+add this line to /etc/opkg.conf on your zipit:
+
+src/gz snapshots http://chainxor.org/openwrt-zipit/snapshot/packages/
+
+... then run 'opkg update'
+
+
+=Building these packages for OpenWRT=
 
 How to add this feed to your OpenWrt buildroot:
 
-1. Clone the git repo somewhere on your system (eg $HOME/zipit/build)
+1. Obtain an OpenWRT for ZipIt buildroot somewhere on your system (eg $HOME/zipit/build)
 	cd $HOME/zipit/build
+   git clone git://github.com/projectgus/openwrt-zipit.git
+
+1. Clone the packages git repo also
 	git clone git://github.com/mozzwald/openwrt-zipit-packages.git openwrt-zipit-packages
 
 2. Add the feed to your OpenWrt buildroot
-	cd $HOME/zipit/build/openwrt-buildroot
+	cd $HOME/zipit/build/openwrt-zipit
 	echo "src-link zipit_packages $HOME/zipit/build/openwrt-zipit-packages" >> feeds.conf
 
 3. Update the feeds in OpenWrt
+   cd -
 	make package/symlinks V=99
 
 Now you can use make menuconfig to add the new packages to your OpenWrt build. You can pull any
-new changes from github by entering the feed directory and running 'git pull', then from your 
+new changes from github by entering the feed directory and running 'git pull', then from your
 OpenWrt directory run 'make package/symlinks V=99'
 
---mozzwald--
-http://www.mozzwald.com
+# Maintainers
 
+mozzwald (http://mozzwald.com)
+projectgus (http://chainxor.org)
+anarsoul (http://anarsoul.blogspot.com)
+germanp
+Qi Hardware Package Maintainers
+
+More contributors & packages welcome!
