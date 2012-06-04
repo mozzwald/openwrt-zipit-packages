@@ -21,6 +21,7 @@ define Package/mouse-emul
   TITLE:=mouse-emul, generic mouse emulator
   URL:=http://github.com/anarsoul/mouse-emul
   SUBMENU:=Terminal
+  DEPENDS:=+kmod-input-userlevel +kmod-input-evdev
 endef
 
 define Package/mouse-emul/description
