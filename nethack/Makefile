@@ -18,7 +18,6 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-3.4.3
 include $(INCLUDE_DIR)/package.mk
 
 define Package/nethack
-    MAINTAINER:="Xiangfu Liu" <xiangfu@sharism.cc>
     SECTION:=games
     CATEGORY:=Games
     DEPENDS:=nethack
@@ -51,20 +50,25 @@ define Build/Compile
 	export PREFIX="${PKG_INSTALL_DIR}";\
 	make;\
 	)
+	$(MAKE) -C $(PKG_BUILD_DIR) PREFIX="$(PKG_INSTALL_DIR)" install
 endef
 
 define Package/nethack/install
+
 	$(INSTALL_DIR) \
 		$(1)/usr/bin \
-		$(1)/usr/games/lib/nethackdir
+		$(1)/usr/games/lib/nethackdir \
+		$(1)/usr/games/lib/nethackdir/save
 
 	$(INSTALL_BIN) \
 		$(PKG_BUILD_DIR)/src/nethack \
 		$(1)/usr/bin/
 
-	# $(CP) \
-	# 	$(PKG_BUILD_DIR)/jemarch-bin/nethack-3.4.3-nanonote-bin/lib/nethackdir/* \
-	# 	$(1)/usr/games/lib/nethackdir
+	$(RM) -r $(PKG_INSTALL_DIR)/lib/nethackdir/save
+
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/lib/nethackdir/* \
+		$(1)/usr/games/lib/nethackdir/
 endef
 
 $(eval $(call BuildPackage,nethack))
