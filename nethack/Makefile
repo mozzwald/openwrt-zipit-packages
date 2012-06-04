@@ -34,11 +34,6 @@ TARGET_LDFLAGS+= -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
-	# (mkdir -p $(PKG_BUILD_DIR)/jemarch-bin; \
-	# cd $(PKG_BUILD_DIR)/; \
-	# wget http://www.jemarch.net/downloads/nanonote/nethack-3.4.3-nanonote-bin.tar.gz; \
-	# tar xf nethack-3.4.3-nanonote-bin.tar.gz -C jemarch-bin/; \
-	# )
 endef
 
 define Build/Compile
