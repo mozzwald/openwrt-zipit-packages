@@ -1,0 +1,37 @@
+--- links-2.3pre1.orig/Makefile.in	2011-08-14 13:48:41.000000000 -0400
++++ links-2.3pre1/Makefile.in	2012-06-26 09:48:23.000000000 -0400
+@@ -68,6 +68,7 @@ DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
+ MAKEINFO = @MAKEINFO@
+ PACKAGE = @PACKAGE@
+ PKG_CONFIG = @PKG_CONFIG@
++SDL_CONFIG = @SDL_CONFIG@
+ VERSION = @VERSION@
+ 
+ man_MANS = links.1
+@@ -78,7 +79,7 @@ bin_PROGRAMS = links
+ 
+ @ATHEOS_GR_TRUE@links_LDADD = atheos.o
+ 
+-links_SOURCES = af_unix.c auth.c beos.c bfu.c block.c bookmarks.c cache.c charsets.c connect.c cookies.c default.c dip.c directfb.c directfb_cursors.h dither.c dns.c drivers.c error.c file.c finger.c font_include.c framebuffer.c ftp.c gif.c html.c html_gr.c html_r.c html_tbl.c http.c https.c img.c imgcache.c jpeg.c jsint.c kbd.c language.c links_icon.c listedit.c lru.c mailto.c main.c memory.c menu.c objreq.c os_dep.c pmshell.c png.c sched.c select.c session.c smb.c svgalib.c terminal.c tiff.c types.c url.c view.c view_gr.c x.c xbm.c links.h cfg.h os_dep.h os_depx.h setup.h codepage.h language.h codepage.inc entity.inc uni_7b.inc language.inc upcase.inc arrow.inc bits.h
++links_SOURCES = af_unix.c auth.c beos.c bfu.c block.c bookmarks.c cache.c charsets.c connect.c cookies.c default.c dip.c directfb.c directfb_cursors.h dither.c dns.c drivers.c error.c file.c finger.c font_include.c framebuffer.c ftp.c gif.c html.c html_gr.c html_r.c html_tbl.c http.c https.c img.c imgcache.c jpeg.c jsint.c kbd.c language.c links_icon.c listedit.c lru.c mailto.c main.c memory.c menu.c objreq.c os_dep.c pmshell.c png.c sched.c select.c session.c smb.c svgalib.c terminal.c tiff.c types.c url.c view.c view_gr.c x.c xbm.c links.h cfg.h os_dep.h os_depx.h setup.h codepage.h language.h codepage.inc entity.inc uni_7b.inc language.inc upcase.inc arrow.inc bits.h sdl.c
+ 
+ CXXFLAGS = @CXXFLAGS@
+ 
+@@ -101,7 +102,7 @@ framebuffer.o ftp.o gif.o html.o html_gr
+ https.o img.o imgcache.o jpeg.o jsint.o kbd.o language.o links_icon.o \
+ listedit.o lru.o mailto.o main.o memory.o menu.o objreq.o os_dep.o \
+ pmshell.o png.o sched.o select.o session.o smb.o svgalib.o terminal.o \
+-tiff.o types.o url.o view.o view_gr.o x.o xbm.o
++tiff.o types.o url.o view.o view_gr.o x.o xbm.o sdl.o
+ @ATHEOS_GR_TRUE@links_DEPENDENCIES =  atheos.o
+ links_LDFLAGS = 
+ CFLAGS = @CFLAGS@
+@@ -436,6 +437,8 @@ png.o: png.c cfg.h config.h links.h os_d
+ 	language.h codepage.h
+ sched.o: sched.c links.h cfg.h config.h os_dep.h os_depx.h setup.h \
+ 	language.h codepage.h
++sdl.o: sdl.c links.h cfg.h config.h os_dep.h os_depx.h setup.h \
++	language.h codepage.h sdl_data.inc
+ select.o: select.c links.h cfg.h config.h os_dep.h os_depx.h setup.h \
+ 	language.h codepage.h
+ session.o: session.c links.h cfg.h config.h os_dep.h os_depx.h setup.h \
