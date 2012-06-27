@@ -1,0 +1,41 @@
+Links Browser Keys:
+	ESC	  display menu
+	^C	  quit
+	^P	  scroll up
+	^N	  scroll down
+	[, ]	  scroll left, right 
+	up, down  select link
+	->, enter follow link
+	<-, z	  go back
+	g	  go to url
+	G	  go to url based on current url
+	^G	  go to url based on current link
+	^R	  reload
+	/	  search
+	?	  search back
+	n	  find next
+	N	  find previous
+	=	  document info
+	\	  document source
+	|	  HTTP header
+	*	  toggle displaying of image links (text mode)
+	d	  download
+	s	  bookmarks
+	q	  quit or close current window
+	^X	  cut to clipboard
+	^V	  paste from clipboard
+	^K	  cut line (in textarea) or text to the end (in field)
+	^U	  cut all text before cursor
+	^W	  autocomplete url
+	Alt-1 .. Alt-9
+		  switch virtual screens (svgalib and framebuffer)
+
+Additions for Zipit Z2:
+        vol+      page up
+        vol-      page down
+        Alt-vol+  scroll up
+        Alt-vol-  scroll down 
+        spacebar  scroll down 
+	<, >	  scroll left, right  (comma and period also work)
+	TAB,      next link  (handy if mouse is enabled)
+        BACKTAB   (Shift-TAB) previous link
