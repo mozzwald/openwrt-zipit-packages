@@ -70,12 +70,14 @@ CONFIGURE_VARS += \
 
 define Package/links/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/links $(1)/usr/bin/
+		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/links $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/root/.links
-	$(INSTALL_BIN) ./files/links.his $(1)/root/.links/
-	$(INSTALL_BIN) ./files/links.cfg $(1)/root/.links/
-	$(INSTALL_BIN) ./files/html.cfg $(1)/root/.links/
-	$(INSTALL_BIN) ./files/linkskeys.txt $(1)/root/.links/
+		$(INSTALL_BIN) ./files/links.his $(1)/root/.links/
+		$(INSTALL_BIN) ./files/links.cfg $(1)/root/.links/
+		$(INSTALL_BIN) ./files/html.cfg $(1)/root/.links/
+		$(INSTALL_BIN) ./files/linkskeys.txt $(1)/root/.links/
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
+		$(INSTALL_BIN) ./files/links.gmenu $(1)/usr/share/gmenu2x/sections/applications/links
 endef
 
 $(eval $(call BuildPackage,links))
