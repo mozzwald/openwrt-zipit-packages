@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=alsa-lib
 PKG_VERSION:=1.0.24.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=ftp://ftp.alsa-project.org/pub/lib/ \
@@ -32,7 +32,7 @@ define Package/alsa-lib
   CATEGORY:=Libraries
   TITLE:=ALSA (Advanced Linux Sound Architecture) library
   URL:=http://www.alsa-project.org/
-  DEPENDS:=@AUDIO_SUPPORT
+  DEPENDS:=@AUDIO_SUPPORT libpthread librt
 endef
 
 define Package/alsa-lib/description
