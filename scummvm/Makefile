@@ -12,8 +12,6 @@ PKG_RELEASE:=1
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
 PKG_CAT:=bzcat
-PKG_BUILD_DEPENDS:=$(ICONV_DEPENDS) +libsdl +libsdl_sound +libsdl_mixer +libmad
-DEPENDS:=$(ICONV_DEPENDS) libsdl libsdl_sound libsdl_mixer libmad
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -23,6 +21,7 @@ define Package/scummvm
     SECTION:=games
     CATEGORY:=Games
     URL:=http://www.scummvm.org/
+	 DEPENDS:=$(ICONV_DEPENDS) +libsdl +libsdl-sound +libsdl-mixer +libmad +libstdcpp +libasound +libpng +libpthread +libvorbis +libz
 endef
 PKG_BUILD_DIR:=$(BUILD_DIR)/scummvm-$(PKG_VERSION)
 
