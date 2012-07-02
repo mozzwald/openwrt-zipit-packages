@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fheroes2
-PKG_REV:=2861
+PKG_REV:=2864
 PKG_VERSION:=r$(PKG_REV)
 PKG_RELEASE:=1
 

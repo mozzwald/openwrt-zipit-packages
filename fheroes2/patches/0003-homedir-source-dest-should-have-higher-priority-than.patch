@@ -1,0 +1,39 @@
+From 2bab32ab095ae52f5ad30bbafa78b88261d9c8bb Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Fri, 22 Jun 2012 16:33:39 +0300
+Subject: [PATCH 3/3] homedir source/dest should have higher priority than
+ others
+
+---
+ src/fheroes2/system/settings.cpp | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/fheroes2/system/settings.cpp b/src/fheroes2/system/settings.cpp
+index 27c845d..cb30cfa 100644
+--- a/src/fheroes2/system/settings.cpp
++++ b/src/fheroes2/system/settings.cpp
+@@ -684,6 +684,10 @@ ListDirs Settings::GetRootDirs(void)
+     const Settings & conf = Settings::Get();
+     ListDirs dirs;
+ 
++    // from HOME
++    const std::string & home = GetHomeDir();
++    if(! home.empty()) dirs.push_back(home);
++
+     // from build
+ #ifdef CONFIGURE_FHEROES2_DATA
+     dirs.push_back(CONFIGURE_FHEROES2_DATA);
+@@ -696,10 +700,6 @@ ListDirs Settings::GetRootDirs(void)
+     // from dirname
+     dirs.push_back(GetDirname(conf.path_program));
+ 
+-    // from HOME
+-    const std::string & home = GetHomeDir();
+-    if(! home.empty()) dirs.push_back(home);
+-
+     return dirs;
+ }
+ 
+-- 
+1.7.11
+

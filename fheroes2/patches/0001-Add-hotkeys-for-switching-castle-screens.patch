@@ -1,0 +1,89 @@
+From ee79449be4e5d7420c0e362d55f23b62246aa39c Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Fri, 22 Jun 2012 14:57:55 +0300
+Subject: [PATCH 1/2] Add hotkeys for switching castle screens
+
+---
+ src/fheroes2/game/game.h                  |  6 ++++++
+ src/fheroes2/game/game_hotkeys.cpp        | 12 ++++++++++++
+ src/fheroes2/pocketpc/pocketpc_castle.cpp | 12 ++++++------
+ 3 files changed, 24 insertions(+), 6 deletions(-)
+
+diff --git a/src/fheroes2/game/game.h b/src/fheroes2/game/game.h
+index 74cfae7..56dada9 100644
+--- a/src/fheroes2/game/game.h
++++ b/src/fheroes2/game/game.h
+@@ -146,6 +146,12 @@ namespace Game
+ 	EVENT_SHOWICONS,
+ 	EVENT_SWITCHGROUP,
+ 	EVENT_EMULATETOGGLE,
++	EVENT_CASTLE_SCREEN1,
++	EVENT_CASTLE_SCREEN2,
++	EVENT_CASTLE_SCREEN3,
++	EVENT_CASTLE_SCREEN4,
++	EVENT_CASTLE_SCREEN5,
++	EVENT_CASTLE_SCREEN6,
+ 	EVENT_LAST
+     };
+ 
+diff --git a/src/fheroes2/game/game_hotkeys.cpp b/src/fheroes2/game/game_hotkeys.cpp
+index 6cec3a4..2853338 100644
+--- a/src/fheroes2/game/game_hotkeys.cpp
++++ b/src/fheroes2/game/game_hotkeys.cpp
+@@ -119,6 +119,12 @@ const char* Game::EventsName(events_t evnt)
+ 	case EVENT_SHOWICONS:		return "show icons";
+         case EVENT_EMULATETOGGLE:	return "emulate mouse toggle";
+ 	case EVENT_SWITCHGROUP:		return "switch group";
++	case EVENT_CASTLE_SCREEN1:	return "castle screen 1";
++	case EVENT_CASTLE_SCREEN2:	return "castle screen 2";
++	case EVENT_CASTLE_SCREEN3:	return "castle screen 3";
++	case EVENT_CASTLE_SCREEN4:	return "castle screen 4";
++	case EVENT_CASTLE_SCREEN5:	return "castle screen 5";
++	case EVENT_CASTLE_SCREEN6:	return "castle screen 6";
+ 	default: break;
+     }
+     return NULL;
+@@ -215,6 +221,12 @@ void Game::HotKeysDefaults(void)
+     key_events[EVENT_SHOWBUTTONS] = KEY_3;
+     key_events[EVENT_SHOWSTATUS] = KEY_4;
+     key_events[EVENT_SHOWICONS] = KEY_5;
++    key_events[EVENT_CASTLE_SCREEN1] = KEY_1;
++    key_events[EVENT_CASTLE_SCREEN2] = KEY_2;
++    key_events[EVENT_CASTLE_SCREEN3] = KEY_3;
++    key_events[EVENT_CASTLE_SCREEN4] = KEY_4;
++    key_events[EVENT_CASTLE_SCREEN5] = KEY_5;
++    key_events[EVENT_CASTLE_SCREEN6] = KEY_6;
+     // system:
+     // emulate mouse
+     // key_events[EVENT_EMULATETOGGLE] = KEY_NONE;
+diff --git a/src/fheroes2/pocketpc/pocketpc_castle.cpp b/src/fheroes2/pocketpc/pocketpc_castle.cpp
+index 126612b..fbc8ff9 100644
+--- a/src/fheroes2/pocketpc/pocketpc_castle.cpp
++++ b/src/fheroes2/pocketpc/pocketpc_castle.cpp
+@@ -123,17 +123,17 @@ bool ScreenSwitch::QueueEventProcessing(void)
+     LocalEvent & le = LocalEvent::Get();
+     result = SCREENOUT;
+ 
+-    if(le.MouseClickLeft(rtScreen1)) result = SCREEN1;
++    if(le.MouseClickLeft(rtScreen1) || Game::HotKeyPress(Game::EVENT_CASTLE_SCREEN1)) result = SCREEN1;
+     else
+-    if(castle.isBuild(BUILD_CASTLE) && le.MouseClickLeft(rtScreen2)) result = SCREEN2;
++    if(castle.isBuild(BUILD_CASTLE) && (le.MouseClickLeft(rtScreen2) || Game::HotKeyPress(Game::EVENT_CASTLE_SCREEN2))) result = SCREEN2;
+     else
+-    if(castle.isBuild(BUILD_CASTLE) && le.MouseClickLeft(rtScreen3)) result = SCREEN3;
++    if(castle.isBuild(BUILD_CASTLE) && (le.MouseClickLeft(rtScreen3) || Game::HotKeyPress(Game::EVENT_CASTLE_SCREEN3))) result = SCREEN3;
+     else
+-    if(castle.isBuild(BUILD_CASTLE) && le.MouseClickLeft(rtScreen4)) result = SCREEN4;
++    if(castle.isBuild(BUILD_CASTLE) && (le.MouseClickLeft(rtScreen4) || Game::HotKeyPress(Game::EVENT_CASTLE_SCREEN4))) result = SCREEN4;
+     else
+-    if(castle.GetLevelMageGuild() && le.MouseClickLeft(rtScreen5)) result = SCREEN5;
++    if(castle.GetLevelMageGuild() && (le.MouseClickLeft(rtScreen5) || Game::HotKeyPress(Game::EVENT_CASTLE_SCREEN5))) result = SCREEN5;
+     else
+-    if(le.MouseClickLeft(rtScreen6)) result = SCREEN6;
++    if(le.MouseClickLeft(rtScreen6) || Game::HotKeyPress(Game::EVENT_CASTLE_SCREEN5)) result = SCREEN6;
+ 
+     return result != SCREENOUT;
+ }
+-- 
+1.7.11
+
