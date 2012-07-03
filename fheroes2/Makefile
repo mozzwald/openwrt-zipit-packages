@@ -25,7 +25,7 @@ define Package/fheroes2
   CATEGORY:=Games
   TITLE:=Free implementation of Heroes of the Might and Magic II engine
   URL:=http://sourceforge.net/projects/fheroes2/
-  DEPENDS:=+libsdl +libpng +libtheora +libsdl +libsdl-mixer +libsdl-image +libsdl-ttf +libintl-full $(ICONV_DEPENDS)
+  DEPENDS:=+libsdl +libpng +libtheora +libsdl +libsdl-mixer +libsdl-image +libsdl-ttf +libintl-full $(ICONV_DEPENDS) +libstdcpp
 endef
 
 define Package/fheroes2/description
