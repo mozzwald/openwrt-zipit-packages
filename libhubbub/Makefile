@@ -5,7 +5,7 @@ PKG_VERSION:=0.1.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=hubbub-$(PKG_VERSION)-src.tar.gz
-PKG_SOURCE_URL:=http://www.netsurf-browser.org/projects/releases/
+PKG_SOURCE_URL:=http://download.netsurf-browser.org/libs/releases/
 PKG_BUILD_DIR:=$(BUILD_DIR)/hubbub-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
