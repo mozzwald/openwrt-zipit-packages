@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=prboom
 PKG_VERSION:=2.5.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/prboom
@@ -22,6 +22,7 @@ define Package/prboom
   CATEGORY:=Games
   TITLE:=Port of Doom
   URL:=http://prboom.sourceforge.net/
+  DEPENDS:=+libsdl +libpng +libpthread
   MENU:=1
 endef
 
@@ -36,17 +37,18 @@ define Build/Configure
 		--libdir=$(STAGING_DIR)/usr/lib/SDL \
 		--includedir=$(STAGING_DIR)/usr/include \
 	)
+	# Ugly, but configure does not detect presence of uid_t and gid_t properly
+	$(SED) '/gid_t/d' $(PKG_BUILD_DIR)/config.h 
+	$(SED) '/uid_t/d' $(PKG_BUILD_DIR)/config.h 
 endef
-
-#define Build/Compile
-#	$(MAKE_VARS) \
-#	$(MAKE) -C $(PKG_BUILD_DIR)/$(MAKE_PATH) $(MAKE_FLAGS)
-#endef
 
 define Package/prboom/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/f3write $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/f3read $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/usr/share/doom
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/prboom $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/prboom-game-server $(1)/usr/bin/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/data/prboom.wad $(1)/usr/share/doom
+	$(INSTALL_DATA) $(FILES_DIR)/prboom.cfg $(1)/usr/share/doom
 endef
 
 $(eval $(call BuildPackage,prboom))
