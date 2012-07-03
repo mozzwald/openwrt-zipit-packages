@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libggi
 PKG_VERSION:=2.2.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).src.tar.gz
 PKG_SOURCE_URL:=@SF/ggi
 PKG_MD5SUM:=4fa672b1403c9f06e8cb35e699a693f1
@@ -39,7 +39,7 @@ endef
 define Package/libggi
 $(call Package/libggi/Default)
   TITLE += (library)
-  DEPENDS:=+libgii 
+  DEPENDS:=+libgii +libncurses +libaa
 #+directfb
 endef
 
