@@ -23,6 +23,7 @@ define Package/scummvm
     DEPENDS:=$(ICONV_DEPENDS) +libsdl +libsdl_sound +libsdl_mixer +libmad +libflac +libfaad2 +libogg +libpng +libpthread +libstdcpp +libtheora
     DEPENDS+=+libvorbis +alsa-lib +zlib
     URL:=http://www.scummvm.org/
+	 DEPENDS:=$(ICONV_DEPENDS) +libsdl +libsdl-sound +libsdl-mixer +libmad +libstdcpp +libasound +libpng +libpthread +libvorbis +libz
 endef
 PKG_BUILD_DIR:=$(BUILD_DIR)/scummvm-$(PKG_VERSION)
 
