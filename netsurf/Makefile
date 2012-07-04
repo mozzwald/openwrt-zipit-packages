@@ -8,7 +8,7 @@ PKG_VERSION:=2.9
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-src.tar.gz
-PKG_SOURCE_URL:=http://www.netsurf-browser.org/downloads/releases/
+PKG_SOURCE_URL:=http://download.netsurf-browser.org/netsurf/releases/source/
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
 PKG_INSTALL:=1
