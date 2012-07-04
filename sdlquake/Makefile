@@ -26,6 +26,7 @@ define Package/sdlquake
   CATEGORY:=Games
   TITLE:=SDL version of Quake I
   URL:=http://www.libsdl.org/projects/quake
+  DEPENDS:=+libsdl
 endef
 
 define Package/sdlquake/description
