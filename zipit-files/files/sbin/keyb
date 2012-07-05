@@ -1,0 +1,67 @@
+#!/bin/sh
+# Script used to set the keyboard backlight brightness
+# Use: keys level
+# level can be max, high, med, low, off, number
+
+#make sure you are root
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+# Check for increase/decrease
+run=1
+case "$1" in
+  +*)
+    # increase if new brightness is not more than 1023
+    inc=`echo "$1" | sed 's/+//'`
+    curr=`cat /sys/class/backlight/pwm-backlight.1/actual_brightness`
+    let new=$((curr+inc))
+    if [ "$new" -gt 1023 ]; then
+      echo "1023" > /sys/class/backlight/pwm-backlight.1/brightness
+    else
+      echo "$new" > /sys/class/backlight/pwm-backlight.1/brightness
+    fi
+    run=0
+    ;;
+  -*)
+    # decrease if new brightness is not less than 0
+    dec=`echo "$1" | sed 's/-//'`
+    curr=`cat /sys/class/backlight/pwm-backlight.1/actual_brightness`
+    let new=$((curr-dec))
+    if [ "$new" -lt 0 ]; then
+      echo "0" > /sys/class/backlight/pwm-backlight.1/brightness
+    else
+      echo "$new" > /sys/class/backlight/pwm-backlight.1/brightness
+    fi
+    run=0
+    ;;
+esac
+
+# Only run the rest if not increase/decrease
+if [ $run = 1 ]; then
+if [ $1 -eq $1 2> /dev/null ]; then
+  echo $1 > /sys/class/backlight/pwm-backlight.1/brightness
+else
+if [ $1 == "max" ]; then
+  echo 1023 > /sys/class/backlight/pwm-backlight.1/brightness
+fi
+
+if [ $1 == "high" ]; then
+  echo 700 > /sys/class/backlight/pwm-backlight.1/brightness
+fi
+
+if [ $1 == "med" ]; then
+  echo 300 > /sys/class/backlight/pwm-backlight.1/brightness
+fi
+
+if [ $1 == "low" ]; then
+  echo 100 > /sys/class/backlight/pwm-backlight.1/brightness
+fi
+
+if [ $1 == "off" ]; then
+  echo 0 > /sys/class/backlight/pwm-backlight.1/brightness
+fi
+
+fi
+fi

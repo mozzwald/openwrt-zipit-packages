@@ -1,0 +1,31 @@
+#!/bin/sh
+kill -USR2 `pidof bldaemon`
+
+###### Pre-suspend ######
+wpaconf="/etc/wpa.conf"
+wifidevice=wlan0
+
+pidof wpa_supplicant
+wpa_stat=$?
+
+if [ $wpa_stat -eq 0 ]; then
+	killall wpa_supplicant
+fi
+
+ifconfig "$wifidevice" down 2>/dev/null
+rmmod libertas_spi 2>/dev/null
+
+##### Suspend #######
+echo "mem" > /sys/power/state
+
+###### Resume ######
+insmod libertas_spi 2>/dev/null
+
+# Check if wpa_supplicant is running -- if true the assumption is that wifi was on
+
+if [ $wpa_stat -eq 0 ]; then
+
+	/usr/local/sbin/wpa-connect $wifidevice $wpaconf
+
+fi
+
