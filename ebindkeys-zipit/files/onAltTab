@@ -1,0 +1,9 @@
+#!/bin/sh
+
+currVT=fgconsole
+
+if [$currVT -eq 1]; then
+	chvt 2
+else
+	chvt 1
+fi

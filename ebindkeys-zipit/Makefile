@@ -8,9 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ebindkeys-zipit
-PKG_VERSION:=2012.04.12
+PKG_VERSION:=2012.06.28
 PKG_RELEASE:=1
-PKG_REV:=f2a35ed6d96820c02ba806cbaab963e704c7c334
+PKG_REV:=1046e3ba02387edf6313ebdb83cfe82c42ca0543
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REV).tar.gz
 PKG_SOURCE_URL:=git://github.com/mozzwald/ebindkeys-zipit.git
@@ -25,22 +25,30 @@ define Package/ebindkeys-zipit
   SECTION:=utilities
   CATEGORY:=Utilities
   TITLE:=bind a key or key combo to a command
+  DEPENDS:=+kmod-input-userlevel +kmod-input-evdev +libpthread +zipit-files
   URL:=http://home.vay8.net/doku.php?id=ebindkeys-zipit
 endef
 
 define Package/ebindkeys-zipit/description
-	ebindkeys-zipit lets you bind a key or key-combo to a command
+	ebindkeys-zipit lets you bind a key or key-combo to a command, now with keymouse
 endef
 
 define Package/ebindkeys-zipit/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ebindkeys $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/usr/sbin
+		$(INSTALL_BIN) $(PKG_BUILD_DIR)/ebindkeys $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/usr/local/sbin
+		$(INSTALL_BIN) ./files/onHome $(1)/usr/local/sbin/onHome
+		$(INSTALL_BIN) ./files/onAltTab $(1)/usr/local/sbin/onAltTab
+		$(INSTALL_BIN) ./files/onPowerDown $(1)/usr/local/sbin/onPowerDown
 	$(INSTALL_DIR) $(1)/usr/share/ebindkeys
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ebindkeysrc.sample $(1)/usr/share/ebindkeys/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/zipit-keys $(1)/usr/share/ebindkeys/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/README $(1)/usr/share/ebindkeys/
+		$(INSTALL_DATA) $(PKG_BUILD_DIR)/ebindkeysrc.sample $(1)/usr/share/ebindkeys/
+		$(INSTALL_DATA) $(PKG_BUILD_DIR)/zipit-keys $(1)/usr/share/ebindkeys/
+		$(INSTALL_DATA) $(PKG_BUILD_DIR)/README $(1)/usr/share/ebindkeys/
 	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ebindkeysrc.sample $(1)/etc/ebindkeysrc
+		$(INSTALL_DATA) ./files/ebindkeysrc $(1)/etc/ebindkeysrc
+		$(INSTALL_DATA) ./files/ebindpwrbtn $(1)/etc/ebindpwrbtn
+	$(INSTALL_DIR) $(1)/etc/init.d
+		$(INSTALL_BIN) ./files/z2-ebindkeys $(1)/etc/init.d/z2-ebindkeys
 endef
 
 $(eval $(call BuildPackage,ebindkeys-zipit))

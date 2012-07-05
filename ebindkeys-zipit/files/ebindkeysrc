@@ -1,0 +1,70 @@
+# Zipit keypad input device
+dev = "/dev/input/event0"
+
+event
+{
+	# CTRL-Options: Turns on/off ebindkeys
+	action = "TOGGLE"
+	keys = {0x1d,0x165} 
+}
+
+event
+{
+	#Home:
+	action = "/usr/local/sbin/onHome"
+	keys = {0x66} 
+}
+
+
+event
+{
+        # alt+tab
+        action = "/usr/local/sbin/onAltTab"
+        keys = {0x38,0xf}
+}
+
+
+event
+{
+        # right side - far flipper
+        action = "/usr/local/bin/voldn"
+        keys = {0x4a}
+}
+
+event
+{
+        # right side - near flipper
+        action = "/usr/local/bin/volup"
+        keys = {0x4e}
+}
+
+event
+{
+	# CTRL-right side - far flipper: Increase LCD Brightness
+	action = "/usr/local/sbin/lcdb +300"
+	keys = {0x1d,0x4a}
+}
+
+event
+{
+        # CTRL-right side - near flipper: Decrease LCD Brightness
+        action = "/usr/local/sbin/lcdb -300"
+        keys = {0x1d,0x4e}
+}
+
+event
+{
+        # Shift-right side - far flipper: Increase KEY Brightness
+        action = "/usr/local/sbin/keyb +300"
+        keys = {0x2a,0x4a}
+}
+
+
+event
+{
+        # Shift-right side - near flipper: Decrease KEY Brightness
+        action = "/usr/local/sbin/keyb -300"
+        keys = {0x2a,0x4e}
+}
+
+
