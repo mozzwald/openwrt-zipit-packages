@@ -26,6 +26,7 @@ define Package/bldaemon-zipit
   CATEGORY:=Utilities
   TITLE:=bldaemon-zipit
   URL:=http://github.com/mozzwald/bldaemon-zipit
+  DEPENDS:=+librt
 endef
 
 define Package/bldaemon-zipit/description
