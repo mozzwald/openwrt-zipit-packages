@@ -35,7 +35,7 @@ define Build/Compile
 endef
 
 define Package/f3/install
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/f3write $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/f3read $(1)/usr/sbin/
 endef
