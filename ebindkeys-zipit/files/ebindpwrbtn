@@ -3,16 +3,8 @@ dev = "/dev/input/event1"
 
 event
 {
-    #Power Btn -- onPress
-    action = "kill -USR1 `pidof bldaemon`"
-    keys = {0x74}
-}
-
-event
-{
-    #Power Btn -- onRelease
+    #Power Btn
     action = "sh /usr/local/sbin/suspend >/dev/null"
-    onrelease = true
     keys = {0x74}
 }
 
