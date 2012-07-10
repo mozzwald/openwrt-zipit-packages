@@ -35,7 +35,9 @@ endef
 
 define Package/bldaemon-zipit/install
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bldaemon $(1)/usr/sbin/bldaemon
+		$(INSTALL_BIN) $(PKG_BUILD_DIR)/bldaemon $(1)/usr/sbin/bldaemon
+	$(INSTALL_DIR) $(1)/etc/init.d
+		$(INSTALL_BIN) ./files/z2-bldaemon $(1)/etc/init.d/z2-bldaemon
 endef
 
 $(eval $(call BuildPackage,bldaemon-zipit))
