@@ -21,7 +21,7 @@ define Package/nupdf
   CATEGORY:=Utilities
   TITLE:=relatively fast pdf reader in SDL
   URL:=http://code.google.com/p/nupdf/
-  DEPENDS:=+libsdl
+  DEPENDS:=+mupdf +libsdl
 endef
 
 define Package/nupdf/description
@@ -29,16 +29,25 @@ define Package/nupdf/description
 endef
 
 TARGET_CFLAGS += \
-	-I$(STAGING_DIR)/usr/include
+	-I$(STAGING_DIR)/usr/include -DZIPIT_Z2
 
 TARGET_LDFLAGS += \
 	-Wl,-rpath-link=$(STAGING_DIR)/usr/lib \
-	-ldl -lSDL -lmupdf -lfitz -lfitzdraw \
-	-lcmaps -lfonts -lfreetype -lpthread \
+	-ldl -lSDL -lmupdf -lfitz \
+	-lfreetype -lpthread \
 	-lm -ljpeg -lz
 
+#	cp -f files/pdfapp.* $(PKG_BUILD_DIR)
+#	cp -f files/main.c $(PKG_BUILD_DIR)
+
 define Build/Compile
+	rm -f $(PKG_BUILD_DIR)/*.a
+	rm -f $(PKG_BUILD_DIR)/fitz*.h
+	rm -f $(PKG_BUILD_DIR)/mupdf.h
+	cp -f files/pdfapp.* $(PKG_BUILD_DIR)
+	cp -f files/main.c $(PKG_BUILD_DIR)
 	$(TARGET_CC) $(PKG_BUILD_DIR)/*.c -o $(PKG_BUILD_DIR)/nupdf $(TARGET_CFLAGS) -L$(PKG_BUILD_DIR) $(TARGET_LDFLAGS)
+	$(TARGET_CROSS)strip $(PKG_BUILD_DIR)/nupdf
 endef
 
 define Package/nupdf/install
