@@ -5,11 +5,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nupdf
+PKG_VERSION:=621ae34de6
+PKG_REV:=621ae34de6fcd4f9306838d594ae7b39d41d3aac
 PKG_RELEASE:=1
-PKG_REV:=15
-PKG_VERSION:=r$(PKG_REV)
-PKG_SOURCE_URL:=http://nupdf.googlecode.com/svn/trunk/
-PKG_SOURCE_PROTO:=svn
+
+
+PKG_SOURCE_URL:=git://github.com/deeice/nupdf.git
+PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -41,11 +43,6 @@ TARGET_LDFLAGS += \
 #	cp -f files/main.c $(PKG_BUILD_DIR)
 
 define Build/Compile
-	rm -f $(PKG_BUILD_DIR)/*.a
-	rm -f $(PKG_BUILD_DIR)/fitz*.h
-	rm -f $(PKG_BUILD_DIR)/mupdf.h
-	cp -f files/pdfapp.* $(PKG_BUILD_DIR)
-	cp -f files/main.c $(PKG_BUILD_DIR)
 	$(TARGET_CC) $(PKG_BUILD_DIR)/*.c -o $(PKG_BUILD_DIR)/nupdf $(TARGET_CFLAGS) -L$(PKG_BUILD_DIR) $(TARGET_LDFLAGS)
 	$(TARGET_CROSS)strip $(PKG_BUILD_DIR)/nupdf
 endef
