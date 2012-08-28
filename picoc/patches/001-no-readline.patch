@@ -1,0 +1,22 @@
+--- picoc.orig/Makefile	2012-08-28 10:41:41.000000000 -0400
++++ picoc/Makefile	2012-08-28 11:09:26.000000000 -0400
+@@ -1,6 +1,6 @@
+ CC=gcc
+-CFLAGS=-Wall -pedantic -g -DUNIX_HOST
+-LIBS=-lm -lreadline
++CFLAGS=-Wall -pedantic -s -DUNIX_HOST
++LIBS=-lm
+ 
+ TARGET	= picoc
+ SRCS	= picoc.c table.c lex.c parse.c expression.c heap.c type.c \
+--- picoc.orig/platform.h	2012-08-28 10:41:41.000000000 -0400
++++ picoc/platform.h	2012-08-28 11:00:32.000000000 -0400
+@@ -47,7 +47,7 @@
+ # ifndef NO_FP
+ #  include <math.h>
+ #  define PICOC_MATH_LIBRARY
+-#  define USE_READLINE
++/* #  define USE_READLINE */
+ #  undef BIG_ENDIAN
+ #  if defined(__powerpc__) || defined(__hppa__) || defined(__sparc__)
+ #   define BIG_ENDIAN
