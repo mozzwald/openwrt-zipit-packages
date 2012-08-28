@@ -5,7 +5,7 @@ PKG_VERSION:=0.0.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-src.tar.gz
-PKG_SOURCE_URL:=http://www.netsurf-browser.org/projects/releases/
+PKG_SOURCE_URL:=http://download.netsurf-browser.org/libs/releases/
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
@@ -14,7 +14,7 @@ define Package/libnsgif
 	MAINTAINER:=Vasily Khoruzhick <anarsoul@gmail.com>
 	SECTION:=libs
 	CATEGORY:=Libraries
-	TITLE:=Libnsgit is a decoding library for GIF image file format, written in C
+	TITLE:=Libnsgif is a decoding library for GIF image file format, written in C
 	URL:=http://www.netsurf-browser.org/projects/libnsgif/
 	DEPENDS:=
 endef

@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=kbd
 PKG_RELEASE:=1
 PKG_VERSION:=1.15.3
-PKG_SOURCE_URL:=ftp://ftp.kernel.org/pub/linux/utils/kbd
+PKG_SOURCE_URL:=http://www.kbd-project.org/download/
 PKG_SOURCE:=kbd-$(PKG_VERSION).tar.gz
 
 include $(INCLUDE_DIR)/package.mk
@@ -20,7 +20,7 @@ define Package/kbd/Default
   MAINTAINER:="Xiangfu Liu" <xiangfu@openmobilefree.net>
   SECTION:=utils
   CATEGORY:=Utilities
-  URL:=ftp://ftp.kernel.org/pub/linux/utils/kbd
+  URL:=http://www.kbd-project.org
 endef
 
 define Package/kbd

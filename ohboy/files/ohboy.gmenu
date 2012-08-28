@@ -1,0 +1,4 @@
+title=OhBoy
+icon=skin:icons/ohboy.png
+exec=/usr/bin/ohboy
+clock=416

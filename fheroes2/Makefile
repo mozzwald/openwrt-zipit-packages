@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fheroes2
-PKG_REV:=2861
+PKG_REV:=2864
 PKG_VERSION:=r$(PKG_REV)
 PKG_RELEASE:=1
 
@@ -25,7 +25,7 @@ define Package/fheroes2
   CATEGORY:=Games
   TITLE:=Free implementation of Heroes of the Might and Magic II engine
   URL:=http://sourceforge.net/projects/fheroes2/
-  DEPENDS:=+libsdl +libpng +libtheora +libsdl +libsdl-mixer +libsdl-image +libsdl-ttf +libintl-full $(ICONV_DEPENDS)
+  DEPENDS:=+libsdl +libpng +libtheora +libsdl +libsdl-mixer +libsdl-image +libsdl-ttf +libintl-full $(ICONV_DEPENDS) +libstdcpp
 endef
 
 define Package/fheroes2/description

@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+# Start Zipit Z2 ebindkeys Daemon
+
+START=19
+
+start() {
+	/usr/sbin/ebindkeys -f /etc/ebindkeysrc
+	/usr/sbin/ebindkeys -f /etc/ebindpwrbtn
+}
+
+stop() {
+	killall ebindkeys
+}

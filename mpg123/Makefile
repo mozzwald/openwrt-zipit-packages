@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpg123
 PKG_VERSION:=1.13.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.mpg123.de/download/
@@ -20,7 +20,7 @@ PKG_INSTALL=1
 
 define Package/mpg123/Default
   URL:=http://www.mpg123.de
-  DEPENDS:=@BUILD_PATENTED
+  DEPENDS:=@BUILD_PATENTED +libltdl
 endef
 
 define Package/libmpg123

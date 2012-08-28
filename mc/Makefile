@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
 PKG_VERSION:=4.7.5.2
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.midnight-commander.org/downloads/
@@ -23,7 +23,7 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/mc
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+glib2 +libncurses +libiconv
+  DEPENDS:=+glib2 +libncurses +libncursesw +libiconv
   TITLE:=midnight commander - a powerful file manager
   URL:=http://www.midnight-commander.org/
   SUBMENU:=filemanager

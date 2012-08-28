@@ -1,0 +1,55 @@
+From ab83c304f9cc5d0a59943d5a9b2f5ffc56a1f85a Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Fri, 22 Jun 2012 15:18:49 +0300
+Subject: [PATCH 2/2] Load/Save 'show control panel' state from/to config
+
+---
+ src/fheroes2/game/game_interface.cpp | 1 -
+ src/fheroes2/system/settings.cpp     | 5 ++++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/fheroes2/game/game_interface.cpp b/src/fheroes2/game/game_interface.cpp
+index 8d45bfc..57f99ac 100644
+--- a/src/fheroes2/game/game_interface.cpp
++++ b/src/fheroes2/game/game_interface.cpp
+@@ -50,7 +50,6 @@ Interface::Basic::Basic() : gameArea(GameArea::Get()), radar(Radar::Get()),
+     if(conf.ExtGameHideInterface())
+     {
+         iconsPanel.SetCount(2);
+-	conf.SetShowPanel(true);
+ 
+ 	Point pos_radr = conf.PosRadar();
+ 	Point pos_bttn = conf.PosButtons();
+diff --git a/src/fheroes2/system/settings.cpp b/src/fheroes2/system/settings.cpp
+index 41a92d3..27c845d 100644
+--- a/src/fheroes2/system/settings.cpp
++++ b/src/fheroes2/system/settings.cpp
+@@ -114,6 +114,7 @@ const settings_t settingsGeneral[] =
+     { GLOBAL_ALTRESOURCE, "alt resource", },
+     { GLOBAL_POCKETPC,    "pocketpc",     },
+     { GLOBAL_POCKETPC,    "pocket pc",    },
++    { GLOBAL_SHOWCPANEL,  "show control panel",},
+     { GLOBAL_USESWSURFACE,"use swsurface only",},
+     { 0, NULL, },
+ };
+@@ -511,7 +512,6 @@ void Settings::PostLoad(void)
+ 
+     if(ExtModes(GAME_HIDE_INTERFACE))
+     {
+-       opt_global.SetModes(GLOBAL_SHOWCPANEL);
+        opt_global.ResetModes(GLOBAL_SHOWRADAR);
+        opt_global.ResetModes(GLOBAL_SHOWICONS);
+        opt_global.ResetModes(GLOBAL_SHOWBUTTONS);
+@@ -602,6 +602,9 @@ std::string Settings::String(void) const
+     if(opt_global.Modes(GLOBAL_POCKETPC))
+     os << "pocket pc = on" << std::endl;
+ 
++    if(opt_global.Modes(GLOBAL_SHOWCPANEL))
++    os << "show control panel = on" << std::endl;
++
+     return os.str();
+ }
+ 
+-- 
+1.7.11
+

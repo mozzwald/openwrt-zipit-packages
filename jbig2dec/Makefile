@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=jbig2dec
 PKG_VERSION:=0.11
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://ghostscript.com/~giles/jbig2/jbig2dec/
@@ -23,6 +23,7 @@ define Package/jbig2dec
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=decoder implementation of the JBIG2 image compression format
+  DEPENDS:=+libpng +zlib
   URL:=http://jbig2dec.sourceforge.net/
 endef
 
