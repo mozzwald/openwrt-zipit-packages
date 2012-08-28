@@ -9,7 +9,8 @@ PKG_SOURCE:=picoc-$(PKG_VERSION).tar.bz2
 	PKG_MD5SUM:=6505fb108d195bad0854c7024993cc24
 	PKG_CAT:=bzip2 -cd
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/picoc-$(PKG_VERSION)
+#PKG_BUILD_DIR:=$(BUILD_DIR)/picoc-$(PKG_VERSION)
+PKG_BUILD_DIR:=$(BUILD_DIR)/picoc
 
 include $(INCLUDE_DIR)/package.mk
 
