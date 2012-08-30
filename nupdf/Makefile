@@ -5,9 +5,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nupdf
-PKG_VERSION:=621ae34de6
-PKG_REV:=621ae34de6fcd4f9306838d594ae7b39d41d3aac
-PKG_RELEASE:=1
+PKG_VERSION:=3de8c5224c
+PKG_REV:=3de8c5224c8dd8974438c992dbc3736ea614c8e4
+PKG_RELEASE:=2
 
 
 PKG_SOURCE_URL:=git://github.com/deeice/nupdf.git
