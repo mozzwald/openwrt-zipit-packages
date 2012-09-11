@@ -39,7 +39,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include $(1)/usr/lib
 
 	$(CP) $(PKG_BUILD_DIR)/include/*.h $(1)/usr/include
-	$(CP) $(PKG_BUILD_DIR)/build/mipsel-linux-gnu/lib/*.a \
+	$(CP) $(PKG_BUILD_DIR)/build/arm-linux-gnu/lib/*.a \
 		$(1)/usr/lib/
 endef
 
