@@ -1,0 +1,50 @@
+--- bard-0.7-current/configure.in~	2012-02-21 11:55:53.000000000 -0500
++++ bard-0.7-current/configure.in	2012-09-11 13:07:22.000000000 -0400
+@@ -524,7 +524,7 @@
+ AC_ARG_WITH( vox, [  --with-vox            with vox ],
+         FL_VOX=$with_vox )
+ if test "x$with_vox" = "x"; then
+-        FL_VOX="cmu_us_kal"
++        FL_VOX="cmu_us_kal16"
+ fi
+ AC_SUBST(FL_VOX)
+ 
+--- bard-0.7-current/main/Makefile~	2012-01-24 17:41:44.000000000 -0500
++++ bard-0.7-current/main/Makefile	2012-09-11 13:26:31.000000000 -0400
+@@ -60,7 +60,7 @@
+ LOCAL_INCLUDES += -I$(FLITEDIR)/include
+ 
+ LOCAL_LANGLEX_LIBS = -lflite_$(FLITE_LANG) -lflite_$(FLITE_LEX)
+-LOCAL_VOICE_LIBS = -lflite_cmu_us_kal
++LOCAL_VOICE_LIBS = -lflite_cmu_us_kal16
+ LOCAL_LIBS = -L$(FLITELIBDIR) $(LOCAL_LANGLEX_LIBS) $(LOCAL_VOICE_LIBS)
+ 
+ LIBS = -lbard $(SDLLIBS) $(LOCAL_LIBS) $(FLITELIBFLAGS) $(LDFLAGS)
+--- bard-0.7-current/src/speech.c~	2012-02-20 08:17:34.000000000 -0500
++++ bard-0.7-current/src/speech.c	2012-09-11 13:34:08.000000000 -0400
+@@ -45,7 +45,7 @@
+ void *flite_set_lang_list(void);
+ void usenglish_init(cst_voice *v);
+ cst_lexicon *cmu_lex_init(void);
+-cst_voice *register_cmu_us_kal(const char *voxdir);
++cst_voice *register_cmu_us_kal16(const char *voxdir);
+ 
+ static int bard_SDL_PauseAudio(int p);
+ 
+@@ -300,13 +300,13 @@
+     flite_init();
+     flite_add_lang("eng",usenglish_init,cmu_lex_init);
+ 
+-    /* Always include the kal diphone voice, but can load cg voices */
++    /* Always include the kal16 diphone voice, but can load cg voices */
+     /* if named on command line */
+     if (flite_voice_list == NULL)
+         flite_voice_list = 
+-            cons_val(voice_val(register_cmu_us_kal(NULL)),flite_voice_list);
++            cons_val(voice_val(register_cmu_us_kal16(NULL)),flite_voice_list);
+     bs->voice_list = flite_voice_list;
+-    bs->default_voice_name = get_param_string(config,"-voice","kal");
++    bs->default_voice_name = get_param_string(config,"-voice","kal16");
+     bs->default_voice = flite_voice_select(bs->default_voice_name);
+ 
+     /* This gets added to the voice, and will be deleted by the voice */

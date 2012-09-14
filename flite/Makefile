@@ -28,7 +28,14 @@ define Package/flite/description
   a small, fast run-time synthesis engine
 endef
 
-CONFIGURE_ARGS += --with-langvox=ben
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	cp -f files/zipit.lv $(PKG_BUILD_DIR)/config
+endef
+
+#CONFIGURE_ARGS += --with-langvox=ben
+#CONFIGURE_ARGS += --with-langvox="cmu_us_kal16" --with-audio="oss"
+CONFIGURE_ARGS += --with-langvox="zipit" --with-audio="oss"
 
 define Package/flite/install
 	$(INSTALL_DIR) $(1)/usr/bin/
