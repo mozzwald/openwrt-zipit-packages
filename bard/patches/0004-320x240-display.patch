@@ -1,0 +1,13 @@
+--- bard-0.7-current/include/bard_display.h~	2012-01-26 07:19:41.000000000 -0500
++++ bard-0.7-current/include/bard_display.h	2012-09-11 14:16:52.000000000 -0400
+@@ -65,8 +65,8 @@
+ };
+ typedef struct bard_display_struct bard_display;
+ 
+-#define BARD_DISPLAY_DEFAULT_MAX_WIDTH 800
+-#define BARD_DISPLAY_DEFAULT_MAX_HEIGHT 600
++#define BARD_DISPLAY_DEFAULT_MAX_WIDTH 320 /* 800 */
++#define BARD_DISPLAY_DEFAULT_MAX_HEIGHT 240 /* 600 */
+ #define BARD_DISPLAY_SCREEN_DEPTH 16
+ 
+ bard_display *bard_display_open(cst_features *config);
