@@ -1,0 +1,198 @@
+diff -rupN imgv.orig/sdl-imageviewer.c imgv-0.3.0/sdl-imageviewer.c
+--- imgv.orig/sdl-imageviewer.c	2012-09-24 11:46:57.000000000 -0400
++++ imgv-0.3.0/sdl-imageviewer.c	2012-09-24 11:54:57.000000000 -0400
+@@ -19,7 +19,7 @@
+ #define SMOOTHING_ON    1
+ #define PANSTEP 40
+ #define ZOOMSTEP 1.2
+-#define SLIDESHOWTIMEOUT 1000 * 5
++#define SLIDESHOWTIMEOUT (1000 * timeoutsecs)
+ #define VERSION "0.3.0"
+ 
+ void quit()
+@@ -265,6 +265,26 @@ Uint32 timerCallback(Uint32 interval, vo
+     return interval;
+ }
+ 
++void print_help(char *name)
++{
++        fprintf(stderr,  "\n Image Viewer -- imgv v%s.  Usage: \n"
++            " imgv -d -f -l -r -s[+|-][secs] <image files>\n\n"
++            " Command line options are like the hotkeys\n"
++            "  except -s has additional modifiers to\n"
++            "  control display time and the finish.\n"
++            "  (+ = loop, - = halt, otherwise exit)\n"
++            "  Also, -l with -r rotates 180 degrees.\n"
++            " Hotkeys:\n"
++            " 'f' fit to screen\n"
++            " 'z' zoom at pixel level\n"
++            " 'i' zoom in  'o' zoom out\n"
++            " 'l' rotate left  'r' rotate right\n"
++            " 'n' next image  'p' previous image\n"
++            " 'd' show / hide file name\n"
++            " 's' start / stop slide show\n"
++            " 'arrows' pan  'ESC' quit\n\n", VERSION);
++}
++
+ int main(int argc, char *argv[])
+ {
+     SDL_Surface *screen      = NULL,
+@@ -274,28 +294,89 @@ int main(int argc, char *argv[])
+     SDL_Rect     picturePortion;
+     TTF_Font    *font = NULL;
+     double       scale = 1.0;
+-    int          currentImageNumber = 1,
++    int          currentImageNumber = 0,
+                  showFileName = TRUE,
+                  runSlideShow = FALSE,
+                  isRunning = TRUE;
+     SDL_TimerID  slideShowTimer = 0;
+ 
++    int          timeoutsecs = 5;
++    int          loopShow=0;
++    int          fullscreen=0;
++    int          angle = 0;
++    
+     // Process command line
+     if (argc < 2) {
+-        fprintf(stderr,  "\n"
+-            " imgv v%s. Syntax: imgv <image files>\n\n"
+-            " Hotkeys:\n"
+-            " 'f' fit to screen\n"
+-            " 'z' zoom at pixel level\n"
+-            " 'i' zoom in  'o' zoom out\n"
+-            " 'l' rotate left  'r' rotate right\n"
+-            " 'n' next image  'p' previous image\n"
+-            " 'd' show / hide file name\n"
+-            " 's' start / stop slide show\n"
+-            " 'arrows' pan  'ESC' quit\n\n", VERSION);
++        print_help(argv[0]);
+         exit(0);
+     }
+ 
++    /* loop along the possible list of arguments */
++    while((--argc>0) && (**++argv=='-'))
++    {
++      char c;
++      int n;
++      while(c=*++*argv)
++      {
++	switch(c)
++	{
++	case 'f': /* -f display images in fullscreen */
++	  fullscreen=1;
++	  break;
++
++	case 'd': /* -d do not show file name */
++	  showFileName = FALSE;
++	  break;
++
++	case 'h': /* -h display help text and exit */
++	  print_help(*(argv-1));
++	  return;
++
++	case 'l': /* -r=l rotate image */
++	/* if option -r already has been used then angle=180 */
++	  if(angle==1) //270)
++	    angle=2;   //180;
++	  else /* only option -r has been given */
++	    angle=3;    //90;
++	  break;
++
++	case 'r': /* -r rotate image */
++	/* if option -l already has been used then angle=180 */
++	  if(angle==3) //90)
++	    angle=2;   //180;
++	  else /* only option -R has been given */
++	    angle=1;   //270;
++	  break;
++	  
++	case 's': /* -s display images in a slideshow */
++	  if (*(*argv+1) == '-')
++	  {
++	      loopShow = 0; // stop after slideshow but do not exit.
++	      ++*argv; // Eat the s (get the minus below).
++	  }
++	  else if (*(*argv+1) == '+')
++	  {
++	      loopShow = 1; // Loop slideshow forever.
++	      ++*argv; // Eat the s (get the minus below).
++	  }
++	  else loopShow =-1;
++	  n = sscanf(*argv+1, "%d", &timeoutsecs);
++	  if(n <= 0) 
++	    timeoutsecs = 5;
++	  else
++	    while(isdigit(*(++*argv+1))); // Eat the s and all but last digit.
++	  runSlideShow = 1 - runSlideShow;
++	  if (timeoutsecs < 0)
++	    timeoutsecs *=1;
++	  break;
++
++	default: 
++	  printf("illegal option %c\n",c);
++	  return;
++	}
++      }
++    }
++
+     screen = initScreen();
+ 
+     font = TTF_OpenFont("font.ttf", 11);
+@@ -309,14 +390,28 @@ int main(int argc, char *argv[])
+     picturePortion.w = SCREENWIDTH;
+     picturePortion.h = SCREENHEIGHT;
+ 
+-    image = loadImage(argv[1]);
++    image = loadImage(argv[0]);
++
++    if (runSlideShow)
++      slideShowTimer = SDL_AddTimer(SLIDESHOWTIMEOUT, timerCallback, NULL);
++    if (angle)
++    {
++      SDL_FreeSurface(scaledImage);
++      SDL_Surface *tmp = rotateSurface90Degrees(image, angle);
++      SDL_FreeSurface(image);
++      image = tmp;
++    }
++    if (fullscreen)
++      scaledImage = zoomFit(image, &picturePortion, &scale);
++    else
++
+     if (image->w < SCREENWIDTH && image->h < SCREENHEIGHT) {
+         scaledImage = zoom100(image, &picturePortion, &scale);
+     } else {
+         scaledImage = zoomFit(image, &picturePortion, &scale);
+     }
+     name = drawFileName(argv[currentImageNumber], font, runSlideShow);
+-    drawImage(scaledImage, &picturePortion, screen, name);
++    drawImage(scaledImage, &picturePortion, screen, showFileName ? name : 0);
+ 
+     do {
+         SDL_Event event;
+@@ -378,6 +473,8 @@ int main(int argc, char *argv[])
+                     }
+                     break;
+                 case SDLK_n: // NEXT IMAGE
++                    if ((loopShow == 1) && (argc >1) && (currentImageNumber >= argc-1))
++                        currentImageNumber=-1; 
+                     if (currentImageNumber < argc-1) {
+                         ++currentImageNumber;
+ 
+@@ -397,11 +494,15 @@ int main(int argc, char *argv[])
+                             SDL_RemoveTimer(slideShowTimer);
+                             runSlideShow = FALSE;
+                             name = drawFileName(argv[currentImageNumber], font, runSlideShow);
++			    if (loopShow == -1)
++			    {
++			      isRunning = FALSE;
++			    }
+                         }
+                     }
+                     break;
+                 case SDLK_p: // PREVIOUS IMAGE
+-                    if (currentImageNumber > 1) {
++                    if (currentImageNumber > 0) {
+                         --currentImageNumber;
+ 
+                         SDL_FreeSurface(image);
