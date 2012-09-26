@@ -1,8 +1,7 @@
-diff -crB imgv-0.3.0-orig/Makefile imgv-0.3.0//Makefile
-*** imgv-0.3.0-orig/Makefile	2012-02-14 08:27:48.355688611 -0600
---- imgv-0.3.0//Makefile	2012-02-14 08:31:10.698222827 -0600
+*** imgv.orig/Makefile	2012-09-26 08:38:31.000000000 -0400
+--- imgv-0.3.0/Makefile	2012-09-26 08:34:16.000000000 -0400
 ***************
-*** 1,13 ****
+*** 1,15 ****
   ####### openwrt-xburst path
   
   BASEPATH      = /home/fcarello/Projects/openwrt-xburst
@@ -14,9 +13,11 @@ diff -crB imgv-0.3.0-orig/Makefile imgv-0.3.0//Makefile
   STRIP         = mipsel-openwrt-linux-strip
 ! CFLAGS        := $(CFLAGS) -pipe -O2 -fomit-frame-pointer -mips32 -mtune=mips32 -funit-at-a-time -fhonour-copts -msoft-float -Wall -W -D_REENTRANT
   INCPATH       = -I$(TARGETPATH)/usr/include/ -I$(TARGETPATH)/usr/include/SDL -I.
-  LIBS          = -L$(TARGETPATH)/usr/lib/ -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lfreetype -ldirectfb -ldirect -lfusion -lz -lpthread
+! LIBS          = -L$(TARGETPATH)/usr/lib/ -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lfreetype -ldirectfb -ldirect -lfusion -lz -lpthread
   
---- 1,13 ----
+  SOURCE1       = sdl-imageviewer.c
+  TARGET1       = imgv
+--- 1,15 ----
   ####### openwrt-xburst path
   
   BASEPATH      = /home/fcarello/Projects/openwrt-xburst
@@ -28,5 +29,7 @@ diff -crB imgv-0.3.0-orig/Makefile imgv-0.3.0//Makefile
   STRIP         = mipsel-openwrt-linux-strip
 ! CFLAGS        := $(CFLAGS)
   INCPATH       = -I$(TARGETPATH)/usr/include/ -I$(TARGETPATH)/usr/include/SDL -I.
-  LIBS          = -L$(TARGETPATH)/usr/lib/ -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lfreetype -ldirectfb -ldirect -lfusion -lz -lpthread
+! LIBS          = -L$(TARGETPATH)/usr/lib/ -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lfreetype -lz -lpthread
   
+  SOURCE1       = sdl-imageviewer.c
+  TARGET1       = imgv
