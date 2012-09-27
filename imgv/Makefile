@@ -35,6 +35,10 @@ MAKE_VARS += TARGETPATH=$(STAGING_DIR)
 define Package/imgv/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/imgv $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
+		$(INSTALL_BIN) ./files/imgv.gmenu $(1)/usr/share/gmenu2x/sections/applications
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
+		$(INSTALL_BIN) ./files/imgv.png $(1)/usr/share/gmenu2x/skins/Default/icons
 endef
 
 $(eval $(call BuildPackage,imgv))

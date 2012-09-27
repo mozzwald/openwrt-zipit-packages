@@ -54,6 +54,11 @@ define Package/nupdf/install
 	$(INSTALL_BIN) \
 		$(PKG_BUILD_DIR)/nupdf $(1)/usr/bin/nupdf
 
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
+		$(INSTALL_BIN) ./files/nupdf.gmenu $(1)/usr/share/gmenu2x/sections/applications
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
+		$(INSTALL_BIN) ./files/nupdf.png $(1)/usr/share/gmenu2x/skins/Default/icons
+
 	$(CP) \
 		$(PKG_BUILD_DIR)/{data,config} $(1)/usr/share/nupdf
 endef
