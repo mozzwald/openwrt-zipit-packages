@@ -1,0 +1,14 @@
+diff -rupN pidgin-2.7.11.orig/finch/gntpounce.c pidgin-2.7.11/finch/gntpounce.c
+--- pidgin-2.7.11.orig/finch/gntpounce.c	2011-01-08 10:19:44.000000000 -0500
++++ pidgin-2.7.11/finch/gntpounce.c	2012-10-10 12:58:02.000000000 -0400
+@@ -984,8 +984,10 @@ finch_pounces_init(void)
+ /* XXX: There's no such thing in pidgin. Perhaps there should be? */
+ void finch_pounces_uninit()
+ {
++#if 0 // Avoid segfault. Defect #13738
+ 	purple_pounces_unregister_handler(FINCH_UI);
+ 
+ 	purple_signals_disconnect_by_handle(finch_pounces_get_handle());
++#endif
+ }
+ 
