@@ -30,9 +30,15 @@ define Package/libpurple
   TITLE:=libpurple is intended to be the core of an IM program
 endef
 
+# Not sure yet why finch wants the WIDE char versions of ncurses (and panel).
 define Package/finch
-  SECTION:=utils
-  CATEGORY:=Utilities
+#  $(call Package/libpurple/Default)
+  DEPENDS:=+libxml2 +libgnutls +libncursesw +libpanelw +libpurple +glib2 $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  URL:=http://developer.pidgin.im
+
+  SECTION:=net
+  CATEGORY:=Network
+  SUBMENU:=Instant Messaging
   TITLE:=IM client based on libpurple and ncurses
 endef
 
