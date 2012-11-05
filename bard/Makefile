@@ -44,6 +44,12 @@ TARGET_LDFLAGS+= -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
 define Package/bard/install
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/bard $(1)/usr/bin/
+
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
+		$(INSTALL_BIN) ./files/bard.gmenu2x $(1)/usr/share/gmenu2x/sections/applications
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
+		$(INSTALL_BIN) ./files/Bard32.png $(1)/usr/share/gmenu2x/skins/Default/icons
+
 endef
 
 $(eval $(call BuildPackage,bard))
