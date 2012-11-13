@@ -1,0 +1,4 @@
+This directory has some cut down font_include.c replacement files.
+
+You can use them to build much smaller links executables with just the
+ASCII or latin1 portions of the built-in unicode font.
