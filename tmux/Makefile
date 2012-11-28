@@ -42,8 +42,9 @@ define Package/tmux/install
 		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/tmux $(1)/usr/bin/
 		$(INSTALL_BIN) ./files/tmuxl $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/terminals
-		$(INSTALL_BIN) ./files/tmux.gmenu $(1)/usr/share/gmenu2x/sections/terminals
-
+		$(INSTALL_DATA) ./files/tmux.gmenu $(1)/usr/share/gmenu2x/sections/terminals/tmux
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
+		$(INSTALL_DATA) ./files/tmux.png $(1)/usr/share/gmenu2x/skins/Default/icons/tmux.png
 endef
 
 $(eval $(call BuildPackage,tmux))
