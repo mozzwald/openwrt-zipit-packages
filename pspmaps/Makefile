@@ -19,7 +19,7 @@ define Package/pspmaps
   SECTION:=utils
   CATEGORY:=Utilities
   URL:=http://royale.zerezo.com/psp/
-  DEPENDS:=+libsdl +libsdl-image +libsdl-mixer +libsdl-ttf +libxml2 +libcurl
+  DEPENDS:=+libsdl +libsdl-image +libsdl-gfx +libsdl-mixer +libsdl-ttf +libxml2 +libcurl
 endef
 
 define Package/pspmaps/description
