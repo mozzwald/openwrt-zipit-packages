@@ -38,7 +38,8 @@ endef
 CONFIGURE_ARGS += FLITEDIR=$(STAGING_DIR)/usr \
 	DEFAULTFONT=/usr/share/fonts/ttf-dejavu/DejaVuSans.ttf
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/SDL
+TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/SDL \
+	-I$(STAGING_DIR)/usr/lib/libiconv-stub/include/
 TARGET_LDFLAGS+= -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
 
 define Package/bard/install
