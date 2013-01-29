@@ -1,0 +1,82 @@
+--- ./pspmaps.c  2013-01-01 14:09:18.017890000 -0800
++++ ./pspmaps.c	2013-01-01 10:47:38.267217000 -0800
+@@ -199,13 +199,13 @@ enum
+ 	PSP_BUTTON_RIGHT = 6,
+ #ifdef ZIPIT_Z2
+ 	PSP_BUTTON_SELECT = 7, 
+-	PSP_BUTTON_START = SDLK_BACKSPACE, // = 8
+-	PSP_BUTTON_X = SDLK_TAB, // SDLK_TAB = 9
+-	PSP_BUTTON_R = 11,
+-	PSP_BUTTON_L = 12,
++	PSP_BUTTON_START = SDLK_TAB, // = 8
++	PSP_BUTTON_X = SDLK_SPACE, // SDLK_TAB = 9
++	PSP_BUTTON_R = SDLK_PERIOD,
++	PSP_BUTTON_L = SDLK_COMMA,
+ 	PSP_BUTTON_A = SDLK_RETURN, // 13
+-	PSP_BUTTON_Y = SDLK_COMMA, // 44
+-	PSP_BUTTON_B = SDLK_PERIOD, //46
++	PSP_BUTTON_Y = SDLK_HOME, // 44
++	PSP_BUTTON_B = SDLK_END, //46
+ #else
+ 	PSP_BUTTON_START = 8,
+ 	PSP_BUTTON_SELECT = 9,
+@@ -797,7 +797,7 @@ void menu()
+ 						case SDLK_ESCAPE:
+ 						case PSP_BUTTON_START:
+ 							return;
+-						case SDLK_SPACE:
++	//					case SDLK_SPACE:
+ 						case PSP_BUTTON_B:
+ 						case PSP_BUTTON_A:
+ 						case PSP_BUTTON_Y:
+@@ -1132,26 +1132,34 @@ void init()
+ 	curl = curl_easy_init();
+ 	
+ 	/* setup SDL */
+-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO) == -1)
++	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO) == -1){
++		printf("SDL_Init Failed\n");
+ 		quit();
++	}
+ 	joystick = SDL_JoystickOpen(0);
+ 	SDL_JoystickEventState(SDL_ENABLE);
+ 	if (TTF_Init() == -1)
++	{
++		printf("TTF_Init Failed\n");
+ 		quit();
++	}
+ 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
+-		quit();
++	{
++		printf("Mix_OpenAudio Failed\n");
++	//	quit();
++	}
+ 	
+ 	/* load urls for services */
+ 	if ((f = fopen("urls.txt", "r")) == NULL)
+ 	{
+-		DEBUG("cannot open urls file!\n");
++		printf("cannot open urls file!\n");
+ 		quit();
+ 	}
+ 	for (i = 0; i < CHEAT_VIEWS; i++) if (i != NORMAL_VIEWS)
+ 	{
+ 		if (fscanf(f, "%s", buffer) != 1)
+ 		{
+-			DEBUG("cannot read url for %s\n", _view[i]);
++			printf("cannot read url for %s\n", _view[i]);
+ 			quit();
+ 		}
+ 		_url[i] = malloc(strlen(buffer) + 1);
+@@ -1176,8 +1184,10 @@ void init()
+ 	next = zoomSurface(screen, 1, 1, 0);
+ 	#endif
+ 	if (screen == NULL)
++	{
++		printf("Mix_OpenAudio Failed\n");
+ 		quit();
+-	
++	}	
+ 	/* load textures */
+ 	logo = IMG_Load("data/logo.png");
+ 	na = IMG_Load("data/na.png");
