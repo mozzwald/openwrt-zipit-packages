@@ -1,0 +1,137 @@
+--- ./view.c  2013-01-01 13:30:24.822416000 -0800
++++ ./view.c	2012-12-31 14:30:33.570252000 -0800
+@@ -3429,10 +3429,12 @@ void send_event(struct session *ses, str
+ 			next_frame(ses, ev->y ? -1 : 1);
+ 			draw_formatted(ses);
+ 		}
++#if 0 /* ZIPIT_Z2 */
+ 		if (ev->x == KBD_LEFT && !ses->term->spec->braille) {
+ 			back(ses, NULL, 0);
+ 			goto x;
+ 		}
++#endif		
+ 		if (upcase(ev->x) == 'Z' && !(ev->y & (KBD_CTRL | KBD_ALT))) {
+ 			back(ses, NULL, 0);
+ 			goto x;
+
+--- ./view_gr.c	2013-01-01 13:30:24.822416000 -0800
++++ ./view_gr.c	2012-12-31 14:30:25.077582000 -0800
+@@ -1172,7 +1172,12 @@ int g_frame_ev(struct session *ses, stru
+ 					return enter(ses, fd, 0);
+ 				}
+ 			}
++#if 1 /* ZIPIT_Z2 */
++			/* Use dpad arrow buttons to scroll ZIPIT_Z2 */		
++			if (ev->x == KBD_ENTER) {
++#else
+ 			if (ev->x == KBD_RIGHT || ev->x == KBD_ENTER) {
++#endif
+ 				struct link *l;
+ 				if (fd->vs->current_link >= 0 && fd->vs->current_link < fd->f_data->nlinks) {
+ 					l = &fd->f_data->links[fd->vs->current_link];
+@@ -1188,7 +1193,9 @@ int g_frame_ev(struct session *ses, stru
+ 			if (upcase(ev->x) == 'M' && !(ev->y & (KBD_CTRL | KBD_ALT))) return write_scrollmark(ses,fd); 
+ 
+ 			/* Add more conveient croll keys for ZIPIT_Z2 */
+-			if (ev->x == KBD_PAGE_DOWN || (upcase(ev->x) == 'F' && ev->y & KBD_CTRL)) {
++			if (ev->x == KBD_PAGE_DOWN || (upcase(ev->x) == 'F' && ev->y & KBD_CTRL)
++			    || (ev->x == KBD_DOWN && (ev->y & (KBD_SHIFT | KBD_ALT))) // added alt or shift dn
++			    ) {
+ #else
+ 			if (ev->x == KBD_PAGE_DOWN || (ev->x == ' ' && !(ev->y & KBD_ALT)) || (upcase(ev->x) == 'F' && ev->y & KBD_CTRL)) {
+ #endif
+@@ -1206,7 +1213,14 @@ int g_frame_ev(struct session *ses, stru
+ 				html_interpret_recursive(ses->screen); 
+ 				return 1;
+ 			}
++#if 1 /* ZIPIT_Z2 */
++			/* Add more conveient scroll keys for ZIPIT_Z2 */
++			if (ev->x == KBD_PAGE_UP || (upcase(ev->x) == 'B' && !(ev->y & KBD_ALT))
++			    || (ev->x == KBD_UP && (ev->y & (KBD_SHIFT | KBD_ALT))) // added alt or shift up
++			    ) {
++#else
+ 			if (ev->x == KBD_PAGE_UP || (upcase(ev->x) == 'B' && !(ev->y & KBD_ALT))) {
++#endif
+ 				unset_link(fd);
+ 				if (!fd->vs->view_pos) {
+ 					fd->vs->orig_view_pos = fd->vs->view_pos;
+@@ -1239,7 +1253,8 @@ int g_frame_ev(struct session *ses, stru
+ #if 1 /* ZIPIT_Z2 */
+ 			/* Add more conveient scroll keys for ZIPIT_Z2 */
+ 			if (ev->x == KBD_DEL || (upcase(ev->x) == 'N' && ev->y & KBD_CTRL) 
+-			    || (ev->x == ' ' && !(ev->y & KBD_ALT))) {
++			    || (ev->x == KBD_DOWN && !(ev->y & (KBD_CTRL | KBD_ALT))) // added down arrow
++			    || (ev->x == ' ' && !(ev->y & KBD_ALT) && !(ev->y & KBD_SHIFT))) {
+ #else
+ 			if (ev->x == KBD_DEL || (upcase(ev->x) == 'N' && ev->y & KBD_CTRL)) {
+ #endif
+@@ -1251,7 +1266,14 @@ int g_frame_ev(struct session *ses, stru
+ 				fd->vs->orig_view_pos = fd->vs->view_pos;
+ 				return 3;
+ 			}
++#if 1 /* ZIPIT_Z2 */
++			/* Add more conveient scroll keys for ZIPIT_Z2 */
++			if (ev->x == KBD_INS || (upcase(ev->x) == 'P' && ev->y & KBD_CTRL) 
++			    || (ev->x == KBD_UP && !(ev->y & (KBD_CTRL | KBD_ALT))) // added up arrow
++			    || (ev->x == ' ' && !(ev->y & KBD_ALT) && (ev->y & KBD_SHIFT))) {
++#else
+ 			if (ev->x == KBD_INS || (upcase(ev->x) == 'P' && ev->y & KBD_CTRL)) {
++#endif
+ 				if (!fd->vs->view_pos) {
+ 					fd->vs->orig_view_pos = fd->vs->view_pos;
+ 					return 0;
+@@ -1280,13 +1302,8 @@ int g_frame_ev(struct session *ses, stru
+ 				fd->vs->orig_view_pos = fd->vs->view_pos;
+ 				return 3;
+ 			}
+-			if (ev->x == KBD_DOWN) {
+-				return g_next_link(fd, 1);
+-			}
+-			if (ev->x == KBD_UP) {
+-				return g_next_link(fd, -1);
+-			}
+ #if 1 /* ZIPIT_Z2 */
++
+ 			/* Allow TAB, BACKTAB to traverse links on ZIPIT_Z2 (mouse eats up,dn keys)*/
+ 			if ((ev->x == KBD_TAB) && (ev->y & KBD_SHIFT)) {
+ 				return g_next_link(fd, -1);
+@@ -1294,9 +1311,27 @@ int g_frame_ev(struct session *ses, stru
+ 			if (ev->x == KBD_TAB) {
+ 				return g_next_link(fd, 1);
+ 			}
++
++			/* Use dpad arrow buttons to scroll ZIPIT_Z2 and use <,>. for URLS. */	
++			if ((ev->x == '.') || (ev->x == '>') || (ev->x == '}') || (ev->x == ')')) {
++				return g_next_link(fd, 1);
++			}
++			if ((ev->x == ',') || (ev->x == '<') || (ev->x == '{') || (ev->x == '(')) {
++				return g_next_link(fd, -1);
++			}
++
+ 			/* Add more conveient sidescroll keys for ZIPIT_Z2 */
+-			if ((ev->x == '[') || (ev->x == ',') || (ev->x == '<')) { 
++			if ((ev->x == '[')
++			    || (ev->x == KBD_LEFT && !(ev->y & (KBD_CTRL | KBD_ALT))) // added left arrow
++			    ) { 
+ #else
++			if (ev->x == KBD_DOWN) {
++				return g_next_link(fd, 1);
++			}
++			if (ev->x == KBD_UP) {
++				return g_next_link(fd, -1);
++			}
++
+ 			if (ev->x == '[') {
+ #endif
+ 				left:
+@@ -1310,7 +1345,9 @@ int g_frame_ev(struct session *ses, stru
+ 			}
+ #if 1 /* ZIPIT_Z2 */
+ 			/* Add more conveient sidescroll keys for ZIPIT_Z2 */
+-			if ((ev->x == ']') || (ev->x == '.') || (ev->x == '>')) { 
++			if ((ev->x == ']')
++			    || (ev->x == KBD_RIGHT && !(ev->y & (KBD_CTRL | KBD_ALT))) // added right arrow
++			    ) { 
+ #else
+ 			if (ev->x == ']') {
+ #endif
