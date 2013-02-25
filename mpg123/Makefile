@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpg123
-PKG_VERSION:=1.13.2
-PKG_RELEASE:=2
+PKG_VERSION:=1.15.1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.mpg123.de/download/
-PKG_MD5SUM:=7cb959877d205f89215a32bf446f5737
+PKG_MD5SUM:=3bb9441c5f4fa10c995b8e0bd84d5549
 PKG_FIXUP:=libtool
 
 include $(INCLUDE_DIR)/package.mk
@@ -20,7 +20,7 @@ PKG_INSTALL=1
 
 define Package/mpg123/Default
   URL:=http://www.mpg123.de
-  DEPENDS:=@BUILD_PATENTED +libltdl
+  DEPENDS:=@BUILD_PATENTED
 endef
 
 define Package/libmpg123
@@ -43,6 +43,7 @@ define Build/Configure
 		--enable-shared \
 		--enable-static \
 		--with-cpu=generic_nofpu \
+		--with-default-audio=alsa \
 	)
 endef
 
