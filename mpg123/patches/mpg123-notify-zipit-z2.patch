@@ -1,0 +1,280 @@
+diff -rupN original/control_generic.c new/control_generic.c
+--- ./src/control_generic.c	2013-01-31 15:00:07.000000000 -0800
++++ ./src/control_generic.c	2013-02-21 21:05:50.625090287 -0800
+@@ -42,12 +42,17 @@ FILE *outstream;
+ static int mode = MODE_STOPPED;
+ static int init = 0;
+ 
++#define MAX_CALLBACK_CLIENTS 5
++
++int nCallBack_PID[MAX_CALLBACK_CLIENTS] = {0};
++char *strURL = NULL;
++
+ #include "debug.h"
+ 
+ void generic_sendmsg (const char *fmt, ...)
+ {
+ 	va_list ap;
+-	fprintf(outstream, "@");
++//	fprintf(outstream, "@");
+ 	va_start(ap, fmt);
+ 	vfprintf(outstream, fmt, ap);
+ 	va_end(ap);
+@@ -121,8 +126,56 @@ static void generic_sendv1(mpg123_id3v1 
+ 	generic_sendmsg("%s ID3.genre:%i", prefix, v1->genre);
+ 	if(v1->comment[28] == 0 && v1->comment[29] != 0)
+ 	generic_sendmsg("%s ID3.track:%i", prefix, (unsigned char)v1->comment[29]);
++	writeMetaData("%s %s %s", v1->title, v1->artist, v1->album);
++}
++
++void writeMetaData(const unsigned char* strMetaData, ...) {	
++
++	FILE *fd = fopen("/tmp/mpg123_meta", "w+");
++
++	if (fd != NULL) {
++		va_list ap;
++		va_start(ap, strMetaData);
++		vfprintf(fd, strMetaData, ap);
++		va_end(ap);
++	
++		fclose(fd);
++	}
++	int i=0;
++	while(i<MAX_CALLBACK_CLIENTS && nCallBack_PID[i]){   
++		unsigned char buff[60] = {0};
++		sprintf(buff,"kill -s USR2 %d", nCallBack_PID[i]);
++		system(buff);
++		i++;
++	}					
++}
++
++void write_infoid3(mpg123_handle *mh)
++{
++	mpg123_id3v1 *v1;
++	mpg123_id3v2 *v2;
++	if(MPG123_OK != mpg123_id3(mh, &v1, &v2))
++	{
++		error1("Cannot get ID3 data: %s", mpg123_strerror(mh));
++		return;
++	}
++	if(v1 != NULL)
++	{
++		generic_sendv1(v1, "I");
++	}
++	if(v2 != NULL)
++	{
++		writeMetaData("%s  %s  %s",   v2->title->p, v2->artist->p, v2->album->p);
++//		writeMetaData("I ID3v2.artist:%s",  v2->artist);
++//		writeMetaData("I ID3v2.album:%s",   v2->album);
++//		writeMetaData("I ID3v2.year:%s",    v2->year);
++//		writeMetaData("I ID3v2.comment:%s", v2->comment);
++//		writeMetaData("I ID3v2.genre:%s",   v2->genre);
++		
++	}
+ }
+ 
++
+ static void generic_sendinfoid3(mpg123_handle *mh)
+ {
+ 	mpg123_id3v1 *v1;
+@@ -139,11 +192,12 @@ static void generic_sendinfoid3(mpg123_h
+ 	if(v2 != NULL)
+ 	{
+ 		generic_send_lines("I ID3v2.title:%s",   v2->title);
+-		generic_send_lines("I ID3v2.artist:%s",  v2->artist);
++		generic_send_lines("I ID3v2.artist:%s",  v2->artist);		
+ 		generic_send_lines("I ID3v2.album:%s",   v2->album);
+ 		generic_send_lines("I ID3v2.year:%s",    v2->year);
+ 		generic_send_lines("I ID3v2.comment:%s", v2->comment);
+ 		generic_send_lines("I ID3v2.genre:%s",   v2->genre);
++		writeMetaData("%s  %s  %s",  v2->title->p, v2->artist->p, v2->album->p);
+ 	}
+ }
+ 
+@@ -230,14 +284,43 @@ static void generic_load(mpg123_handle *
+ 		generic_sendmsg("P 0");
+ 		return;
+ 	}
++	
++	if (!strncmp(arg, "http://", 7)){ /* http stream */
++
++		char* newURL=NULL;
++		int num = strlen(arg);
++		if ((newURL = (char *) malloc(num+1)))
++		{
++			newURL[num] = '\0';
++			strncpy(newURL, arg, num);
++		}
++		if(strURL)
++			free(strURL);
++		strURL=newURL;
++	}
++	
+ 	mpg123_seek(fr, 0, SEEK_SET); /* This finds ID3v2 at beginning. */
+ 	if(mpg123_meta_check(fr) & MPG123_NEW_ID3)
+ 	{
+ 		generic_sendinfoid3(fr);
+ 		mpg123_meta_free(fr);
+ 	}
+-	else generic_sendinfo(arg);
+-
++	else{
++		char *s, *t;
++		s = strrchr(arg, '/');
++		if (!s)
++			s = arg;
++		else
++			s++;
++		
++		t = strrchr(s, '.');
++		if (t)
++			*t = 0;
++		generic_sendmsg("I %s", s);
++	
++//		generic_sendinfo(arg);
++		writeMetaData("%s", s);
++	}
+ 	if(htd.icy_name.fill) generic_sendmsg("I ICY-NAME: %s", htd.icy_name.p);
+ 	if(htd.icy_url.fill)  generic_sendmsg("I ICY-URL: %s", htd.icy_url.p);
+ 
+@@ -285,6 +368,8 @@ static void generic_loadlist(mpg123_hand
+ 	free_playlist(); /* Free memory after it is not needed anymore. */
+ }
+ 
++
++	
+ int control_generic (mpg123_handle *fr)
+ {
+ 	struct timeval tv;
+@@ -357,12 +442,32 @@ int control_generic (mpg123_handle *fr)
+ 				{
+ 					/* When the track ended, user may want to keep it open (to seek back),
+ 					   so there is a decision between stopping and pausing at the end. */
++					   
++					//we only notify the first client that connected, they are the controller of the playlist
++					//secondary clients will only be notified of the meta data change, but they can start a song of choice at any time
++					//however, when that song is over, only the first client will be notified and is granted exclusive priority to select the next song
++					//if the first client doesn't respond to this notification then the playlist will end and mpg123 will stop playing
++					//another client can then become the controller of the playlist by playing an item
++  					if(nCallBack_PID[0]){ 
++						unsigned char buff[30] = {0};
++						sprintf(buff,"kill -s USR1 %d", nCallBack_PID[0]);
++						nCallBack_PID[0]=0;
++						system(buff);
++					}
++					
+ 					if(param.keep_open)
+ 					{
+-						mode = MODE_PAUSED;
++						mode = MODE_STOPPED;
++						
+ 						/* Hm, buffer should be stopped already, shouldn't it? */
+ 						if(param.usebuffer) buffer_stop();
+-						generic_sendmsg("P 1");
++						
++						generic_sendmsg("P 0");
++						close_track();
++						
++						if(strURL)
++							generic_load(fr, strURL, MODE_PLAYING);
++						
+ 					}
+ 					else
+ 					{
+@@ -376,14 +481,16 @@ int control_generic (mpg123_handle *fr)
+ 					print_remote_header(fr);
+ 					init = 0;
+ 				}
+-				if(silent == 0)
++			//	if(silent == 1)
+ 				{
+-					generic_sendstat(fr);
++				//	generic_sendstat(fr);
+ 					if(mpg123_meta_check(fr) & MPG123_NEW_ICY)
+ 					{
+ 						char *meta;
+-						if(mpg123_icy(fr, &meta) == MPG123_OK)
+-						generic_sendmsg("I ICY-META: %s", meta != NULL ? meta : "<nil>");
++						if(mpg123_icy(fr, &meta) == MPG123_OK){
++							generic_sendmsg("%s", meta != NULL ? meta : "<nil>");
++							writeMetaData("%s", meta != NULL ? meta : "<nil>");
++						}	
+ 					}
+ 				}
+ 			}
+@@ -478,7 +585,10 @@ int control_generic (mpg123_handle *fr)
+ 							if(param.usebuffer) buffer_start();
+ 							generic_sendmsg("P 2");
+ 						}
+-					} else generic_sendmsg("P 0");
++					} 
++					else{ 
++						generic_sendmsg("P 0");
++					}
+ 					continue;
+ 				}
+ 
+@@ -492,8 +602,9 @@ int control_generic (mpg123_handle *fr)
+ 						}
+ 						close_track();
+ 						mode = MODE_STOPPED;
+-						generic_sendmsg("P 0");
+-					} else generic_sendmsg("P 0");
++						
++					}
++					generic_sendmsg("P 0");
+ 					continue;
+ 				}
+ 
+@@ -726,6 +837,26 @@ int control_generic (mpg123_handle *fr)
+ 						continue;
+ 					}
+ 
++
++
++					/* NOTIFY callback pid */
++					if(!strcasecmp(cmd, "NOTIFY") )
++					{
++						int i=0;
++						while(i<MAX_CALLBACK_CLIENTS){ 
++							if(!nCallBack_PID[i])
++							{
++								nCallBack_PID[i] = atoi(arg);
++								generic_sendmsg("NOTIFY %d", nCallBack_PID[i]);
++								break;
++							}
++							i++;
++						}
++						
++						continue;
++					}
++					
++					
+ 					/* PITCH (playback speed) in percent */
+ 					if(!strcasecmp(cmd, "PITCH"))
+ 					{
+@@ -753,7 +884,7 @@ int control_generic (mpg123_handle *fr)
+ 					/* LOAD - actually play */
+ 					if (!strcasecmp(cmd, "L") || !strcasecmp(cmd, "LOAD")){ generic_load(fr, arg, MODE_PLAYING); continue; }
+ 
+-					if (!strcasecmp(cmd, "L") || !strcasecmp(cmd, "LOADLIST")){ generic_loadlist(fr, arg); continue; }
++					if (!strcasecmp(cmd, "LL") || !strcasecmp(cmd, "LOADLIST")){ generic_loadlist(fr, arg); continue; }
+ 
+ 					/* LOADPAUSED */
+ 					if (!strcasecmp(cmd, "LP") || !strcasecmp(cmd, "LOADPAUSED")){ generic_load(fr, arg, MODE_PAUSED); continue; }
+@@ -782,9 +913,15 @@ int control_generic (mpg123_handle *fr)
+ 				generic_sendmsg("E Unfinished command: %s%c", comstr, lasti);
+ 			}
+ 		} /* end command reading & processing */
++		
+ 	} /* end main (alive) loop */
+ 	debug("going to end");
+ 	/* quit gracefully */
++		if(strURL){
++			free(strURL);
++			strURL=NULL;
++		}
++		
+ #ifndef NOXFERMEM
+ 	if (param.usebuffer) {
+ 		kill(buffer_pid, SIGINT);
