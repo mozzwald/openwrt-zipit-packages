@@ -20,7 +20,7 @@ PKG_INSTALL=1
 
 define Package/mpg123/Default
   URL:=http://www.mpg123.de
-  DEPENDS:=@BUILD_PATENTED
+  DEPENDS:=@BUILD_PATENTED +libltdl
 endef
 
 define Package/libmpg123
