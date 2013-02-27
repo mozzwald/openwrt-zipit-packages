@@ -24,7 +24,8 @@ define Package/gmu
   URL:=http://wejp.k.vu/projects/gmu/
   MENU:=1
   DEPENDS:=+libsdl +libsdl-image +libsdl-gfx +libmpcdec +libmikmod \
-	  +libvorbisidec +libspeex +libflac +libogg +libncurses +BUILD_PATENTED:libmpg123
+	+libvorbisidec +libspeex +libflac +libogg +libncurses \
+	+libncursesw +BUILD_PATENTED:libmpg123
 endef
 
 define Package/gmu/description
