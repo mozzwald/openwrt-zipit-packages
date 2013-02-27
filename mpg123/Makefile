@@ -20,7 +20,7 @@ PKG_INSTALL=1
 
 define Package/mpg123/Default
   URL:=http://www.mpg123.de
-  DEPENDS:=@BUILD_PATENTED +libltdl
+  DEPENDS:=@BUILD_PATENTED
 endef
 
 define Package/libmpg123
@@ -28,6 +28,7 @@ define Package/libmpg123
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=fast console mpeg audio decoder library
+  DEPENDS:=+libltdl +alsa-lib
 endef
 
 define Package/mpg123
@@ -43,7 +44,7 @@ define Build/Configure
 		--enable-shared \
 		--enable-static \
 		--with-cpu=generic_nofpu \
-		--with-default-audio=alsa \
+		--with-audio=alsa \
 	)
 endef
 
