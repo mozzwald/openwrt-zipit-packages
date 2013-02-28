@@ -28,6 +28,7 @@ define Package/libmpg123
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=fast console mpeg audio decoder library
+  DEPENDS:=+libltdl +alsa-lib
 endef
 
 define Package/mpg123
@@ -43,7 +44,7 @@ define Build/Configure
 		--enable-shared \
 		--enable-static \
 		--with-cpu=generic_nofpu \
-		--with-default-audio=alsa \
+		--with-audio=alsa \
 	)
 endef
 
