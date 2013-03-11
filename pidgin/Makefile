@@ -33,7 +33,7 @@ endef
 # Not sure yet why finch wants the WIDE char versions of ncurses (and panel).
 define Package/finch
 #  $(call Package/libpurple/Default)
-  DEPENDS:=+libxml2 +libgnutls +libncursesw +libpanelw +libpurple +glib2 $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  DEPENDS:=+libxml2 +libgnutls +libncursesw +libpurple +glib2 $(ICONV_DEPENDS) $(INTL_DEPENDS)
   URL:=http://developer.pidgin.im
 
   SECTION:=net
