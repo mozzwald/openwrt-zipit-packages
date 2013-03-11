@@ -1,0 +1,65 @@
+--- ./links.h	2013-01-29 08:57:12.673451000 -0800
++++ ./links.h	2013-02-12 10:16:15.515225000 -0800
+@@ -3035,6 +3035,7 @@ void map_selected(struct terminal *term,
+ void go_back(struct session *);
+ void go_backwards(struct terminal *term, void *psteps, struct session *ses);
+ void reload(struct session *, int);
++void retry(struct session *);
+ void destroy_session(struct session *);
+ void destroy_location(struct location *);
+ void ses_destroy_defered_jump(struct session *ses);
+
+--- ./session.c	2013-01-29 08:57:12.673451000 -0800
++++ ./session.c	2013-02-27 08:36:15.526539000 -0800
+@@ -250,7 +250,7 @@ void print_error_dialog(struct session *
+ 	unsigned char *u = stracpy(title);
+ 	if (strchr(u, POST_CHAR)) *strchr(u, POST_CHAR) = 0;
+ 	if (!t) return;
+-	msg_box(ses->term, getml(u, NULL), TEXT(T_ERROR), AL_CENTER | AL_EXTD_TEXT, TEXT(T_ERROR_LOADING), " ", u, ":\n\n", t, NULL, ses, 1, TEXT(T_CANCEL), NULL, B_ENTER | B_ESC/*, _("Retry"), NULL, 0 !!! FIXME: retry */);
++	msg_box(ses->term, getml(u, NULL), TEXT(T_ERROR), AL_CENTER | AL_EXTD_TEXT, TEXT(T_ERROR_LOADING), " ", u, ":\n\n", t, NULL, ses, 2, TEXT(T_CANCEL), NULL, B_ESC, "Retry", retry, B_ENTER);
+ }
+ 
+ static inline unsigned char hx(int a)
+@@ -1945,7 +1945,9 @@ void refresh_timer(struct f_data_c *fd)
+ 	fd->refresh_timer = -1;
+ 	if (fd->f_data && fd->f_data->refresh) {
+ 		fd->refresh_timer = install_timer(fd->f_data->refresh_seconds * 1000, (void (*)(void *))refresh_timer, fd);
+-		goto_url_f(fd->ses, NULL, fd->f_data->refresh, "_self", fd, -1, 0, 0, 1);
++		
++		reload(fd->ses, -1);
++//		goto_url_f(fd->ses, NULL, fd->f_data->refresh, "_self", fd, -1, 0, 0, 1);
+ 	}
+ }
+ 
+@@ -2376,7 +2378,7 @@ int prog_sel_open(struct dialog_data *dl
+ 
+ 	if (!a) internal("This should not happen.\n");
+ 	ses->tq_prog = stracpy(a->prog), ses->tq_prog_flag_block = a->block, ses->tq_prog_flag_direct = direct_download_possible(ses->tq, a);
+-	g_xwin = a->xwin;
++	g_xwin = a->xwin;	
+ 	tp_open(ses);
+ 	cancel_dialog(dlg,idata);
+ 	return 0;
+@@ -2490,8 +2492,8 @@ void type_query(struct session *ses, uns
+ 	if (n>1){vysad_okno(ses,ct,a,n);return;}
+ 	
+ 	if (a) ses->tq_prog = stracpy(a[0].prog), ses->tq_prog_flag_block = a[0].block, ses->tq_prog_flag_direct = direct_download_possible(ses->tq, a);
+-	if (a && !a[0].ask) {
+-		g_xwin = a->xwin;
++	if (a && !a[0].ask) {	
++	g_xwin = a->xwin;
+ 		tp_open(ses);
+ 		if (n) mem_free(a);
+ 		if (ct) mem_free(ct);
+@@ -2736,6 +2738,11 @@ void reload_frame(struct f_data_c *fd, i
+ 	jsint_destroy(fd);
+ }
+ 
++void retry(struct session *ses)
++{
++	goto_url(ses, ses->screen->rq->url);
++}
++
+ void reload(struct session *ses, int no_cache)
+ {
+ 	ses_destroy_defered_jump(ses);
