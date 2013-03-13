@@ -1,0 +1,18 @@
+--- fceu.orig/fceu/acinclude.m4	2013-03-13 09:37:41.000000000 -0400
++++ fceu-r67/fceu/acinclude.m4	2013-03-13 11:02:29.000000000 -0400
+@@ -407,11 +407,11 @@ for x in $test_paths ; do
+         save_LDFLAGS=$LDFLAGS
+         CFLAGS="$CFLAGS"
+         LDFLAGS="-L$x/lib $LDFLAGS $lib_m"
+-        AC_CHECK_LIB(lua, luaL_newstate,
+-            [
+-            LUA_LIBS="-L$x/lib -llua"
++#        AC_CHECK_LIB(lua, luaL_newstate,
++#            [
++            LUA_LIBS="-L$x/lib -llua $lib_m -lasound"
+             LUA_CFLAGS="-I$x/include"
+-            ])
++#            ])
+         CFLAGS=$save_CFLAGS
+         LDFLAGS=$save_LDFLAGS
+         break
