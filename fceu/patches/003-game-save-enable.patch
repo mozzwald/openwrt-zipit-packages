@@ -1,0 +1,16 @@
+--- fceu.orig/fceu/src/fceu.c	2013-07-09 09:28:44.000000000 -0400
++++ fceu-r67/fceu/src/fceu.c	2013-07-09 09:29:16.000000000 -0400
+@@ -219,8 +219,13 @@
+   }
+   if(FCEUGameInfo->type!=GIT_NSF)
+    FCEU_FlushGameCheats(0,0);
++#if 1 /* ZIPIT_Z2 */
++  // Save battery backed RAM and ignore crashing on load after error.
++  GameInterface(GI_CLOSE);
++#else
+   // What in the name of fucking.... vvv
+   // GameInterface=GI_CLOSE; // fixes crash when loading game after an error - was "GameInterface(GI_CLOSE);"
++#endif
+   ResetExState(0,0);
+   CloseGenie();
+   free(FCEUGameInfo);
