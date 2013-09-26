@@ -26,14 +26,14 @@ TARGET_CFLAGS += \
 
 TARGET_LDFLAGS += \
 	-Wl,-rpath-link=$(STAGING_DIR)/usr/lib \
-	-lSDL -lSDL_ttf -lm
+	-lSDL -lSDL_ttf -lSDL_gfx -lm
 
 define Package/dgclock
   SECTION:=xorg-apps
   CATEGORY:=Xorg
   TITLE:=dgclock - sdl based date and time
   URL:=http://clogging.web.fc2.com/dingoo/
-  DEPENDS:=+libsdl +libsdl-image +libsdl-ttf +dejavu-fonts-ttf
+  DEPENDS:=+libsdl +libsdl-image +libsdl-ttf +libsdl-gfx +dejavu-fonts-ttf
 endef
 
 define Package/dgclock/description
