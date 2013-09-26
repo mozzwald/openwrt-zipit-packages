@@ -53,20 +53,20 @@ endef
 define Package/dgclock/install
 	$(INSTALL_DIR) \
 		$(1)/usr/bin \
-		$(1)/usr/share/icons \
-		$(1)/usr/share/applications
+		$(1)/usr/share/gmenu2x/skins/Default/icons \
+		$(1)/usr/share/gmenu2x/sections/applications
         
 	$(INSTALL_BIN) \
 		$(PKG_BUILD_DIR)/bin/dgclock \
 		$(1)/usr/bin/
 
 	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/dgclock/dgclock.png \
-		$(1)/usr/share/icons/
+		./files/dgclock.png \
+		$(1)/usr/share/gmenu2x/skins/Default/icons/ 
 
 	$(INSTALL_DATA) \
-		./files/dgclock.desktop \
-		$(1)/usr/share/applications/
+		./files/dgclock.gmenu \
+		$(1)/usr/share/gmenu2x/sections/applications/ 
 endef
 
 $(eval $(call BuildPackage,dgclock))
