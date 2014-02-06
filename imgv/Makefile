@@ -25,7 +25,7 @@ define Package/imgv
 	SECTION:=utils
 	CATEGORY:=Utilities
 	TITLE:=SDL-based image viewer
-	DEPENDS:=+libsdl +libsdl-gfx +libsdl-image +libsdl-ttf +libfreetype
+	DEPENDS:=+libsdl +libsdl-gfx +libsdl-image
 	URL:=http://projects.qi-hardware.com/index.php/p/imgv/
 endef
 
