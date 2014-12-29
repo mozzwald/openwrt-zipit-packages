@@ -4,13 +4,16 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=pspmaps
-PKG_VERSION:=2.2
-PKG_RELEASE:=1
-
-PKG_SOURCE:=PSP-Maps-2.2.tar.gz
-PKG_BUILD_DIR=$(BUILD_DIR)/PSP-Maps-$(PKG_VERSION)
-PKG_SOURCE_URL:=http://royale.zerezo.com/psp
+PKG_NAME:=PSP-Maps
+PKG_VERSION:=3e86689ae1
+PKG_REV:=3e86689ae177e22b8ce4b49d7dca8208006c4a69
+PKG_RELEASE:=2
+PKG_INSTALL:=1
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=git://github.com/deeice/PSP-Maps.git
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -18,8 +21,8 @@ define Package/pspmaps
   TITLE:=pspmaps
   SECTION:=utils
   CATEGORY:=Utilities
-  URL:=http://royale.zerezo.com/psp/
-  DEPENDS:=+libsdl +libsdl-image +libsdl-gfx +libsdl-mixer +libsdl-ttf +libxml2 +libcurl
+  URL:=https://github.com/deeice/PSP-Maps/
+  DEPENDS:=+libsdl +libsdl-image +libsdl-gfx +libsdl-ttf +libcurl
 endef
 
 define Package/pspmaps/description
@@ -28,8 +31,7 @@ endef
 
 MAKE_VARS += \
 	CURLCONFIG=$(STAGING_DIR)/host/bin/curl-config \
-	SDLCONFIG=$(STAGING_DIR)/host/bin/sdl-config \
-	XMLCONFIG=$(STAGING_DIR)/host/bin/xml2-config
+	SDLCONFIG=$(STAGING_DIR)/host/bin/sdl-config
 
 MAKE_FLAGS += -f Makefile.zipit
 
