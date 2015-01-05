@@ -8,9 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bldaemon-zipit
-PKG_VERSION:=20120220
+PKG_VERSION:=20130312
 PKG_RELEASE:=1
-PKG_REV:=f044675a50d4ceb7fc232a2a05cf3e2470e86632
+PKG_REV:=b74ece896ff2d3db429da7a86583bd51d23d2e4a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REV).tar.gz
 PKG_SOURCE_URL:=git://github.com/mozzwald/bldaemon-zipit.git
