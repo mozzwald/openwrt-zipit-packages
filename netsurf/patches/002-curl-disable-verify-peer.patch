@@ -1,0 +1,11 @@
+--- a/content/fetchers/curl.c	2015-05-19 08:34:54.802630668 -0500
++++ b/content/fetchers/curl.c	2015-05-19 08:35:34.986632334 -0500
+@@ -540,7 +540,7 @@
+ 	/* Disable SSL session ID caching, as some servers can't cope. */
+ 	SETOPT(CURLOPT_SSL_SESSIONID_CACHE, 0);
+ 
+-	if (urldb_get_cert_permissions(f->url)) {
++	if (1) { //(urldb_get_cert_permissions(f->url)) {
+ 		/* Disable certificate verification */
+ 		SETOPT(CURLOPT_SSL_VERIFYPEER, 0L);
+ 		SETOPT(CURLOPT_SSL_VERIFYHOST, 0L);

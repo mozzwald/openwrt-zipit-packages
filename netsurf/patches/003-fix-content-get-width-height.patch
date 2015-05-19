@@ -1,0 +1,22 @@
+--- a/content/content.c	2015-05-19 08:38:53.786640575 -0500
++++ b/content/content.c	2015-05-19 08:40:17.238644035 -0500
+@@ -1098,6 +1098,9 @@
+ /* exported interface documented in content/content.h */
+ int content_get_width(hlcache_handle *h)
+ {
++	if (h == NULL)
++		return 0;
++
+ 	return content__get_width(hlcache_handle_get_content(h));
+ }
+ 
+@@ -1114,6 +1117,9 @@
+ /* exported interface documented in content/content.h */
+ int content_get_height(hlcache_handle *h)
+ {
++	if (h == NULL)
++		return 0;
++
+ 	return content__get_height(hlcache_handle_get_content(h));
+ }
+ 
