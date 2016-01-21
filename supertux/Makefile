@@ -9,7 +9,7 @@ PKG_VERSION:=0.1.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://download.berlios.de/$(PKG_NAME)/
+PKG_SOURCE_URL:=https://github.com/SuperTux/supertux/releases/download/v0.1.3/
 PKG_MD5SUM:=f2fc288459f33d5cd8f645fbca737a63
 
 include $(INCLUDE_DIR)/package.mk
