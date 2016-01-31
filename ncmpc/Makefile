@@ -30,7 +30,7 @@ define Package/ncmpc
     TITLE:=ncmpc
     SECTION:=sound
     CATEGORY:=Sound
-    DEPENDS:=+libncurses $(ICONV_DEPENDS) $(INTL_DEPENDS) +libmpdclient
+    DEPENDS:=+libncurses $(ICONV_DEPENDS) $(INTL_DEPENDS) +libmpdclient +glib2
     URL:=http://mpd.wikia.com/wiki/Music_Player_Daemon_Wiki
 endef
 
