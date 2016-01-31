@@ -1,0 +1,221 @@
+diff -rupN jdkdrum.bak/jdkdrum.c jdkdrum/jdkdrum.c
+--- jdkdrum.bak/jdkdrum.c	2004-05-13 13:47:35.000000000 -0400
++++ jdkdrum/jdkdrum.c	2015-10-14 21:57:48.000000000 -0400
+@@ -138,19 +138,19 @@ int merge_buffer(
+   signed short *buf,
+   int buflen,
+   int pos, 
+-  float vol, 
+-  float pan
++  int vol, 
++  int pan
+   ) 
+ {
+   int i;
+-  float left_vol = (2.0-(pan+1.0))*0.5 * vol;
+-  float right_vol = (pan+1.0)*0.5 * vol;
++  int left_vol = (65536-pan) * vol >> 16;
++  int right_vol = pan * vol >> 16;
+   
+   for( i=0; i<buflen; i++ )
+   {			
+     
+-    audiobuf[(pos*2)+0] += (signed short)((float)buf[i] * left_vol);
+-    audiobuf[(pos*2)+1] += (signed short)((float)buf[i] * right_vol);
++    audiobuf[(pos*2)+0] += (signed short)(((int)buf[i] * left_vol) >> 16);
++    audiobuf[(pos*2)+1] += (signed short)(((int)buf[i] * right_vol) >> 16);
+     
+     pos++;
+     if( pos>repeatpos )
+@@ -169,15 +169,15 @@ int merge_read_file(
+   int repeatpos,
+   const char *fname, 
+   int pos, 
+-  float vol, 
+-  float pan
++  int vol, 
++  int pan
+   ) 
+ {
+   FILE *f = fopen(fname,"rb");
+   if( f )
+   {
+-    float left_vol = (2.0-(pan+1.0))*0.5 * vol;
+-    float right_vol = (pan+1.0)*0.5 * vol;
++    int left_vol = (65536-pan) * vol >> 16;
++    int right_vol = pan * vol >> 16;
+     
+     while( !feof(f) )
+     {			
+@@ -186,8 +186,8 @@ int merge_read_file(
+       if( fread(&val,2,1,f)!=1 )
+         break;
+       
+-      audiobuf[(pos*2)+0] += (signed short)((float)val * left_vol);
+-      audiobuf[(pos*2)+1] += (signed short)((float)val * right_vol);
++      audiobuf[(pos*2)+0] += (signed short)(((int)val * left_vol) >> 16);
++      audiobuf[(pos*2)+1] += (signed short)(((int)val * right_vol) >> 16);
+       
+       pos++;
+       if( pos>repeatpos )
+@@ -204,25 +204,25 @@ int merge_read_file(
+ }
+ 
+ 
+-
++/**********************************
+ int merge_echo_read_file( 
+   signed short *audiobuf,
+   int repeatpos,
+   const char *fname, 
+   int pos, 
+-  float vol, 
+-  float pan,
++  int vol, 
++  int pan,
+   int echo_left_time,
+   int echo_right_time,
+-  float echo_left_volume,
+-  float echo_right_volume
++  int echo_left_volume,
++  int echo_right_volume
+   ) 
+ {
+   FILE *f = fopen(fname,"rb");
+   if( f )
+   {
+-    float left_vol = (2.0-(pan+1.0))*0.5 * vol;
+-    float right_vol = (pan+1.0)*0.5 * vol;
++    int left_vol = (65536-pan) * vol >> 16;
++    int right_vol = pan * vol >> 16;
+     
+     while( !feof(f) )
+     {			
+@@ -232,16 +232,16 @@ int merge_echo_read_file(
+         break;
+       
+       audiobuf[(((pos+echo_left_time)%repeatpos)*2)+0]
+-        += (signed short)((float)val * echo_left_volume * left_vol );
++        += (signed short)((int)val * echo_left_volume * left_vol) >> 16;
+       
+       audiobuf[(((pos+echo_right_time)%repeatpos)*2)+1]
+-        += (signed short)((float)val * echo_right_volume  * right_vol);
++        += (signed short)((int)val * echo_right_volume  * right_vol) >> 16;
+       
+-      audiobuf[(pos*2)+1] += (signed short)((float)val * right_vol );
++      audiobuf[(pos*2)+1] += (signed short)((int)val * right_vol) >> 16;
+       
+       
+-      audiobuf[(pos*2)+0] += (signed short)((float)val * left_vol);
+-      audiobuf[(pos*2)+1] += (signed short)((float)val * right_vol);
++      audiobuf[(pos*2)+0] += (signed short)((int)val * left_vol) >> 16;
++      audiobuf[(pos*2)+1] += (signed short)((int)val * right_vol) >> 16;
+       
+       pos++;
+       if( pos>repeatpos )
+@@ -258,7 +258,7 @@ int merge_echo_read_file(
+   
+   return -1;
+ }
+-
++*****************************/
+ 
+ 
+ signed short * load_instrument( 
+@@ -323,12 +323,12 @@ int merge_text_pattern(
+   {		
+     for( i=0; i<16; ++i )
+     {
+-      float vol=0.0f;
+-      float pan=(float)(rand()%200) / 100.0 - 1.0;
++      int vol=0;
++      int pan=rand() % 65536;
+       
+       if( pattern[i]>='1' && pattern[i]<='9' )
+       {
+-        vol = (pattern[i]-'0') * 0.1;
++        vol = (pattern[i]-'0') * 65536 / 10;
+         merge_buffer( 
+           audiobuf,
+           repeatpos,
+@@ -362,19 +362,22 @@ int merge_multi_pattern(
+ {
+   int i;
+   int step_position[16];	
+-  float tempo_bpm = 135.0;
+-  float tempo_bps;
++  //float tempo_bpm = 135.0;
++  int tempo_bpm = 135;
++  //float tempo_bps;
+   int beats_per_measure=4;
+   int repeatpos;
+   signed short *audiobuf_to_use = audiobuf[audiobuf_current_playing^1];
+   
+-  fscanf( in, "%f", &tempo_bpm );
++  //fscanf( in, "%f", &tempo_bpm );
++  fscanf( in, "%d", &tempo_bpm );
+   if( feof(in) )
+     return -1;
+   
+   //fprintf( stderr, "%f\n", tempo_bpm );
+-  tempo_bps = tempo_bpm / 60;	
+-  repeatpos = (long)(((float)SAMPLE_RATE) / tempo_bps ) * beats_per_measure;
++  //tempo_bps = tempo_bpm / 60;	
++  //repeatpos = (long)(((float)(SAMPLE_RATE * 60)) / tempo_bpm ) * beats_per_measure;
++  repeatpos = ((long)SAMPLE_RATE * 60 * beats_per_measure) / tempo_bpm;
+   
+   
+   for( i=0; i<16; ++i )
+diff -rupN jdkdrum.bak/jdkdrum.h jdkdrum/jdkdrum.h
+--- jdkdrum.bak/jdkdrum.h	2004-05-13 13:48:05.000000000 -0400
++++ jdkdrum/jdkdrum.h	2015-10-14 10:23:14.000000000 -0400
+@@ -47,8 +47,8 @@ int merge_buffer(
+   signed short *buf,
+   int buflen,
+   int pos, 
+-  float vol, 
+-  float pan
++  int vol, 
++  int pan
+   );
+ 
+ int merge_read_file( 
+@@ -56,8 +56,8 @@ int merge_read_file(
+   int repeatpos,
+   const char *fname, 
+   int pos, 
+-  float vol, 
+-  float pan
++  int vol, 
++  int pan
+   );
+ 
+ int merge_echo_read_file( 
+@@ -65,12 +65,12 @@ int merge_echo_read_file(
+   int repeatpos,
+   const char *fname, 
+   int pos, 
+-  float vol, 
+-  float pan,
++  int vol, 
++  int pan,
+   int echo_left_time,
+   int echo_right_time,
+-  float echo_left_volume,
+-  float echo_right_volume
++  int echo_left_volume,
++  int echo_right_volume
+   );
+ signed short * load_instrument( 
+   const char *fname, 
+diff -rupN jdkdrum.bak/makefile jdkdrum/makefile
+--- jdkdrum.bak/makefile	2003-01-18 05:31:21.000000000 -0500
++++ jdkdrum/makefile	2015-10-15 08:24:38.596265630 -0400
+@@ -1,6 +1,7 @@
+ 
+ CFLAGS = -O2 -g
+-LDFLAGS = -lm -lpthread
++#LDFLAGS = -lm -lpthread
++LDFLAGS = -lpthread
+ 
+ all : jdkdrum

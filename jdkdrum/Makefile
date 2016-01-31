@@ -22,7 +22,7 @@ define Package/jdkdrum
     TITLE:=jdkdrum
     SECTION:=utils
     CATEGORY:=Utilities
-    DEPENDS:=
+    DEPENDS:=+libpthread
     URL:=http://www.jdkoftinoff.com/main/Free_Projects/Drum_Synth_For_Linux/
 endef
 
