@@ -1,0 +1,113 @@
+--- a/framebuffer/fbtk/event.c	2015-05-19 14:31:35.299517882 -0500
++++ b/framebuffer/fbtk/event.c	2015-05-19 14:35:46.787528308 -0500
+@@ -285,7 +285,7 @@
+ 	-1,  -1,  -1,  13,  -1,  -1,  -1,  -1,  -1,  -1, /*  10 -  19 */
+ 	-1,  -1,  -1,  -1,  -1,  -1,  -1,  27,  -1,  -1, /*  20 -  29 */
+ 	-1,  -1, ' ', '!', '"', '~', '$',  -1, '&', '@', /*  30 -  39 */
+-	'(', ')', '*', '+', '<', '_', '>', '?', ')', '!', /*  40 -  49 */
++	'(', ')', '*', '+', '(', '_', ')', '?', ')', '!', /*  40 -  49 */
+ 	'"', 243, '$', '%', '^', '&', '*', '(', ';', ':', /*  50 -  59 */
+ 	'<', '+', '>', '?', '@',  -1,  -1,  -1,  -1,  -1, /*  60 -  69 */
+ 	-1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, /*  70 -  79 */
+@@ -296,6 +296,22 @@
+ 	'X', 'Y', 'Z',  -1,  -1,  -1,  -1,  -1,  -1,  -1, /* 120 - 129 */
+ };
+ 
++static int alt_keymap[] = {
++	/* 0    1    2    3    4    5    6    7    8    9               */
++	-1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,   8,   9, /*   0 -   9 */
++	-1,  -1,  -1,  13,  -1,  -1,  -1,  -1,  -1,  -1, /*  10 -  19 */
++	-1,  -1,  -1,  -1,  -1,  -1,  -1,  27,  -1,  -1, /*  20 -  29 */
++	-1,  -1, ' ', '!', '"', '#', '$',  -1, '&','\'', /*  30 -  39 */
++	'(', ')', '*', '+', '<', '-', '>', '/', '0', '1', /*  40 -  49 */
++	'2', '3', '4', '5', '6', '7', '8', '9', ':', ';', /*  50 -  59 */
++	'<', '=', '>', '?', '@',  -1,  -1,  -1,  -1,  -1, /*  60 -  69 */
++	-1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, /*  70 -  79 */
++	-1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, /*  80 -  89 */
++	-1, '[','\\', ']', '~', '_', '`', '$', '=', '+', /*  90 -  99 */
++	'&', '3', '@', '"', '\'', '8', '[', ']', '-', '?', /* 100 - 109 */
++	'_', '9', '0', '1', '4', '#', '5', '7', '*', '2', /* 110 - 119 */
++	'/', '6', '!',  -1,  -1,  -1,  -1,  -1,  -1,  -1, /* 120 - 129 */
++};
+ 
+ /* exported function documented in fbtk.h */
+ int
+@@ -306,6 +322,9 @@
+ 	if (mods & FBTK_MOD_LSHIFT || mods & FBTK_MOD_RSHIFT) {
+ 		if ((code >= 0) && (code < (int) NOF_ELEMENTS(sh_keymap)))
+ 			ucs4 = sh_keymap[code];
++	} else if (mods & FBTK_MOD_ALT) {
++		if ((code >= 0) && (code < (int) NOF_ELEMENTS(sh_keymap)))
++			ucs4 = alt_keymap[code];
+ 
+ 	} else if (mods == FBTK_MOD_CLEAR) {
+ 		if ((code >= 0) && (code < (int) NOF_ELEMENTS(keymap)))
+--- a/framebuffer/fbtk/text.c	2015-05-19 14:31:57.835518816 -0500
++++ b/framebuffer/fbtk/text.c	2015-05-19 14:38:29.751535064 -0500
+@@ -324,6 +324,10 @@
+ 		case NSFB_KEY_LCTRL:
+ 			modifier &= ~FBTK_MOD_LCTRL;
+ 			break;
++		case NSFB_KEY_LALT:
++		case NSFB_KEY_RALT:
++			modifier &= ~FBTK_MOD_ALT;
++			break;
+ 
+ 		default:
+ 			break;
+@@ -390,6 +394,11 @@
+ 		modifier |= FBTK_MOD_LSHIFT;
+ 		break;
+ 
++	case NSFB_KEY_LALT:
++	case NSFB_KEY_RALT:
++		modifier |= FBTK_MOD_ALT;
++ 		break;
++
+ 	case NSFB_KEY_RCTRL:
+ 		modifier |= FBTK_MOD_RCTRL;
+ 		break;
+--- a/framebuffer/gui.c	2015-05-19 14:32:56.355521242 -0500
++++ b/framebuffer/gui.c	2015-05-19 14:41:02.523541397 -0500
+@@ -906,6 +906,11 @@
+ 			modifier |= FBTK_MOD_LSHIFT;
+ 			break;
+ 
++		case NSFB_KEY_LALT:
++		case NSFB_KEY_RALT:
++			modifier |= FBTK_MOD_ALT;
++ 			break;
++
+ 		case NSFB_KEY_RCTRL:
+ 			modifier |= FBTK_MOD_RCTRL;
+ 			break;
+@@ -960,6 +965,11 @@
+ 		case NSFB_KEY_LSHIFT:
+ 			modifier &= ~FBTK_MOD_LSHIFT;
+ 			break;
++		
++		case NSFB_KEY_LALT:
++		case NSFB_KEY_RALT:
++			modifier &= ~(FBTK_MOD_ALT);
++			break;
+ 
+ 		case NSFB_KEY_RCTRL:
+ 			modifier &= ~FBTK_MOD_RCTRL;
+--- a/framebuffer/fbtk.h	2015-05-19 14:33:18.531522161 -0500
++++ b/framebuffer/fbtk.h	2015-05-19 14:47:18.879557000 -0500
+@@ -78,10 +78,11 @@
+ /** Key modifier status */
+ typedef enum fbtk_modifier_type {
+ 	FBTK_MOD_CLEAR  = 0,
+-	FBTK_MOD_LSHIFT = (1 << 0),
+-	FBTK_MOD_RSHIFT = (1 << 1),
+-	FBTK_MOD_LCTRL  = (1 << 2),
+-	FBTK_MOD_RCTRL  = (1 << 3)
++	FBTK_MOD_LSHIFT = 1,
++	FBTK_MOD_RSHIFT = 1,
++	FBTK_MOD_LCTRL  = 4,
++	FBTK_MOD_RCTRL  = 4,
++	FBTK_MOD_ALT	= 2
+ } fbtk_modifier_type;
+ 
+ typedef int (*fbtk_callback)(fbtk_widget_t *widget, fbtk_callback_info *cbi);

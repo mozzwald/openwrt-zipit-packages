@@ -1,5 +1,5 @@
 title=tmux
-icon=skin:icons/utilities-terminal.png
+icon=skin:icons/tmux.png
 exec=/usr/bin/tmuxl
 params=
 

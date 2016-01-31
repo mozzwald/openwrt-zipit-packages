@@ -18,16 +18,36 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 
+define Package/libpurple/Default
+  DEPENDS:=+libxml2 +libgnutls +libncurses +glib2 $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  URL:=http://developer.pidgin.im
+endef
+
 define Package/libpurple
+  $(call Package/libpurple/Default)
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libxml2 +libgnutls +libncurses +glib2 $(ICONV_DEPENDS) $(INTL_DEPENDS)
   TITLE:=libpurple is intended to be the core of an IM program
+endef
+
+# Not sure yet why finch wants the WIDE char versions of ncurses (and panel).
+define Package/finch
+#  $(call Package/libpurple/Default)
+  DEPENDS:=+libxml2 +libgnutls +libncursesw +libpurple +glib2 $(ICONV_DEPENDS) $(INTL_DEPENDS)
   URL:=http://developer.pidgin.im
+
+  SECTION:=net
+  CATEGORY:=Network
+  SUBMENU:=Instant Messaging
+  TITLE:=IM client based on libpurple and ncurses
 endef
 
 define Package/libpurple/description
 	libpurple is intended to be the core of an IM program. When using libpurple, you'll basically be writing a UI for this core chunk of code.
+endef
+
+define Package/finch/description
+	finch is an ncurses based IM program with many plugin protocols.
 endef
 
 define Build/Configure
@@ -49,7 +69,9 @@ define Build/Configure
 		--with-gnutls-includes=$(STAGING_DIR)/usr/include \
 		--with-ncurses-headers=$(STAGING_DIR)/usr/include/ncursesw \
 		--disable-gtkui \
-		--disable-consoleui \
+		--disable-pixmaps-install \
+		--disable-doxygen \
+		--disable-dot \
 		--disable-tcl \
 		--disable-tk \
 	)
@@ -90,4 +112,20 @@ define Package/libpurple/install
 		$(1)/usr/lib/purple-2
 endef
 
+define Package/finch/install
+	$(INSTALL_DIR) \
+		$(1)/usr/bin $(1)/usr/lib $(1)/usr/lib/gnt
+	$(CP) \
+		$(PKG_INSTALL_DIR)/usr/lib/libgnt.so* \
+		$(1)/usr/lib
+	$(CP) \
+		$(PKG_INSTALL_DIR)/usr/lib/gnt/*.so* \
+		$(1)/usr/lib/gnt
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/usr/bin/finch \
+		$(1)/usr/bin
+
+endef
+
 $(eval $(call BuildPackage,libpurple))
+$(eval $(call BuildPackage,finch))

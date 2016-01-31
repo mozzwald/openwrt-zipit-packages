@@ -1,0 +1,5 @@
+#!/bin/sh
+# Start fceu from /usr/games/fceu
+
+cd /usr/games/fceu
+/usr/bin/fceu -sound 0 -xscale 1 -yscale 1 $1

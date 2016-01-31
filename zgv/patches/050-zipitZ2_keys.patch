@@ -1,0 +1,113 @@
+--- ./src/readnbkey.h  2000-03-09 20:08:38.000000000 -0800
++++ ./src/readnbkey.h	2013-01-01 22:53:03.794030000 -0800
+@@ -46,6 +46,10 @@ extern int is_start_click_right(void);
+  * the same as shift F1 and F2.
+  */
+ 
++#define RK_SHIFT_CURSOR_LEFT    0x300
++#define RK_SHIFT_CURSOR_DOWN    0x301
++#define RK_SHIFT_CURSOR_UP      0x302
++#define RK_SHIFT_CURSOR_RIGHT   0x303
+ 
+ #define RK_CURSOR_LEFT    0x200
+ #define RK_CURSOR_DOWN    0x201
+--- ./src/vgadisp.c	2005-01-20 15:09:35.000000000 -0800
++++ ./src/vgadisp.c	2013-01-02 10:00:40.243491143 -0800
+@@ -1410,11 +1410,14 @@ while(!quitshow && (zgv_io_timer_flag!=1
+           slideshow_pause=0;
+         break;
+       
+-      case 's': case 'd':
++      case 's': case 'd': case '.':
+         if(allow_zoom())
+-          vga_clear();	/* cls if zoomed, in case x2 is smaller! */
+-        zoom=0;
+-        if(scaling<512)
++        {
++			vga_clear();	/* cls if zoomed, in case x2 is smaller! */
++			zoom=0;
++			redraw=1;
++		}
++        else if(scaling<512)
+           {
+           int oldscale=scaling;
+           
+@@ -1424,19 +1427,25 @@ while(!quitshow && (zgv_io_timer_flag!=1
+           redraw=1; /* no cls reqd. - must be bigger */
+           }
+         break;
+-      case 'S': case 'D':
++
++      case 'S': case 'D': case ',':
+         if(scaling>1 || allow_zoom())
+           {
+           int oldscale=scaling;
+-          
++
+           scaling-=(key=='D')?scaling/2:1;
+           if(scaling<1) scaling=1;
+           samecentre(&px,&py,scaling,px,py,oldscale);
+           redraw=1;
+           if(width*scaling<scrnwide || height*scaling<scrnhigh) vga_clear();
+           }
+-        zoom=0;
++		else
++		{
++			zoom=1; scaling=redraw=1; px=py=0; vga_clear();
++		}			
++        
+         break;
++	
+       case 'n':
+         if(allow_zoom() || scaling>1)
+           {
+@@ -1459,7 +1468,8 @@ while(!quitshow && (zgv_io_timer_flag!=1
+       case '=':
+         px+=scrnwide*9/10; break;
+       case 'v': vkludge=((vkludge==1)?0:1); redraw=1; graphicson(); break;
+-      case ',': case '.': case '<': case '>': case 128+',': case 128+'.':
++//      case ',': case '.': case '<': case '>': case 128+',': case 128+'.':
++      case '<': case '>': case 128+',': case 128+'.':
+       case 'B': case '*': case ';':
+       case '1': case '2': case '3': case '4':
+         switch(key)
+@@ -1500,14 +1510,14 @@ while(!quitshow && (zgv_io_timer_flag!=1
+         if(redraw)
+           graphicson();
+         break;
+-      case 'q': case 'k': py-=MOVSTP; break;
+-      case 'a': case 'j': py+=MOVSTP; break;
+-      case 'o': case 'h': px-=MOVSTP; break;
+-      case 'p': case 'l': px+=MOVSTP; break;
+-      case 'Q': case 'K': case RK_CURSOR_UP:    py-=BIGSTP; break;
+-      case 'A': case 'J': case RK_CURSOR_DOWN:  py+=BIGSTP; break;
+-      case 'O': case 'H': case RK_CURSOR_LEFT:  px-=BIGSTP; break;
+-      case 'P': case 'L': case RK_CURSOR_RIGHT: px+=BIGSTP; break;
++      case 'q': case 'k': case RK_CURSOR_UP:  			py-=MOVSTP; break;
++      case 'a': case 'j': case RK_CURSOR_DOWN:  		py+=MOVSTP; break;
++      case 'o': case 'h': case RK_CURSOR_LEFT:  		px-=MOVSTP; break;
++      case 'p': case 'l': case RK_CURSOR_RIGHT:  		px+=MOVSTP; break;
++      case 'Q': case 'K': case RK_SHIFT_CURSOR_UP:    	py-=BIGSTP; break;
++      case 'A': case 'J': case RK_SHIFT_CURSOR_DOWN:  	py+=BIGSTP; break;
++      case 'O': case 'H': case RK_SHIFT_CURSOR_LEFT:  	px-=BIGSTP; break;
++      case 'P': case 'L': case RK_SHIFT_CURSOR_RIGHT: 	px+=BIGSTP; break;
+       case 'e':		/* animate */
+         {
+         int ret;
+--- ./src/zgv_io.c	2013-01-02 09:47:48.323433000 -0800
++++ ./src/zgv_io.c	2013-01-01 22:47:42.475346000 -0800
+@@ -634,10 +634,10 @@ while(SDL_PollEvent(&event))
+         case SDLK_F10:		return(RK_F10);
+         case SDLK_F11:		return(RK_F11);
+         case SDLK_F12:		return(RK_F12);
+-        case SDLK_LEFT:		return(RK_CURSOR_LEFT);
+-        case SDLK_DOWN:		return(RK_CURSOR_DOWN);
+-        case SDLK_UP:		return(RK_CURSOR_UP);
+-        case SDLK_RIGHT:	return(RK_CURSOR_RIGHT);
++        case SDLK_LEFT:		return((event.key.keysym.mod&KMOD_SHIFT)?RK_SHIFT_CURSOR_LEFT:RK_CURSOR_LEFT); //return(RK_CURSOR_LEFT);
++        case SDLK_DOWN:		return((event.key.keysym.mod&KMOD_SHIFT)?RK_SHIFT_CURSOR_DOWN:RK_CURSOR_DOWN); //return(RK_CURSOR_DOWN);
++        case SDLK_UP:		return((event.key.keysym.mod&KMOD_SHIFT)?RK_SHIFT_CURSOR_UP:RK_CURSOR_UP); //return(RK_CURSOR_UP);
++        case SDLK_RIGHT:	return((event.key.keysym.mod&KMOD_SHIFT)?RK_SHIFT_CURSOR_RIGHT:RK_CURSOR_RIGHT); //return(RK_CURSOR_RIGHT);
+         case SDLK_HOME:		return(RK_HOME);
+         case SDLK_END:		return(RK_END);
+         case SDLK_PAGEUP:	return(RK_PAGE_UP);

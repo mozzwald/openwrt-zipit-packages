@@ -1,0 +1,27 @@
+*** a/configure.in	2012-02-21 10:55:53.000000000 -0600
+--- b/configure.in	2013-01-08 14:31:25.000000000 -0600
+***************
+*** 455,467 ****
+  AC_CHECK_HEADER(SDL/SDL.h,,[AC_MSG_ERROR([Cannot locate SDL/SDL.h])])
+  SDLLIBS="-lSDL"
+  
+! dnl Fix this ....
+! if ! test -f /usr/include/SDL/SDL_ttf.h; then
+!     AC_MSG_ERROR("Cannot locate /usr/include/SDL/SDL_ttf.h.")
+! fi
+  SDLLIBS="-lSDL_ttf $SDLLIBS"
+  
+- dnl AC_CHECK_HEADER(SDL/SDL_ttf.h,,[AC_MSG_ERROR([Cannot locate SDL/SDL_ttf.h])])
+  if ! test "x$EPUBDEFS" = x; then
+     if test -f /usr/include/SDL/SDL_image.h -a -f /usr/include/SDL/SDL_rotozoom.h
+     then
+--- 455,463 ----
+  AC_CHECK_HEADER(SDL/SDL.h,,[AC_MSG_ERROR([Cannot locate SDL/SDL.h])])
+  SDLLIBS="-lSDL"
+  
+! AC_CHECK_HEADER(SDL/SDL_ttf.h,,[AC_MSG_ERROR([Cannot locate SDL/SDL_ttf.h])])
+  SDLLIBS="-lSDL_ttf $SDLLIBS"
+  
+  if ! test "x$EPUBDEFS" = x; then
+     if test -f /usr/include/SDL/SDL_image.h -a -f /usr/include/SDL/SDL_rotozoom.h
+     then

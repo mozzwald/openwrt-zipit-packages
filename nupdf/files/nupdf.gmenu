@@ -1,0 +1,7 @@
+title=nupdf
+icon=skin:/icons/nupdf.png
+exec=/usr/bin/nupdf
+clock=312
+selectordir=/
+selectorbrowser=true
+selectorfilter=.pdf

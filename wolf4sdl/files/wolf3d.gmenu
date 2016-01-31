@@ -1,0 +1,5 @@
+title=Wolf3D
+icon=skin:icons/wolf3d.png
+exec=/usr/bin/runwolf
+params=/mnt/mmcblk0p1/wolf3d
+clock=312

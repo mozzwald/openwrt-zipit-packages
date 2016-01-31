@@ -1,0 +1,32 @@
+--- milkytracker-0.90.85.old/src/compression/DecompressorGZIP.cpp	2013-05-12 11:08:05.000000000 -0400
++++ milkytracker-0.90.85/src/compression/DecompressorGZIP.cpp	2013-05-12 11:01:33.000000000 -0400
+@@ -61,9 +61,9 @@
+ 	int len = 0;
+ 	pp_uint8 *buf;
+ 	
+-	if ((gz_input_file = (void **)gzopen (fileName.getStrBuffer(), "r")) == NULL)
++	if ((gz_input_file = (gzFile *)(void **)gzopen (fileName.getStrBuffer(), "r")) == NULL)
+ 		return false;
+-	
++
+ 	if ((buf = new pp_uint8[0x10000]) == NULL)
+ 		return false;
+ 	
+@@ -71,7 +71,7 @@
+ 	
+     while (true) 
+ 	{
+-        len = gzread (gz_input_file, buf, 0x10000);
++	  len = gzread ((gzFile)gz_input_file, buf, 0x10000);
+ 		
+         if (len < 0) 
+ 		{
+@@ -84,7 +84,7 @@
+ 		fOut.write(buf, 1, len);
+     }
+ 	
+-    if (gzclose (gz_input_file) != Z_OK)
++    if (gzclose ((gzFile)gz_input_file) != Z_OK)
+ 	{
+ 	    delete[] buf;
+         return false;

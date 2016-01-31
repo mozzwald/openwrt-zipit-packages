@@ -7,14 +7,14 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=gmenu2x
-PKG_VERSION:=20120702
-PKG_REV:=01bb682ab9bb69a672d2f8e6d650fb0b5f7563de
-PKG_RELEASE:=1
+PKG_NAME:=gmenu2x-zipit
+PKG_VERSION:=34a5603cf1
+PKG_REV:=34a5603cf1a0cdbd401937eed30abddbdbbb816e
+PKG_RELEASE:=2
 PKG_INSTALL:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REV).tar.gz
-PKG_SOURCE_URL:=git://github.com/anarsoul/gmenu2x-zipit.git
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=git://github.com/engine12/gmenu2x-zipit.git
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
@@ -28,9 +28,10 @@ TARGET_CFLAGS+= \
 	-I$(STAGING_DIR)/usr/include/SDL \
 	-I$(STAGING_DIR)/usr/include/google/sparsehash \
 	-I$(PKG_BUILD_DIR)/src/tinyxml \
-	-DTIXML_USE_STL -O3 -msoft-float -fomit-frame-pointer \
-	-ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format \
-
+	-DTIXML_USE_STL -msoft-float -fomit-frame-pointer \
+	-ffast-math -Wall -Wno-unknown-pragmas -Wno-format \
+	-pipe -g -fno-exceptions -Os -fdata-sections -ffunction-sections
+	
 TARGET_CPPFLAGS+= \
   -I$(STAGING_DIR)/usr/include/SDL \
   -I$(STAGING_DIR)/usr/include/google/sparsehash \
@@ -39,7 +40,8 @@ TARGET_CPPFLAGS+= \
 
 TARGET_LDFLAGS+= \
 	-Wl,-rpath-link=$(STAGING_DIR)/usr/lib \
-	-L$(STAGING_DIR)/usr/lib/SDL
+	-L$(STAGING_DIR)/usr/lib/SDL \
+	-Wl,--gc-sections
 
 define Package/gmenu2x
   SECTION:=xorg-apps

@@ -11,7 +11,7 @@ PKG_NAME:=gc
 PKG_VERSION:=7.2alpha4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/
+PKG_SOURCE_URL:=http://pkgs.fedoraproject.org/repo/pkgs/gc/gc-7.2alpha4.tar.gz/0a6785ebb61c6e2b50c3952c3bbf9ea1/
 PKG_MD5SUM:=0a6785ebb61c6e2b50c3952c3bbf9ea1
 
 PKG_INSTALL:=1
@@ -24,6 +24,7 @@ define Package/gc
     TITLE:=gc
     SECTION:=libs
     CATEGORY:=Libraries
+    DEPENDS:=+libpthread
     URL:=http://www.hpl.hp.com/personal/Hans_Boehm/gc/
 endef
 

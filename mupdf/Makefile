@@ -35,6 +35,7 @@ define Package/mupdf-tools
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=Command-line PDF tools
+  DEPENDS:=+mupdf
 endef
 
 define Package/mupdf/description
@@ -76,15 +77,15 @@ define Package/mupdf/install
 		$(1)/usr/lib/
 endef
 
-define Package/mupdf-tools/install
-	$(INSTALL_DIR) \
-		$(1)/usr/bin
-
-	$(INSTALL_BIN) \
-		$(PKG_BUILD_DIR)/build/release/{pdfclean,pdfinfo,pdfdraw,pdfextract,pdfshow} \
-		$(1)/usr/bin
-
-endef
+#define Package/mupdf-tools/install
+#	$(INSTALL_DIR) \
+#		$(1)/usr/bin
+#
+#	$(INSTALL_BIN) \
+#		$(PKG_BUILD_DIR)/build/release/{pdfclean,pdfinfo,pdfdraw,pdfextract,pdfshow} \
+#		$(1)/usr/bin
+#
+#endef
 
 $(eval $(call BuildPackage,mupdf))
-$(eval $(call BuildPackage,mupdf-tools))
+#$(eval $(call BuildPackage,mupdf-tools))

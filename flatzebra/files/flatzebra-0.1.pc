@@ -1,0 +1,12 @@
+# .pc file for the pkg-config script for FlatZebra
+
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/flatzebra-0.1/flatzebra
+
+Name: FlatZebra
+Description: Small Engine for 2D video games like BurgerSpace
+Version: 0.1.6
+Libs: -L${libdir} -lflatzebra-0.1 -L/usr/lib -lSDL -lSDL_image -lSDL_mixer -lSDL_image -lSDL_mixer
+Cflags: -I${includedir} -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT

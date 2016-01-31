@@ -40,7 +40,7 @@ endef
 define Package/zgv
 $(call Package/zgv/Default)
   TITLE += 
-  DEPENDS:=+svgalib +zlib +libjpeg +libpng +libtiff
+  DEPENDS:= +libsdl +zlib +libjpeg +libpng +libtiff
 endef
 
 define Package/zgv/description

@@ -1,0 +1,169 @@
+--- original/sdl-imageviewer.c	2014-02-06 12:56:11.030667000 -0800
++++ new/sdl-imageviewer.c	2014-02-06 12:37:30.766073000 -0800
+@@ -8,7 +8,7 @@
+ #include <SDL/SDL.h>
+ #include <SDL/SDL_image.h>
+ #include <SDL/SDL_rotozoom.h>
+-#include <SDL/SDL_ttf.h>
++
+ 
+ #define TRUE 1
+ #define FALSE 0
+@@ -24,14 +24,68 @@
+ 
+ void quit()
+ {
+-    TTF_Quit();
+     SDL_Quit();
+ 
+     exit(1);
+ }
+ 
++#ifdef UNLOCK_VT
++
++#include <linux/vt.h>
++#include <linux/kd.h>
++#include <sys/fcntl.h>
++
++#define FB_TTY "/dev/tty%i"
++static void unlockVT()
++{
++	int i;
++	int fd;
++	char tty[10];
++
++	for (i=0; i < 10; i++) {
++		int mode;
++
++		sprintf(tty, FB_TTY, i);
++		fd = open(tty, O_RDWR);
++		if (fd < 0)
++		  continue;
++
++		if (ioctl(fd, KDGETMODE, &mode) < 0) {
++			fprintf(stderr,	"Unable to get mode for tty %i.\n", i);
++			close(fd);
++			return;
++		}
++
++		if (mode != KD_TEXT)
++		  break;
++
++		close(fd);
++	}
++
++	if (i==10) {
++//		fprintf(stderr,	"No graphic tty found.\n");
++		return;
++	}
++
++//	fprintf(stderr,	"Graphic tty found on %s.\n", tty);
++
++	if (ioctl(fd, KDSETMODE, KD_TEXT) < 0)
++		fprintf(stderr,	"unable to set keyboard mode.\n");
++
++	if (ioctl(fd, VT_UNLOCKSWITCH, 1) < 0)
++		fprintf(stderr,	"unable to unlock terminal.\n");
++
++	close(fd);
++}
++#endif
++
+ SDL_Surface *initScreen()
+ {
++	
++#ifdef UNLOCK_VT
++	unlockVT();
++#endif
++
+     // Initialize the SDL library 
+     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) 
+     {
+@@ -51,8 +105,6 @@
+     // Can't stand the useless arrow... Ben has no pointing device
+     SDL_ShowCursor(SDL_DISABLE);	
+ 
+-    TTF_Init();
+-
+     return screen;
+ }
+ 
+@@ -201,19 +253,10 @@
+     return result;
+ }
+ 
++typedef int TTF_Font;
++
+ SDL_Surface *drawFileName(char *filename, TTF_Font *font, int slideShow)
+ {
+-    if(font) {
+-        SDL_Color foregroundColor = { 0, 0, 0, 0 }; 
+-        SDL_Color backgroundColor = { 200, 200, 200, 0 };
+-
+-        char text[strlen(filename)+4];
+-        strcpy(text, filename);
+-        if (slideShow) {
+-            strcat(text, " >>");
+-        }
+-        return TTF_RenderText_Shaded(font, text, foregroundColor, backgroundColor);
+-    }
+     return NULL;
+ }
+ 
+@@ -295,7 +338,6 @@
+     TTF_Font    *font = NULL;
+     double       scale = 1.0;
+     int          currentImageNumber = 0,
+-                 showFileName = TRUE,
+                  runSlideShow = FALSE,
+                  isRunning = TRUE;
+     SDL_TimerID  slideShowTimer = 0;
+@@ -325,7 +367,6 @@
+ 	  break;
+ 
+ 	case 'd': /* -d do not show file name */
+-	  showFileName = 1 - showFileName;
+ 	  break;
+ 
+ 	case 'h': /* -h display help text and exit */
+@@ -379,14 +420,6 @@
+ 
+     screen = initScreen();
+ 
+-    font = TTF_OpenFont("font.ttf", 11);
+-    if (font == (TTF_Font *) (NULL)) {
+-        font = TTF_OpenFont("/usr/share/imgv/font.ttf", 11);
+-    }
+-    if (font == (TTF_Font *) (NULL)) {
+-        font = TTF_OpenFont("/usr/share/fonts/ttf-dejavu/DejaVuSans.ttf", 11);
+-    }
+-
+     picturePortion.w = SCREENWIDTH;
+     picturePortion.h = SCREENHEIGHT;
+ 
+@@ -528,7 +561,6 @@
+                     }
+                     break;
+                 case SDLK_d: // SHOW / HIDE FILENAME
+-                    showFileName = 1 - showFileName;
+                     break;
+                 case SDLK_ESCAPE: // QUIT
+                 case SDLK_q:
+@@ -538,16 +570,13 @@
+                     break;
+              } // end of switch (event.key.keysym.sym)
+         } // end of if(SDL_WaitEvent())
+-        drawImage(scaledImage, &picturePortion, screen, showFileName ? name : 0);
++        drawImage(scaledImage, &picturePortion, screen, 0);
+     } while(isRunning); // end of do
+ 
+     SDL_FreeSurface(image);
+     SDL_FreeSurface(scaledImage);
+     SDL_FreeSurface(screen);
+ 
+-    TTF_CloseFont(font);
+-    TTF_Quit();
+-
+     SDL_Quit();
+ 
+     return 0;

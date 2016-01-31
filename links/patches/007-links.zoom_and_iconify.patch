@@ -1,0 +1,266 @@
+--- ./links.h  2009-12-25 13:54:21.000000000 -0800
++++ ./links.h	2013-01-24 10:59:32.636803784 -0800
+@@ -29,8 +29,8 @@
+ #define _LINKS_H
+ 
+ #define LINKS_COPYRIGHT "(C) 1999 - 2009 Mikulas Patocka\n(C) 2000 - 2009 Petr Kulhavy, Karel Kulhavy, Martin Pergel"
+-#define LINKS_COPYRIGHT_8859_1 "(C) 1999 - 2009 Mikulás Patocka\n(C) 2000 - 2009 Petr Kulhavý, Karel Kulhavý, Martin Pergel"
+-#define LINKS_COPYRIGHT_8859_2 "(C) 1999 - 2009 Mikulá¹ Patoèka\n(C) 2000 - 2009 Petr Kulhavý, Karel Kulhavý, Martin Pergel"
++#define LINKS_COPYRIGHT_8859_1 "(C) 1999 - 2009 MikulÃ¡s Patocka\n(C) 2000 - 2009 Petr KulhavÃœ, Karel KulhavÃœ, Martin Pergel"
++#define LINKS_COPYRIGHT_8859_2 "(C) 1999 - 2009 MikulÃ¡Â¹ PatoÃška\n(C) 2000 - 2009 Petr KulhavÃœ, Karel KulhavÃœ, Martin Pergel"
+ 
+ #ifndef __EXTENSIONS__
+ #define __EXTENSIONS__
+@@ -1172,6 +1172,13 @@ void free_blacklist(void);
+ 
+ struct session;
+ 
++#ifdef G
++extern int g_nFontSize;
++extern int g_nImageScale;
++#endif
++
++void html_refresh(struct session *);
++
+ #define POST_CHAR 1
+ 
+ static inline int end_of_dir(unsigned char *url, unsigned char c)
+@@ -2574,7 +2581,7 @@ struct cached_image {
+ 	struct cached_image *prev;
+ 	int refcount;
+ 
+-	int background_color; /* nezaokrouhlené pozadí: 
++	int background_color; /* nezaokrouhlenÃ© pozadÃ­: 
+ 			       * sRGB, (r<<16)+(g<<8)+b */
+ 	unsigned char *url;
+ 	int wanted_xw, wanted_yw; /* This is what is written in the alt.
+
+--- ./menu.c	2009-09-13 05:36:34.000000000 -0700
++++ ./menu.c	2013-01-13 23:08:44.283472000 -0800
+@@ -60,7 +60,6 @@ void menu_shell(struct terminal *, void 
+ void menu_kill_background_connections(struct terminal *, void *, void *);
+ void menu_kill_all_connections(struct terminal *, void *, void *);
+ void menu_save_html_options(struct terminal *, void *, struct session *);
+-void html_refresh(struct session *);
+ int dlg_assume_cp(struct dialog_data *, struct dialog_item_data *);
+ int dlg_kb_cp(struct dialog_data *, struct dialog_item_data *);
+ void menu_html_options(struct terminal *, void *, struct session *);
+@@ -1682,6 +1681,9 @@ unsigned char marg_str[2];
+ #ifdef G
+ unsigned char html_font_str[4];
+ unsigned char image_scale_str[6];
++
++int g_nFontSize =10;
++int g_nImageScale=100;
+ #endif
+ 
+ void html_refresh(struct session *ses)
+@@ -1690,8 +1692,8 @@ void html_refresh(struct session *ses)
+ #ifdef G
+ 	if (F)
+ 	{
+-		ses->ds.font_size = atoi(html_font_str);
+-		ses->ds.image_scale = atoi(image_scale_str);
++		ses->ds.font_size = g_nFontSize;// atoi(html_font_str);
++		ses->ds.image_scale = g_nImageScale;//atoi(image_scale_str);
+ 	}
+ #endif
+ 	html_interpret_recursive(ses->screen);
+
+--- ./sdl.c	2013-01-14 13:31:16.413548000 -0800
++++ ./sdl.c	2013-01-24 10:58:41.640595104 -0800
+@@ -67,6 +67,7 @@
+ typedef unsigned char 		u_char_t;
+ typedef unsigned short int	u_short_t;
+ struct graphics_driver sdl_driver;
++int display_inactive = 0;
+ 
+ /* keysyms */
+ #include "sdl_data.inc"
+@@ -146,7 +147,7 @@ static void sdl_catch_event(void *data)
+ #ifdef ZIPIT_Z2
+     static int dead_key = 0;
+ 
+-    //static FILE *fp = NULL;      
++ //   static FILE *fp = NULL;      
+ #endif
+ 
+     SDL_PumpEvents();
+@@ -162,6 +163,18 @@ static void sdl_catch_event(void *data)
+ #define event events[i]
+ 	switch (event.type)
+ 	{
++			case SDL_ACTIVEEVENT: {
++				
++				if (SDL_GetAppState() & SDL_APPACTIVE){
++					display_inactive = 0;
++					SDL_UpdateRect(sdl_SURFACE(dev), 0, 0, 0, 0);
++				}
++				else
++					display_inactive = 1;
++				
++				break;
++			}
++		
+ /*	    case SDL_ACTIVEEVENT:	*/
+ 	    /* mouse motion */
+             case SDL_MOUSEMOTION:
+@@ -192,11 +205,11 @@ static void sdl_catch_event(void *data)
+ 	    /* keyboard */
+ 	    case SDL_KEYUP:
+ 	        S_ON_DEBUG_TRACE("event: key up");
+-		break;
++			break;
+             case SDL_KEYDOWN:
+ 	       {	/*translate */
+ 			int		k	= 0;
+-			int		key	= 0;
++			int		key	= 0;		
+ /*
+ *			//////////////////////////
+ *			//FIXME: needs rework !!!
+@@ -212,8 +225,8 @@ static void sdl_catch_event(void *data)
+ 			if(sdl_keysyms[k].sym >= SDLK_NUMLOCK && sdl_keysyms[k].sym <= SDLK_COMPOSE) 
+ 				break;	/* aka ignore modifiers */
+ #ifdef ZIPIT_Z2
+-			//if (fp == NULL)
+-			//  fp = fopen("/tmp/keylog.txt", "w");
++		//	if (fp == NULL)
++		//	  fp = fopen("/tmp/keylog.txt", "w");
+ 
+ 			/* key re-map */
+ 			key	= sdl_keysyms[k].key;
+@@ -232,7 +245,7 @@ static void sdl_catch_event(void *data)
+ 			  else
+ 			    key	= sdl_keysyms[k].skey;
+ 			}
+-#if 1
++#if 1		
+ 			//fprintf(fp, "sym=%d, key=%d, u=%d, mod=0x%0X\n",
+ 			//	(int)sdl_keysyms[k].key, key, event.key.keysym.unicode, (int)fl);
+ 			/* Try the Unicode if available? (bad for sticky and KBD_* keys) */
+@@ -412,6 +425,10 @@ static inline void sdl_update_sc(void *d
+ 	struct t_sdl_device_data	*dev	= NULL;
+ 
+ 	S_ON_DEBUG_TRACE("in");
++	
++	if (display_inactive)
++		return;
++		
+ 	/* assing struct */
+ 	if(data == NULL)
+ 		return;
+
+--- ./session.c	2009-09-13 05:36:34.000000000 -0700
++++ ./session.c	2013-01-24 10:52:52.760632836 -0800
+@@ -2294,9 +2294,13 @@ void tp_save(struct session *ses)
+ 	query_file(ses, ses->tq->url, ses->tq->ce ? ses->tq->ce->head : NULL, continue_download, tp_cancel);
+ }
+ 
++int g_xwin =0;
++
+ void tp_open(struct session *ses)
+ {
+ 	continue_download(ses, "");
++	if(g_xwin)
++		SDL_WM_IconifyWindow();	
+ }
+ 
+ int ses_abort_1st_state_loading(struct session *ses)
+@@ -2372,6 +2376,7 @@ int prog_sel_open(struct dialog_data *dl
+ 
+ 	if (!a) internal("This should not happen.\n");
+ 	ses->tq_prog = stracpy(a->prog), ses->tq_prog_flag_block = a->block, ses->tq_prog_flag_direct = direct_download_possible(ses->tq, a);
++	g_xwin = a->xwin;
+ 	tp_open(ses);
+ 	cancel_dialog(dlg,idata);
+ 	return 0;
+@@ -2435,7 +2440,7 @@ void vysad_okno(struct session *ses, uns
+ 	int i;
+ 	struct dialog *d;
+ 	struct memory_list *ml;
+-
++	
+ 	if ((unsigned)n > (MAXINT - sizeof(struct dialog)) / sizeof(struct dialog_item) - 4) overalloc();
+ 	d = mem_calloc(sizeof(struct dialog) + (n+3+(!anonymous)) * sizeof(struct dialog_item));
+ 	d->title = TEXT(T_WHAT_TO_DO);
+@@ -2446,9 +2451,7 @@ void vysad_okno(struct session *ses, uns
+ 
+ 	for (i=0;i<n;i++)
+ 	{
+-		unsigned char *bla=stracpy(_(TEXT(T_OPEN_WITH),ses->term));
+-		add_to_strn(&bla," ");
+-		add_to_strn(&bla,_(a[i].label,ses->term));
++		unsigned char *bla=stracpy(_(a[i].label,ses->term));
+ 		
+ 		d->items[i].type = D_BUTTON;
+ 		d->items[i].fn = prog_sel_open;
+@@ -2488,6 +2491,7 @@ void type_query(struct session *ses, uns
+ 	
+ 	if (a) ses->tq_prog = stracpy(a[0].prog), ses->tq_prog_flag_block = a[0].block, ses->tq_prog_flag_direct = direct_download_possible(ses->tq, a);
+ 	if (a && !a[0].ask) {
++		g_xwin = a->xwin;
+ 		tp_open(ses);
+ 		if (n) mem_free(a);
+ 		if (ct) mem_free(ct);
+@@ -2498,6 +2502,7 @@ void type_query(struct session *ses, uns
+ 		if (!anonymous) msg_box(ses->term, getml(m1, NULL), TEXT(T_UNKNOWN_TYPE), AL_CENTER | AL_EXTD_TEXT, TEXT(T_CONTEN_TYPE_IS), " ", m1, ".\n", TEXT(T_DO_YOU_WANT_TO_SAVE_OR_DISLPAY_THIS_FILE), NULL, ses, 3, TEXT(T_SAVE), tp_save, B_ENTER, TEXT(T_DISPLAY), tp_display, 0, TEXT(T_CANCEL), tp_cancel, B_ESC);
+ 		else msg_box(ses->term, getml(m1, NULL), TEXT(T_UNKNOWN_TYPE), AL_CENTER | AL_EXTD_TEXT, TEXT(T_CONTEN_TYPE_IS), " ", m1, ".\n", TEXT(T_DO_YOU_WANT_TO_SAVE_OR_DISLPAY_THIS_FILE), NULL, ses, 2, TEXT(T_DISPLAY), tp_display, B_ENTER, TEXT(T_CANCEL), tp_cancel, B_ESC);
+ 	} else {
++		g_xwin = a->xwin;
+ 		m2 = stracpy(a[0].label ? a[0].label : (unsigned char *)"");
+ 		if (!anonymous) msg_box(ses->term, getml(m1, m2, NULL), TEXT(T_WHAT_TO_DO), AL_CENTER | AL_EXTD_TEXT, TEXT(T_CONTEN_TYPE_IS), " ", m1, ".\n", TEXT(T_DO_YOU_WANT_TO_OPEN_FILE_WITH), " ", m2, ", ", TEXT(T_SAVE_IT_OR_DISPLAY_IT), NULL, ses, 4, TEXT(T_OPEN), tp_open, B_ENTER, TEXT(T_SAVE), tp_save, 0, TEXT(T_DISPLAY), tp_display, 0, TEXT(T_CANCEL), tp_cancel, B_ESC);
+ 		else msg_box(ses->term, getml(m1, m2, NULL), TEXT(T_WHAT_TO_DO), AL_CENTER | AL_EXTD_TEXT, TEXT(T_CONTEN_TYPE_IS), " ", m1, ".\n", TEXT(T_DO_YOU_WANT_TO_OPEN_FILE_WITH), " ", m2, ", ", TEXT(T_SAVE_IT_OR_DISPLAY_IT), NULL, ses, 3, TEXT(T_OPEN), tp_open, B_ENTER, TEXT(T_DISPLAY), tp_display, 0, TEXT(T_CANCEL), tp_cancel, B_ESC);
+
+--- ./view.c	2013-01-14 13:31:16.477300000 -0800
++++ ./view.c	2013-01-24 10:45:30.799760768 -0800
+@@ -3425,10 +3425,10 @@ void send_event(struct session *ses, str
+ 			activate_bfu_technology(ses, 0);
+ 			goto x;
+ 		}
+-		if (ev->x == KBD_TAB) {
++		if (ev->x == KBD_TAB){
+ 			next_frame(ses, ev->y ? -1 : 1);
+ 			draw_formatted(ses);
+-		}
++  		}
+ #if 0 /* ZIPIT_Z2 */
+ 		if (ev->x == KBD_LEFT && !ses->term->spec->braille) {
+ 			back(ses, NULL, 0);
+
+--- ./view_gr.c	2013-01-14 13:31:16.477300000 -0800
++++ ./view_gr.c	2013-01-24 11:06:06.480743814 -0800
+@@ -1322,7 +1322,7 @@ int g_frame_ev(struct session *ses, stru
+ 				return 3;
+ 			}
+ #if 1 /* ZIPIT_Z2 */
+-
++	
+ 			/* Allow TAB, BACKTAB to traverse links on ZIPIT_Z2 (mouse eats up,dn keys)*/
+ 			if ((ev->x == KBD_TAB) && (ev->y & KBD_SHIFT)) {
+ 				return g_next_link(fd, -1);
+@@ -1333,10 +1333,22 @@ int g_frame_ev(struct session *ses, stru
+ 
+ 			/* Use dpad arrow buttons to scroll ZIPIT_Z2 and use <,>. for URLS. */	
+ 			if ((ev->x == '.') || (ev->x == '>') || (ev->x == '}') || (ev->x == ')')) {
+-				return g_next_link(fd, 1);
++				//zoom in.....   increase the text size and reduce the imageScale
++				g_nImageScale = g_nImageScale-5;
++				g_nFontSize++;
++				
++				html_refresh(ses);
++				return 1;
++//				return g_next_link(fd, 1);
+ 			}
+ 			if ((ev->x == ',') || (ev->x == '<') || (ev->x == '{') || (ev->x == '(')) {
+-				return g_next_link(fd, -1);
++				//zoom out.....   reduce the text size and increase the imageScale
++				g_nImageScale = g_nImageScale+5;
++				g_nFontSize--;
++				
++				html_refresh(ses);
++				return 1;
++//				return g_next_link(fd, -1);
+ 			}
+ 
+ 			/* Add more conveient sidescroll keys for ZIPIT_Z2 */

@@ -1,0 +1,90 @@
+diff -rupN gmu-0.9.0/src/tools.orig/charset.h gmu-0.9.0/src/tools/charset.h
+--- gmu-0.9.0/src/tools.orig/charset.h	1969-12-31 19:00:00.000000000 -0500
++++ gmu-0.9.0/src/tools/charset.h	2013-02-19 20:48:30.000000000 -0500
+@@ -0,0 +1,40 @@
++#ifndef WEJ_CHARSET_H
++#define WEJ_CHARSET_H
++
++#ifdef USE_WIDE_CHAR
++#include <wctype.h>
++
++static char *wchars_to_utf8_str_realloc(char *input, wchar_t *wchars)
++{
++	int len = wcstombs(NULL, wchars, 0);
++	if (len >= 0) {
++		input = realloc(input, len + 1);
++		if (input) {
++			if (wcstombs(input, wchars, len) != len) {
++				free(input);
++				input = NULL;
++			} else {
++				input[len] = '\0';
++			}
++		}
++	}
++	return input;
++}
++
++#else /* USE_WIDE_CHAR */
++
++#define wchar_t char
++#define wcstombs(d, s, l) strlen(l)
++#define wchars_to_utf8_str_realloc(i, wc) wc
++#define wget_wch(w, c) ((*(c) = wgetch(w)) ? OK : OK)
++
++#define WACS_VLINE   ACS_VLINE
++#define WACS_DIAMOND ACS_DIAMOND
++#define WACS_UARROW  ACS_UARROW
++#define WACS_DARROW  ACS_DARROW
++#define mvwadd_wchnstr(w, y, x, c, n) mvwaddch(w, y, x, c)
++#define mvwvline_set(w, y, x, c, n) mvwvline(w, y, x, c, n)
++
++#endif /* USE_WIDE_CHAR */
++
++#endif
+diff -rupN gmu-0.9.0/src/tools.orig/gmuc.c gmu-0.9.0/src/tools/gmuc.c
+--- gmu-0.9.0/src/tools.orig/gmuc.c	2013-02-19 20:56:36.000000000 -0500
++++ gmu-0.9.0/src/tools/gmuc.c	2013-02-19 19:40:26.000000000 -0500
+@@ -32,7 +32,7 @@
+ #endif
+ #include <curses.h>
+ #include <signal.h>
+-#include <wctype.h>
++#include "charset.h"
+ #include "../wejpconfig.h"
+ #include "../ringbuffer.h"
+ #include "../debug.h"
+@@ -131,23 +131,6 @@ static int parse_input_alloc(char *input
+ 	return res;
+ }
+ 
+-static char *wchars_to_utf8_str_realloc(char *input, wchar_t *wchars)
+-{
+-	int len = wcstombs(NULL, wchars, 0);
+-	if (len >= 0) {
+-		input = realloc(input, len + 1);
+-		if (input) {
+-			if (wcstombs(input, wchars, len) != len) {
+-				free(input);
+-				input = NULL;
+-			} else {
+-				input[len] = '\0';
+-			}
+-		}
+-	}
+-	return input;
+-}
+-
+ static State do_websocket_handshake(RingBuffer *rb, State state)
+ {
+ 	int  i, data_available = 1;
+diff -rupN gmu-0.9.0/src/tools.orig/listwidget.c gmu-0.9.0/src/tools/listwidget.c
+--- gmu-0.9.0/src/tools.orig/listwidget.c	2013-02-19 20:56:36.000000000 -0500
++++ gmu-0.9.0/src/tools/listwidget.c	2013-02-19 20:48:52.000000000 -0500
+@@ -19,6 +19,7 @@
+ #define _XOPEN_SOURCE_EXTENDED
+ #endif
+ #include <curses.h>
++#include "charset.h"
+ #include "window.h"
+ #include "listwidget.h"

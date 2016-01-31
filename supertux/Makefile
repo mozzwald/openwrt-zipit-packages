@@ -9,7 +9,7 @@ PKG_VERSION:=0.1.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://download.berlios.de/$(PKG_NAME)/
+PKG_SOURCE_URL:=https://github.com/SuperTux/supertux/releases/download/v0.1.3/
 PKG_MD5SUM:=f2fc288459f33d5cd8f645fbca737a63
 
 include $(INCLUDE_DIR)/package.mk
@@ -57,6 +57,8 @@ define Package/supertux/install
 	$(INSTALL_DIR) \
 		$(1)/usr/bin/ \
 		$(1)/usr/share/supertux/{images,levels,music,sounds} \
+		$(1)/usr/share/gmenu2x/skins/Default/icons/ \
+		$(1)/usr/share/gmenu2x/sections/games/
 
 	$(INSTALL_BIN) \
 		$(PKG_BUILD_DIR)/src/supertux \
@@ -76,6 +78,14 @@ define Package/supertux/install
 	ln -s \
 		SALCON-fast.MOD \
 		$(1)/usr/share/supertux/music/salcon-fast.mod
+
+	$(INSTALL_DATA) \
+		./files/supertux.gmenu \
+		$(1)/usr/share/gmenu2x/sections/games/supertux
+
+	$(INSTALL_DATA) \
+		./files/supertux.png \
+		$(1)/usr/share/gmenu2x/skins/Default/icons/supertux.png
 endef
 
 $(eval $(call RequireCommand,pngcrush,Please install pngcrush.))

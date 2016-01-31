@@ -1,0 +1,28 @@
+--- ./sdl.c  2013-01-29 08:18:56.883509672 -0800
++++ ./sdl.c	2013-01-29 08:19:03.703608439 -0800
+@@ -168,6 +168,7 @@ static void sdl_catch_event(void *data)
+ 				if (SDL_GetAppState() & SDL_APPACTIVE){
+ 					display_inactive = 0;
+ 					SDL_UpdateRect(sdl_SURFACE(dev), 0, 0, 0, 0);
++					sdl_GD(dev)->resize_handler(sdl_GD(dev));					
+ 				}
+ 				else
+ 					display_inactive = 1;
+@@ -209,7 +210,7 @@ static void sdl_catch_event(void *data)
+             case SDL_KEYDOWN:
+ 	       {	/*translate */
+ 			int		k	= 0;
+-			int		key	= 0;		
++			int		key	= 0;
+ /*
+ *			//////////////////////////
+ *			//FIXME: needs rework !!!
+@@ -245,7 +246,7 @@ static void sdl_catch_event(void *data)
+ 			  else
+ 			    key	= sdl_keysyms[k].skey;
+ 			}
+-#if 1		
++#if 1	
+ 			//fprintf(fp, "sym=%d, key=%d, u=%d, mod=0x%0X\n",
+ 			//	(int)sdl_keysyms[k].key, key, event.key.keysym.unicode, (int)fl);
+ 			/* Try the Unicode if available? (bad for sticky and KBD_* keys) */

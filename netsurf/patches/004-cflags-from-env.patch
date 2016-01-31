@@ -1,0 +1,13 @@
+--- a/Makefile.defaults	2015-03-10 09:37:37.000000000 -0500
++++ b/Makefile.defaults	2015-05-19 15:40:09.207688435 -0500
+@@ -91,8 +91,8 @@
+ # Valid options: YES, NO
+ NETSURF_FS_BACKING_STORE := NO
+ 
+-# Initial CFLAGS. Optimisation level etc. tend to be target specific.
+-CFLAGS :=
++# Take CFLAGS from environment
++#CFLAGS :=
+ 
+ # Initial CXXFLAGS. Optimisation level etc. tend to be target specific.
+ CXXFLAGS :=

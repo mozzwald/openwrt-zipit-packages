@@ -8,12 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pianobar
-PKG_VERSION:=2012.01.10
-PKG_RELEASE:=1
+PKG_VERSION:=ed26b4ad0e
+PKG_REV:=ed26b4ad0ec296751300676ab1b5782e498dfdb5
+PKG_RELEASE:=2
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://6xq.net/static/projects/pianobar
-PKG_MD5SUM:=448c57d65c71158674e8b30a8cfa217e
+
+PKG_SOURCE_URL:=https://github.com/PromyLOPh/pianobar.git
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_VERSION:=$(PKG_REV)
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 
 include $(INCLUDE_DIR)/package.mk
 

@@ -4,12 +4,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netsurf
-PKG_VERSION:=2.9
-PKG_RELEASE:=2
+PKG_VERSION:=3.3
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-src.tar.gz
 PKG_SOURCE_URL:=http://download.netsurf-browser.org/netsurf/releases/source/
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_INSTALL:=1
 
@@ -23,7 +23,8 @@ define Package/netsurf
 	CATEGORY:=Network
 	TITLE:=netsurf
 	URL:=http://www.netsurf-browser.org/
-	DEPENDS:=+libsdl +libcss +libhubbub +libparserutils +libnsfb +libnsgif +libnsbmp +libxml2 +libcurl +libfreetype +liberation-fonts-ttf $(ICONV_DEPENDS)
+	DEPENDS:=+libsdl +libcss +libdom +libhubbub +libparserutils +libnsfb +libnsgif +libnsbmp +libutf8proc +libnsutils +libxml2 +libcurl +libfreetype +liberation-fonts-ttf $(ICONV_DEPENDS)
+	PKG_BUILD_DEPENDS:=+netsurf-buildsystem
 endef
 
 define Package/netsurf/description
@@ -31,8 +32,9 @@ define Package/netsurf/description
 endef
 
 MAKE_FLAGS += "TARGET=framebuffer" \
-			  "PREFIX=/usr"
-
+    NSSHARED=$(STAGING_DIR)/usr/share/netsurf-buildsystem \
+    PREFIX=/usr
+    
 TARGET_CFLAGS += $(ICONV_CFLAGS) -I$(STAGING_DIR)/usr/include/SDL
 TARGET_LDFLAGS += $(ICONV_LDFLAGS) -liconv -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
 
@@ -59,6 +61,11 @@ define Package/netsurf/install
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/usr/share/netsurf/* \
 		$(1)/usr/share/netsurf/
+
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
+		$(INSTALL_BIN) ./files/netsurf.gmenu $(1)/usr/share/gmenu2x/sections/applications/netsurf.gmenu
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
+		$(INSTALL_BIN) ./files/netsurf.png $(1)/usr/share/gmenu2x/skins/Default/icons
 
 	$(CP) $(FILES_DIR)/Choices $(1)/usr/share/netsurf/
 	$(CP) $(FILES_DIR)/Cookies $(1)/usr/share/netsurf/

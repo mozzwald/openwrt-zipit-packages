@@ -26,14 +26,14 @@ TARGET_CFLAGS += \
 
 TARGET_LDFLAGS += \
 	-Wl,-rpath-link=$(STAGING_DIR)/usr/lib \
-	-lSDL -lSDL_ttf
+	-lSDL -lSDL_ttf -lSDL_gfx -lm
 
 define Package/dgclock
   SECTION:=xorg-apps
   CATEGORY:=Xorg
   TITLE:=dgclock - sdl based date and time
   URL:=http://clogging.web.fc2.com/dingoo/
-  DEPENDS:=+libsdl +libsdl-image +libsdl-ttf +dejavu-fonts-ttf
+  DEPENDS:=+libsdl +libsdl-image +libsdl-ttf +libsdl-gfx +dejavu-fonts-ttf
 endef
 
 define Package/dgclock/description
@@ -53,20 +53,20 @@ endef
 define Package/dgclock/install
 	$(INSTALL_DIR) \
 		$(1)/usr/bin \
-		$(1)/usr/share/icons \
-		$(1)/usr/share/applications
+		$(1)/usr/share/gmenu2x/skins/Default/icons \
+		$(1)/usr/share/gmenu2x/sections/applications
         
 	$(INSTALL_BIN) \
 		$(PKG_BUILD_DIR)/bin/dgclock \
 		$(1)/usr/bin/
 
 	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/dgclock/dgclock.png \
-		$(1)/usr/share/icons/
+		./files/dgclock.png \
+		$(1)/usr/share/gmenu2x/skins/Default/icons/ 
 
 	$(INSTALL_DATA) \
-		./files/dgclock.desktop \
-		$(1)/usr/share/applications/
+		./files/dgclock.gmenu \
+		$(1)/usr/share/gmenu2x/sections/applications/ 
 endef
 
 $(eval $(call BuildPackage,dgclock))

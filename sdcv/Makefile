@@ -12,7 +12,7 @@ PKG_NAME:=sdcv
 PKG_VERSION:=0.4.2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://cdnetworks-kr-1.dl.sourceforge.net/project/sdcv/sdcv/0.4.2/
+PKG_SOURCE_URL:=http://liquidtelecom.dl.sourceforge.net/project/sdcv/sdcv/0.4.2/
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
@@ -25,7 +25,7 @@ define Package/sdcv
     TITLE:=sdcv
     SECTION:=utils
     CATEGORY:=Utilities
-    DEPENDS:=$(ICONV_DEPENDS) $(INTL_DEPENDS) +libreadline +glib2
+    DEPENDS:=$(ICONV_DEPENDS) $(INTL_DEPENDS) +libreadline +glib2 +libncurses +libstdcpp
     URL:=http://sdcv.sourceforge.net/
 endef
 

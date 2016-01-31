@@ -25,7 +25,7 @@ define Package/imgv
 	SECTION:=utils
 	CATEGORY:=Utilities
 	TITLE:=SDL-based image viewer
-	DEPENDS:=+libsdl +libsdl-gfx +libsdl-image +libsdl-ttf +directfb +libfreetype
+	DEPENDS:=+libsdl +libsdl-gfx +libsdl-image
 	URL:=http://projects.qi-hardware.com/index.php/p/imgv/
 endef
 
@@ -35,6 +35,10 @@ MAKE_VARS += TARGETPATH=$(STAGING_DIR)
 define Package/imgv/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/imgv $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
+		$(INSTALL_BIN) ./files/imgv.gmenu $(1)/usr/share/gmenu2x/sections/applications
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
+		$(INSTALL_BIN) ./files/imgv.png $(1)/usr/share/gmenu2x/skins/Default/icons
 endef
 
 $(eval $(call BuildPackage,imgv))

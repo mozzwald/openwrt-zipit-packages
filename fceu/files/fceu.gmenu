@@ -1,0 +1,4 @@
+title=fceu
+icon=skin:icons/fceu.png
+exec=/usr/bin/runfceu
+clock=416

@@ -1,0 +1,109 @@
+diff -rupN zgv-5.9-orig/config.mk zgv-5.9/config.mk
+--- zgv-5.9-orig/config.mk	2005-01-20 18:13:19.000000000 -0500
++++ zgv-5.9/config.mk	2012-10-10 16:04:00.000000000 -0400
+@@ -26,8 +27,8 @@ AWK=awk
+ # is likely to remain preferable. The SDL backend is now quite
+ # usable, but tends to be rather slower.
+ #
+-BACKEND=SVGALIB
+-#BACKEND=SDL
++#BACKEND=SVGALIB
++BACKEND=SDL
+ 
+ 
+ # --------------------- Installation options ----------------------
+diff -rupN zgv-5.9-orig/src/rcfile.c zgv-5.9/src/rcfile.c
+--- zgv-5.9-orig/src/rcfile.c	2005-01-28 07:56:40.000000000 -0500
++++ zgv-5.9/src/rcfile.c	2012-10-10 16:04:09.000000000 -0400
+@@ -228,7 +228,7 @@ cfg.fastdither16col=1;	/* 1=use ordered 
+ cfg.echotagged=0;	/* echo tagged files on exit */
+ cfg.forgetoldpos=0;	/* don't return to old position in revisited dir */
+ cfg.linetext=0;		/* use old line-based text instead of bitmap fonts */
+-cfg.smallfstext=0;	/* use smaller font for filenames in file selector */
++cfg.smallfstext=1;	/* use smaller font for filenames in file selector */
+ cfg.writefile=0;
+ cfg.slowupdate=0;
+ cfg.shuffleslideshow=0;
+Binary files zgv-5.9-orig/src/zgv and zgv-5.9/src/zgv differ
+diff -rupN zgv-5.9-orig/src/zgv.c zgv-5.9/src/zgv.c
+--- zgv-5.9-orig/src/zgv.c	2005-01-20 17:54:52.000000000 -0500
++++ zgv-5.9/src/zgv.c	2012-10-10 16:04:09.000000000 -0400
+@@ -158,13 +158,18 @@ struct rbm_data_tag filesel_menu_data[]=
+ #define MARKEDCOL	14
+ 
+ /* these relate to the size of each file's entry ("bar") onscreen */
+-#define GDFYBIT			18
+-#define BARWIDTH		126
++//#define GDFYBIT			18
++#define GDFYBIT			14
++//#define BARWIDTH		126
++#define BARWIDTH		78
+ #define BAR_RESTRICT_WIDTH	BARWIDTH-4
+ 
+-#define DIR_OF_XPOS	(100)
+-#define DIR_OF_YPOS	(12)
+-#define DIR_OF_XSIZ	(fs_scrnwide-DIR_OF_XPOS-10)
++//#define DIR_OF_XPOS	(100)
++#define DIR_OF_XPOS	(80)
++//#define DIR_OF_YPOS	(12)
++#define DIR_OF_YPOS	(6)
++//#define DIR_OF_XSIZ	(fs_scrnwide-DIR_OF_XPOS-10)
++#define DIR_OF_XSIZ	(fs_scrnwide-DIR_OF_XPOS)
+ #define COLS		(fs_scrnwide-5)
+ #define ROWS		(fs_scrnhigh-10-yofs)
+ #define XSIZ		(COLS/BARWIDTH)
+@@ -2382,7 +2387,7 @@ for(f=start;f<=end;f++)
+           vga_setcolor(unshow?idx_medium:idx_black);
+           xt=xpos+(BARWIDTH-80)/2;
+           ypos+=GDFYBIT+9;
+-          
++
+           /* main bit */
+           vga_drawline(xt+10,ypos+50,xt+70,ypos+50);
+           vga_drawline(xt+70,ypos+50,xt+70,ypos+20);
+@@ -2683,7 +2688,11 @@ msgbox_draw_ok=1;
+ gdfsiz=3-cfg.smallfstext;
+ gdfofs=4*cfg.smallfstext;
+ 
++#if 0
+ yofs=50;
++#else
++yofs=40;
++#endif
+ 
+ if(cfg.xvpic_index)
+   {
+@@ -2786,8 +2795,13 @@ else
+   vga_clear();	/* reflect zero-index palette change */
+ #endif
+ 
++#if 0
+ draw3dbox(0,0,fs_scrnwide-1,39,1,1,	idx_light,idx_dark);
+ draw3dbox(0,40,fs_scrnwide-1,fs_scrnhigh-1,1,1,	idx_light,idx_dark);
++#else
++draw3dbox(0,0,fs_scrnwide-1,29,1,1,	idx_light,idx_dark);
++draw3dbox(0,30,fs_scrnwide-1,fs_scrnhigh-1,1,1,	idx_light,idx_dark);
++#endif
+ 
+ /* draw complete scrollbar, but without any slider. */
+ if(cfg.scrollbar)
+diff -rupN zgv-5.9-orig/src/zgv_io.c zgv-5.9/src/zgv_io.c
+--- zgv-5.9-orig/src/zgv_io.c	2005-01-20 18:07:46.000000000 -0500
++++ zgv-5.9/src/zgv_io.c	2012-10-10 16:04:09.000000000 -0400
+@@ -645,7 +645,7 @@ while(SDL_PollEvent(&event))
+         case SDLK_INSERT:	return(RK_INSERT);
+         case SDLK_DELETE:	return(RK_DELETE);
+         case SDLK_RETURN:	return(RK_ENTER);
+-        default:
++    default: break;
+           /* stop complaints */
+         }
+ 
+@@ -772,6 +772,7 @@ void zgv_io_fixfsmode(int *mode)
+   if(modes[xx].has_mode && cfg.mode_allowed[xx]) \
+     { *mode=(xx); return; }
+ 
++TRY_MODE(G320x240x256);
+ TRY_MODE(G640x480x256);
+ TRY_MODE(G800x600x256);
+ TRY_MODE(G1024x768x256);

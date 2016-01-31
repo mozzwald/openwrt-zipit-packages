@@ -5,12 +5,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nupdf
-PKG_VERSION:=3de8c5224c
-PKG_REV:=3de8c5224c8dd8974438c992dbc3736ea614c8e4
-PKG_RELEASE:=2
+PKG_VERSION:=274ac45659
+PKG_REV:=274ac4565923770dfb59b67a9c03e8e8a98681ca
+PKG_RELEASE:=3
 
 
-PKG_SOURCE_URL:=git://github.com/deeice/nupdf.git
+PKG_SOURCE_URL:=git://github.com/engine12/nupdf.git
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
@@ -53,6 +53,11 @@ define Package/nupdf/install
 
 	$(INSTALL_BIN) \
 		$(PKG_BUILD_DIR)/nupdf $(1)/usr/bin/nupdf
+
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
+		$(INSTALL_BIN) ./files/nupdf.gmenu $(1)/usr/share/gmenu2x/sections/applications
+	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
+		$(INSTALL_BIN) ./files/nupdf.png $(1)/usr/share/gmenu2x/skins/Default/icons
 
 	$(CP) \
 		$(PKG_BUILD_DIR)/{data,config} $(1)/usr/share/nupdf

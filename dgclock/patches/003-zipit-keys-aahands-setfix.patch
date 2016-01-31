@@ -1,0 +1,148 @@
+--- dgclock-091222/src/main.c	2013-09-25 19:46:46.000000000 -0400
++++ dgclock-091222.mod/src/main.aa.c	2013-09-24 18:50:36.000000000 -0400
+@@ -95,6 +95,9 @@
+ 	((Uint16 *)surface->pixels)[(surface->w * y)+ x] = color; 
+ }
+ 
++#if 1 /* ZIPIT_Z2 */
++#include <SDL_gfxPrimitives.h>
++#else
+ void draw_line(SDL_Surface *surface,int x,int y,int px,int py,Uint16 color)
+ {
+ 	int i,j;
+@@ -131,6 +134,7 @@
+ 		}		
+ 	}
+ }
++#endif
+ 
+ 
+ void app_make_bg(int setmode)
+@@ -142,9 +146,11 @@
+ 	TXT_Printf(gTTFFont,gSurfaceMain,0,0,white,"dgClock");
+ 
+ 	if (setmode)
+-		TXT_Printf(gTTFSmall,gSurfaceMain,0,225,white,"SELECT:CANCEL A:SET  ARROW:MOVE");
++		TXT_Printf(gTTFSmall,gSurfaceMain,0,225,white,
++			   "Press Enter to save, Esc to cancel, Arrows to move/set.");
+ 	else 
+-		TXT_Printf(gTTFSmall,gSurfaceMain,0,225,white,"SELECT:QUIT   A:SET  ARROW:MONTH  Y:CURRENT");
++		TXT_Printf(gTTFSmall,gSurfaceMain,0,225,white,
++			   "Press Enter to set, Arrows for month, BS for current.");
+ }
+ 
+ void app_make_clock(int hour,int min,int sec)
+@@ -177,6 +183,16 @@
+ 	while (i < 0) 
+ 		i+=360;
+ 
++#if 1 /* ZIPIT_Z2 */
++	dx = 250 + (38 * cos_tbl[i]);
++	dy = 120 + (38 * sin_tbl[i]);
++	
++	x = 250 + (-6 * cos_tbl[i]);
++	y = 120 + (-6 * sin_tbl[i]);
++	
++	//aalineColor(gSurfaceMain , x,y,dx,dy , 0xffffff40); //Semi transparent white
++	aalineColor(gSurfaceMain , x,y,dx,dy , 0x404040ff); // dim white
++#else
+ 	dx = 250 + (38 * cos_tbl[i]);
+ 	dy = 120 + (38 * sin_tbl[i]);
+ 	
+@@ -184,6 +200,7 @@
+ 	y = 120 + (-10 * sin_tbl[i]);
+ 	
+ 	draw_line(gSurfaceMain , x,y,dx,dy , white);
++#endif
+ 
+ 	
+ 	// min
+@@ -194,6 +211,15 @@
+ 	while (i < 0) 
+ 		i+=360;
+ 	
++#if 1 /* ZIPIT_Z2 */
++	dx = 250 + (37 * cos_tbl[i]);
++	dy = 120 + (37 * sin_tbl[i]);
++	
++	x = 250 + (-2 * cos_tbl[i]);
++	y = 120 + (-2 * sin_tbl[i]);
++	
++	aalineColor(gSurfaceMain , x,y,dx,dy , 0xffffffff); // white
++#else
+ 	dx = 250 + (34 * cos_tbl[i]);
+ 	dy = 120 + (34 * sin_tbl[i]);
+ 	
+@@ -201,6 +227,7 @@
+ 	y = 120 + (-10 * sin_tbl[i]);
+ 	
+ 	draw_line(gSurfaceMain , x,y,dx,dy , white);
++#endif
+ 	
+ 	// hour
+ 	i =  hour % 12;
+@@ -211,6 +238,17 @@
+ 	while (i < 0) 
+ 		i+=360;
+ 	
++#if 1 /* ZIPIT_Z2 */
++	dx = 250 + (28 * cos_tbl[i]);
++	dy = 120 + (28 * sin_tbl[i]);
++	
++	x = 250 + (-2 * cos_tbl[i]);
++	y = 120 + (-2 * sin_tbl[i]);
++	
++	aalineColor(gSurfaceMain , x,y,dx,dy , 0xffffffff); // white
++
++	aacircleColor(gSurfaceMain , 250, 120, 2, 0x404040ff); // dim white
++#else
+ 	dx = 250 + (30 * cos_tbl[i]);
+ 	dy = 120 + (30 * sin_tbl[i]);
+ 	
+@@ -218,6 +256,7 @@
+ 	y = 120 + (-5 * sin_tbl[i]);
+ 	
+ 	draw_line(gSurfaceMain , x,y,dx,dy , white);
++#endif
+ 	
+ 	// hour
+ 	
+@@ -654,7 +693,7 @@
+ 
+ 								break;
+ 								// set
+-								case DG_KEY_A:
++								case DG_KEY_START:
+ 									update_flag = 1;
+ 									set_flag = 0;
+ 									
+@@ -665,6 +704,11 @@
+ 									c_mon = c_tm->tm_mon;
+ 
+ 									set_hwclock(c_tm);
++#if 1 /* ZIPIT_Z2 */
++									time(&b_time);
++									bkup_time = b_time;
++									base_tick = cur_tick = old_tick = SDL_GetTicks();
++#endif
+ 								break;
+ 								case DG_KEY_LEFT:
+ 									update_flag = 1;
+@@ -704,13 +748,15 @@
+ 							switch(event.key.keysym.sym)
+ 							{
+ 								// enter set mode
+-								case DG_KEY_A:
++								case DG_KEY_START:
+ 									bkup_time = b_time;
+ 									update_flag = 1;
+ 									set_flag = 1;							
+ 									break;
+ 								// view current
+-								case DG_KEY_Y:
++								case DG_KEY_X:
++								case DG_KEY_R:
++								case DG_KEY_L:
+ 									update_flag = 1;
+ 									mon  = c_mon;
+ 									year = c_year;
