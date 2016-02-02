@@ -34,7 +34,7 @@ endef
 TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/SDL
 
 CONFIGURE_VARS += \
-	LIBS="-lSDL +libsdl-ttf"
+	LIBS="-lSDL -lSDL_ttf"
 
 define Build/Configure
     $(call Build/Configure/Default, \
@@ -52,8 +52,7 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) \
 		$(1)/usr/include/SDL \
-		$(1)/usr/lib \
-		$(1)/usr/lib/pkgconfig
+		$(1)/usr/lib
 
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/include/SDL/* \
@@ -62,10 +61,6 @@ define Build/InstallDev
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/lib/*.{a,so*} \
 		$(1)/usr/lib/
-
-	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/* \
-		$(1)/usr/lib/pkgconfig
 endef
 
 define Package/libsdl-rtf/install
