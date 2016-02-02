@@ -1,16 +1,5 @@
 --- ./links.h  2009-12-25 13:54:21.000000000 -0800
 +++ ./links.h	2013-01-24 10:59:32.636803784 -0800
-@@ -29,8 +29,8 @@
- #define _LINKS_H
- 
- #define LINKS_COPYRIGHT "(C) 1999 - 2009 Mikulas Patocka\n(C) 2000 - 2009 Petr Kulhavy, Karel Kulhavy, Martin Pergel"
--#define LINKS_COPYRIGHT_8859_1 "(C) 1999 - 2009 Mikulás Patocka\n(C) 2000 - 2009 Petr Kulhavý, Karel Kulhavý, Martin Pergel"
--#define LINKS_COPYRIGHT_8859_2 "(C) 1999 - 2009 Mikulá¹ Patoèka\n(C) 2000 - 2009 Petr Kulhavý, Karel Kulhavý, Martin Pergel"
-+#define LINKS_COPYRIGHT_8859_1 "(C) 1999 - 2009 MikulÃ¡s Patocka\n(C) 2000 - 2009 Petr KulhavÃœ, Karel KulhavÃœ, Martin Pergel"
-+#define LINKS_COPYRIGHT_8859_2 "(C) 1999 - 2009 MikulÃ¡Â¹ PatoÃška\n(C) 2000 - 2009 Petr KulhavÃœ, Karel KulhavÃœ, Martin Pergel"
- 
- #ifndef __EXTENSIONS__
- #define __EXTENSIONS__
 @@ -1172,6 +1172,13 @@ void free_blacklist(void);
  
  struct session;
@@ -25,16 +14,6 @@
  #define POST_CHAR 1
  
  static inline int end_of_dir(unsigned char *url, unsigned char c)
-@@ -2574,7 +2581,7 @@ struct cached_image {
- 	struct cached_image *prev;
- 	int refcount;
- 
--	int background_color; /* nezaokrouhlené pozadí: 
-+	int background_color; /* nezaokrouhlenÃ© pozadÃ­: 
- 			       * sRGB, (r<<16)+(g<<8)+b */
- 	unsigned char *url;
- 	int wanted_xw, wanted_yw; /* This is what is written in the alt.
-
 --- ./menu.c	2009-09-13 05:36:34.000000000 -0700
 +++ ./menu.c	2013-01-13 23:08:44.283472000 -0800
 @@ -60,7 +60,6 @@ void menu_shell(struct terminal *, void 
