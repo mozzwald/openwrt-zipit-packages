@@ -6,9 +6,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=burgerspace
-PKG_VERSION:=1.9.1
+PKG_FETCH:=1.9.1
+# The tarball actually contains a more recent version.  Weird.
+PKG_VERSION:=1.9.2
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_FETCH).tar.gz
 PKG_SOURCE_URL:=http://perso.b2b2c.ca/sarrazip/dev/
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
@@ -21,7 +23,7 @@ define Package/burgerspace
   CATEGORY:=Games
   TITLE:=burgerspace
   URL:=http://perso.b2b2c.ca/sarrazip/dev/burgerspace.html
-  DEPENDS:=+libsdl +libsdl-ttf +flatzebra
+  DEPENDS:=+libsdl +libsdl-ttf +flatzebra +libpthread
 endef
 
 define Package/burgerspace/description
@@ -32,7 +34,7 @@ CONFIGURE_ARGS +=
 #FLATZEBRA_CFLAGS = -I$(STAGING_DIR)/usr/include/flatzebra-0.1
 #FLATZEBRA_LIBS = -L$(STAGING_DIR)/usr/lib
 TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/flatzebra-0.1 -I$(STAGING_DIR)/usr/include/SDL -I$(STAGING_DIR)/usr/lib/libiconv-stub/include
-TARGET_LDFLAGS+= -Wl,-rpath-link=$(STAGING_DIR)/usr/lib -L$(STAGING_DIR)/usr/lib
+TARGET_LDFLAGS+= -Wl,-rpath-link=$(STAGING_DIR)/usr/lib -L$(STAGING_DIR)/usr/lib -lpthread
 
 define Package/burgerspace/install
 	$(INSTALL_DIR) $(1)/usr/bin/
