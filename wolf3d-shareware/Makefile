@@ -12,7 +12,7 @@ PKG_VERSION:=1.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=wolf3d-shareware.tar.bz2
-PKG_SOURCE_URL:=http://mozzwald.homelinux.net/zipit/openwrt/packages/
+PKG_SOURCE_URL:=http://mozzwald.com/zipit/openwrt/packages/
 PKG_SOURCE_SUBDIR:=wolf3d
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
