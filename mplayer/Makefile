@@ -51,6 +51,7 @@ CONFIGURE_ARGS := \
 		--enable-alsa \
 		--enable-largefiles \
 		--disable-sdl \
+		--disable-directfb \
 		--enable-mplayer \
 		--disable-mencoder \
 		--enable-armv5te \
