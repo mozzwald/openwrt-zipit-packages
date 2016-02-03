@@ -34,7 +34,7 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/src/flatzebra/*.h $(STAGING_DIR)/usr/include/flatzebra-0.1/flatzebra/
 	$(CP) $(PKG_BUILD_DIR)/src/flatzebra/.libs/libflatzebra-0.1.so.* $(STAGING_DIR)/usr/lib/
 	$(CP) ./files/flatzebra-0.1.pc $(STAGING_DIR)/usr/lib/pkgconfig/
-	ln -s $(STAGING_DIR)/usr/lib/libflatzebra-0.1.so.2.0.0 $(STAGING_DIR)/usr/lib/libflatzebra-0.1.so
+	$(CP) $(STAGING_DIR)/usr/lib/libflatzebra-0.1.so.2.0.0 $(STAGING_DIR)/usr/lib/libflatzebra-0.1.so
 endef
 
 define Package/flatzebra/install
