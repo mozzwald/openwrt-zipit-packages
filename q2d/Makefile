@@ -10,10 +10,14 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=q2d
 PKG_VERSION:=0.0.3
 PKG_RELEASE:=1
+#PKG_VERSION:=0.0.5
+#PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://sourceforge.net/projects/q2d/files/
+#PKG_SOURCE_URL:=http://sourceforge.net/projects/q2d/files/
+PKG_SOURCE_URL:=https://mozzwald.com/zipit/openwrt/packages/
 PKG_MD5SUM:=0e2ff5cbddc37f9bf2c7b3647952883a
+#PKG_MD5SUM:=c2a383ee3f1842f6c0973b79239751a3
 
 include $(INCLUDE_DIR)/package.mk
 
