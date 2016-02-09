@@ -1,0 +1,56 @@
+--- burgerspace-1.9.2~/src/util.h	2016-02-07 08:19:26.741971862 -0500
++++ burgerspace-1.9.2/src/util.h	2016-02-08 19:43:53.029792334 -0500
+@@ -50,8 +50,11 @@
+ {
+     TILE_SIDE = 32,
+ #if 1 // ZIPIT_Z2
+-    SCREEN_WIDTH_IN_PIXELS = 320,
+-    SCREEN_HEIGHT_IN_PIXELS = 240
++    // SCREEN_WIDTH_IN_PIXELS = 320,
++    // SCREEN_HEIGHT_IN_PIXELS = 240
++    // Scale to half size in sdl_Flip in flatzebra.
++    SCREEN_WIDTH_IN_PIXELS = 640,
++    SCREEN_HEIGHT_IN_PIXELS = 480
+ #else
+     SCREEN_WIDTH_IN_PIXELS = 672,
+     SCREEN_HEIGHT_IN_PIXELS = 520
+--- burgerspace-1.9.2~/src/client.cpp	2010-11-18 00:35:02.000000000 -0500
++++ burgerspace-1.9.2/src/client.cpp	2016-02-07 14:32:02.095358913 -0500
+@@ -151,7 +151,11 @@
+     int initLevelNo = 1;
+     int millisecondsPerFrame = 55;
+     bool useSound = true;
++#if 1 // ZIPIT_Z2
++    bool fullScreen = true;
++#else
+     bool fullScreen = false;
++#endif
+     bool useOldMotionMode = false;
+     SDLKey pepperKey = SDLK_LCTRL;
+     string serverHostname;  // UDP server hostname if not empty; local server otherwise
+--- burgerspace-1.9.2~/src/BurgerSpaceClient.cpp	2013-02-25 00:04:43.000000000 -0500
++++ burgerspace-1.9.2/src/BurgerSpaceClient.cpp	2016-02-07 16:08:38.435895859 -0500
+@@ -379,6 +379,10 @@
+                 case SDL_KEYDOWN:
+                     controller.check(event.key.keysym.sym, true);
+                     lastKeyPressed = event.key.keysym.sym;
++#if 1 // ZIPIT_Z2
++		    if (lastKeyPressed == SDLK_q)
++		      return;
++#endif
+                     break;
+ 
+                 case SDL_KEYUP:
+@@ -509,8 +513,11 @@
+         }
+ 
+         // Double buffering: switch pages:
++#if 1 // ZIPIT_Z2
++	sdl_Flip();
++#else
+         SDL_Flip(theSDLScreen);
+-
++#endif
+         // Wait until next animation frame:
+         Uint32 now = SDL_GetTicks();
+         if (frameEnd > now)

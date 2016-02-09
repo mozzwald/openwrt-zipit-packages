@@ -1,4 +1,4 @@
 title=BurgerSpace
 icon=skin:icons/burgerspace.png
-exec=/usr/bin/burgerspace
+exec=/usr/bin/burgers
 clock=312
