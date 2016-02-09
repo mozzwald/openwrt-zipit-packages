@@ -42,7 +42,7 @@ define Package/burgerspace/install
 	$(INSTALL_DIR) $(1)/usr/bin/
 		$(INSTALL_BIN) ./files/burgers $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/usr/share/sounds/burgerspace/
-		$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/burgerspace/sounds/*.wav $(1)/usr/share/sounds/burgerspace/
+		$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/sounds/*.wav $(1)/usr/share/sounds/burgerspace/
 	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/games/
 		$(INSTALL_DATA) ./files/burgerspace.gmenu $(1)/usr/share/gmenu2x/sections/games/
 	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons/
