@@ -1,0 +1,115 @@
+--- flatzebra-0.1.6~/src/flatzebra/GameEngine.h	2012-07-13 23:15:57.000000000 -0400
++++ flatzebra-0.1.6/src/flatzebra/GameEngine.h	2016-02-07 16:07:27.892291058 -0500
+@@ -145,6 +145,9 @@
+         */
+ 
+     SDL_Surface *theSDLScreen;
++#if 1 // ZIPIT_Z2
++    SDL_Surface *theSDLDisplay;
++#endif
+ 
+     SDL_Surface *fixedWidthFontPixmap;
+ 
+@@ -247,9 +250,14 @@
+         Never called if processActiveEvent argument of constructor is false.
+     */
+ 
++#if 1 // ZIPIT_Z2
++    void sdl_Flip(void);
++#endif
++
+ private:
+ 
+     void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
++    Uint32 getpixel(SDL_Surface *surface, int x, int y);
+     void initWuLineAlgorithm();
+     void wu_line(SDL_Surface *surface,
+                 Uint32 x0, Uint32 y0, Uint32 x1, Uint32 y1,
+--- flatzebra-0.1.6~/src/flatzebra/GameEngine.cpp	2016-02-08 08:03:33.790144644 -0500
++++ flatzebra-0.1.6/src/flatzebra/GameEngine.cpp	2016-02-08 19:39:57.790761438 -0500
+@@ -383,56 +383,40 @@
+ GameEngine::sdl_Flip(void)
+ {
+   if (theSDLDisplay) {
+-    int i, j;
+-    Uint32 pixel, r, g, b;
++    int x, y;
+     SDL_PixelFormat *fmt = theSDLScreen->format;
+     if (fmt->BytesPerPixel == 2){
+-      for (j=0; j<240; j++) {
+-	for (i=0; i<320; i++) {
+-#if 1
+-	  // For speedup inline a get2pixels fn to fetch 32bits at time.
+-	  // Then shift right 16 to access the other 16bit pixel.
+-	  Uint8 *p = (Uint8 *)theSDLScreen->pixels +j*2*theSDLScreen->pitch +i*4;
+-	  pixel = *(Uint32 *)p;
+-	  r = pixel & fmt->Rmask;
+-	  g = pixel & fmt->Gmask;
+-	  b = pixel & fmt->Bmask;
+-	  pixel >>= 16;
+-	  r += (pixel & fmt->Rmask);
+-	  g += (pixel & fmt->Gmask);
+-	  b += (pixel & fmt->Bmask);
+-#else
+-	  pixel = getpixel(theSDLScreen, i*2, j*2);
+-	  r = pixel & fmt->Rmask;
+-	  g = pixel & fmt->Gmask;
+-	  b = pixel & fmt->Bmask;
+-	  pixel = getpixel(theSDLScreen, i*2+1, j*2);
+-	  r += (pixel & fmt->Rmask);
+-	  g += (pixel & fmt->Gmask);
+-	  b += (pixel & fmt->Bmask);
+-#endif
+-#if 1
+-	  pixel = (r/2 & fmt->Rmask) | (g/2 & fmt->Gmask) | (b/2 & fmt->Bmask);
+-#else
+-	  pixel = getpixel(theSDLScreen, i*2, j*2+1);
+-	  r += (pixel & fmt->Rmask);
+-	  g += (pixel & fmt->Gmask);
+-	  b += (pixel & fmt->Bmask);
+-	  pixel = getpixel(theSDLScreen, i*2+1, j*2+1);
+-	  r += (pixel & fmt->Rmask);
+-	  g += (pixel & fmt->Gmask);
+-	  b += (pixel & fmt->Bmask);
+-	  pixel = (r/4 & fmt->Rmask) | (g/4 & fmt->Gmask) | (b/4 & fmt->Bmask);
+-#endif
+-	  putpixel(theSDLDisplay, i, j, pixel);
++      // Use fast 16bpp average algorithm from compuphase.com/graphic/scale3.htm 
++      Uint8 *p = (Uint8 *)theSDLScreen->pixels;
++      Uint32 a, b, c, m; // Three pixel values to work with and the underflow mask.
++      m = 0xffff & ~((1 << fmt->Rshift) | (1 << fmt->Rshift) | (1 << fmt->Rshift));
++      for (y=0; y<240; y++) {
++	for (x=0; x<320; x++) {
++	  // Average 2 pixels from one row.
++	  a = *(Uint32 *)p;
++	  b = a >> 16;
++	  a &= 0xffff;
++	  a = (((a ^ b) & m) >> 1) + (a & b); 
++	  // Average 2 pixels from next row.
++	  c = *(Uint32 *)(p+theSDLScreen->pitch);
++	  b = c >> 16;
++	  c &= 0xffff;
++	  c = (((c ^ b) & m) >> 1) + (c & b); 
++	  // Average the average pixels to squeeze 2x2 pixels to 1..
++	  a = (((a ^ c) & m) >> 1) + (a & c); 
++	  putpixel(theSDLDisplay, x, y, a);
++	  p += 4;
+ 	}
++	p += theSDLScreen->pitch;
+       }      
+     }
+-    else
+-    for (j=0; j<240; j++) {
+-      for (i=0; i<320; i++) {
+-	pixel = getpixel(theSDLScreen, i*2, j*2);
+-	putpixel(theSDLDisplay, i, j, pixel);
++    else {
++      Uint32 pixel;
++      for (y=0; y<240; y++) {
++	for (x=0; x<320; x++) {
++	  pixel = getpixel(theSDLScreen, x*2, y*2);
++	  putpixel(theSDLDisplay, x, y, pixel);
++	}
+       }
+     }
+     SDL_Flip(theSDLDisplay);
