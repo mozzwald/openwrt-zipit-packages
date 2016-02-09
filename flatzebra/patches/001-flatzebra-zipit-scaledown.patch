@@ -27,53 +27,42 @@
                  Uint32 x0, Uint32 y0, Uint32 x1, Uint32 y1,
 --- flatzebra-0.1.6~/src/flatzebra/GameEngine.cpp	2016-02-08 08:03:33.790144644 -0500
 +++ flatzebra-0.1.6/src/flatzebra/GameEngine.cpp	2016-02-08 19:39:57.790761438 -0500
-@@ -383,56 +383,40 @@
- GameEngine::sdl_Flip(void)
- {
-   if (theSDLDisplay) {
--    int i, j;
--    Uint32 pixel, r, g, b;
+@@ -153,7 +153,11 @@
+         if (!tick())  // virtual function
+             return;
+ 
++#if 1 // ZIPIT_Z2
++	sdl_Flip();
++#else
+         SDL_Flip(theSDLScreen);
++#endif
+ 
+         // Pause for the rest of the current animation frame.
+         Uint32 limit = lastTime + millisecondsPerFrame;
+@@ -173,7 +177,11 @@
+ 
+     // Allow effect of drawing commands made by processActivation() to appear.
+     //
++#if 1 // ZIPIT_Z2
++    sdl_Flip();
++#else
+     SDL_Flip(theSDLScreen);
++#endif
+ 
+     // Sleep on SDL event loop until reactivation.
+     //
+@@ -304,6 +312,87 @@
+ 
+ ///////////////////////////////////////////////////////////////////////////////
+ 
++#if 1 // ZIPIT_Z2
++void
++GameEngine::sdl_Flip(void)
++{
++  if (theSDLDisplay) {
 +    int x, y;
-     SDL_PixelFormat *fmt = theSDLScreen->format;
-     if (fmt->BytesPerPixel == 2){
--      for (j=0; j<240; j++) {
--	for (i=0; i<320; i++) {
--#if 1
--	  // For speedup inline a get2pixels fn to fetch 32bits at time.
--	  // Then shift right 16 to access the other 16bit pixel.
--	  Uint8 *p = (Uint8 *)theSDLScreen->pixels +j*2*theSDLScreen->pitch +i*4;
--	  pixel = *(Uint32 *)p;
--	  r = pixel & fmt->Rmask;
--	  g = pixel & fmt->Gmask;
--	  b = pixel & fmt->Bmask;
--	  pixel >>= 16;
--	  r += (pixel & fmt->Rmask);
--	  g += (pixel & fmt->Gmask);
--	  b += (pixel & fmt->Bmask);
--#else
--	  pixel = getpixel(theSDLScreen, i*2, j*2);
--	  r = pixel & fmt->Rmask;
--	  g = pixel & fmt->Gmask;
--	  b = pixel & fmt->Bmask;
--	  pixel = getpixel(theSDLScreen, i*2+1, j*2);
--	  r += (pixel & fmt->Rmask);
--	  g += (pixel & fmt->Gmask);
--	  b += (pixel & fmt->Bmask);
--#endif
--#if 1
--	  pixel = (r/2 & fmt->Rmask) | (g/2 & fmt->Gmask) | (b/2 & fmt->Bmask);
--#else
--	  pixel = getpixel(theSDLScreen, i*2, j*2+1);
--	  r += (pixel & fmt->Rmask);
--	  g += (pixel & fmt->Gmask);
--	  b += (pixel & fmt->Bmask);
--	  pixel = getpixel(theSDLScreen, i*2+1, j*2+1);
--	  r += (pixel & fmt->Rmask);
--	  g += (pixel & fmt->Gmask);
--	  b += (pixel & fmt->Bmask);
--	  pixel = (r/4 & fmt->Rmask) | (g/4 & fmt->Gmask) | (b/4 & fmt->Bmask);
--#endif
--	  putpixel(theSDLDisplay, i, j, pixel);
++    SDL_PixelFormat *fmt = theSDLScreen->format;
++    if (fmt->BytesPerPixel == 2){
 +      // Use fast 16bpp average algorithm from compuphase.com/graphic/scale3.htm 
 +      Uint8 *p = (Uint8 *)theSDLScreen->pixels;
 +      Uint32 a, b, c, m; // Three pixel values to work with and the underflow mask.
@@ -94,15 +83,10 @@
 +	  a = (((a ^ c) & m) >> 1) + (a & c); 
 +	  putpixel(theSDLDisplay, x, y, a);
 +	  p += 4;
- 	}
++ 	}
 +	p += theSDLScreen->pitch;
-       }      
-     }
--    else
--    for (j=0; j<240; j++) {
--      for (i=0; i<320; i++) {
--	pixel = getpixel(theSDLScreen, i*2, j*2);
--	putpixel(theSDLDisplay, i, j, pixel);
++      }      
++    }
 +    else {
 +      Uint32 pixel;
 +      for (y=0; y<240; y++) {
@@ -110,6 +94,48 @@
 +	  pixel = getpixel(theSDLScreen, x*2, y*2);
 +	  putpixel(theSDLDisplay, x, y, pixel);
 +	}
-       }
-     }
-     SDL_Flip(theSDLDisplay);
++      }
++    }
++    SDL_Flip(theSDLDisplay);
++  }
++  else
++    SDL_Flip(theSDLScreen);
++}
++
++
++Uint32
++GameEngine::getpixel(SDL_Surface *surface, int x, int y)
++{
++    int bpp = surface->format->BytesPerPixel;
++    /* Here p is the address to the pixel we want to retrieve */
++    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
++
++    switch(bpp) {
++    case 1:
++        return *p;
++        break;
++
++    case 2:
++        return *(Uint16 *)p;
++        break;
++
++    case 3:
++        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
++            return p[0] << 16 | p[1] << 8 | p[2];
++        else
++            return p[0] | p[1] << 8 | p[2] << 16;
++        break;
++
++    case 4:
++        return *(Uint32 *)p;
++        break;
++
++    default:
++        return 0;       /* shouldn't happen, but avoids warnings */
++    }
++}
++#endif
++
+ 
+ void
+ GameEngine::putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
