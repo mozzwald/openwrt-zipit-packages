@@ -38,7 +38,7 @@
 +    //fullScreen = true;
 +    if ((screenSizeInPixels.x > 320) || (screenSizeInPixels.y > 240)) {
 +      screenSizeInPixels.x = 320;
-+      screenSizeInPixels.y > 240;
++      screenSizeInPixels.y = 240;
 +    }
 +#endif
      if (fullScreen)
