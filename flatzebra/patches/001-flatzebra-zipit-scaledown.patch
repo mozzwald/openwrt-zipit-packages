@@ -1,5 +1,5 @@
 --- flatzebra-0.1.6~/src/flatzebra/GameEngine.h	2012-07-13 23:15:57.000000000 -0400
-+++ flatzebra-0.1.6/src/flatzebra/GameEngine.h	2016-02-07 16:07:27.892291058 -0500
++++ flatzebra-0.1.6/src/flatzebra/GameEngine.h	2016-02-08 21:42:23.421804718 -0500
 @@ -145,6 +145,9 @@
          */
  
@@ -25,9 +25,66 @@
      void initWuLineAlgorithm();
      void wu_line(SDL_Surface *surface,
                  Uint32 x0, Uint32 y0, Uint32 x1, Uint32 y1,
---- flatzebra-0.1.6~/src/flatzebra/GameEngine.cpp	2016-02-08 08:03:33.790144644 -0500
-+++ flatzebra-0.1.6/src/flatzebra/GameEngine.cpp	2016-02-08 19:39:57.790761438 -0500
-@@ -153,7 +153,11 @@
+--- flatzebra-0.1.6~/src/flatzebra/GameEngine.cpp	2012-07-13 23:16:03.000000000 -0400
++++ flatzebra-0.1.6/src/flatzebra/GameEngine.cpp	2016-02-09 19:10:47.316423349 -0500
+@@ -101,23 +101,56 @@
+ GameEngine::setVideoMode(Couple screenSizeInPixels, bool fullScreen)
+ {
+     Uint32 flags = SDL_HWSURFACE | SDL_ANYFORMAT;
++#if 1 //Zipit_Z2
++    int w = screenSizeInPixels.x;
++    int h = screenSizeInPixels.y;
++    flags = SDL_SWSURFACE | SDL_ANYFORMAT;
++    //fullScreen = true;
++    if ((screenSizeInPixels.x > 320) || (screenSizeInPixels.y > 240)) {
++      screenSizeInPixels.x = 320;
++      screenSizeInPixels.y > 240;
++    }
++#endif
+     if (fullScreen)
+         flags |= SDL_FULLSCREEN;
+ 
+     theDepth = SDL_VideoModeOK(
+                         screenSizeInPixels.x, screenSizeInPixels.y,
+                         32, flags);
++#if 1 //Zipit_Z2
++    if (theDepth <= 0)
++      printf("\nvideo mode (%d, %d) not available\n", 
++	     screenSizeInPixels.x, screenSizeInPixels.y);
++#endif
+     if (theDepth <= 0)
+         return string("video mode not available");
+ 
+     theSDLScreen = SDL_SetVideoMode(
+                             screenSizeInPixels.x, screenSizeInPixels.y,
+                         theDepth, flags);
++#if 1 //Zipit_Z2
++    if (theSDLScreen == NULL)
++      printf("\nSDL_SetVideoMode(%d, %d) => %s\n", 
++	     screenSizeInPixels.x, screenSizeInPixels.y,SDL_GetError());
++#endif
+     if (theSDLScreen == NULL)
+         throw string(SDL_GetError());
+ 
++#if 1 //Zipit_Z2
++    if ((screenSizeInPixels.x != w) || (screenSizeInPixels.y != h)) {
++      // Make full size screen for app.
++      SDL_PixelFormat *fmt = theSDLScreen->format;
++      theSDLDisplay = theSDLScreen;
++      theSDLScreen = SDL_CreateRGBSurface(flags,w,h,fmt->BitsPerPixel,
++                  fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask );
++    }
++    else
++      theSDLDisplay = NULL; // App screen = real SDL screen.
++    SDL_ShowCursor(SDL_DISABLE);
++#else
+     // Hide the mouse pointer when in full-screen mode.
+     SDL_ShowCursor(fullScreen ? SDL_DISABLE : SDL_ENABLE);
++#endif
+ 
+     usingFullScreen = fullScreen;
+     return string();
+@@ -153,7 +186,11 @@
          if (!tick())  // virtual function
              return;
  
@@ -39,7 +96,7 @@
  
          // Pause for the rest of the current animation frame.
          Uint32 limit = lastTime + millisecondsPerFrame;
-@@ -173,7 +177,11 @@
+@@ -173,7 +210,11 @@
  
      // Allow effect of drawing commands made by processActivation() to appear.
      //
@@ -51,7 +108,7 @@
  
      // Sleep on SDL event loop until reactivation.
      //
-@@ -304,6 +312,87 @@
+@@ -304,6 +345,87 @@
  
  ///////////////////////////////////////////////////////////////////////////////
  
