@@ -1,7 +1,7 @@
 #!/bin/sh /etc/rc.common
 # Start Zipit Z2 Backlight Daemon
 
-START=19
+START=11
 
 start() {
 	/usr/sbin/bldaemon &
