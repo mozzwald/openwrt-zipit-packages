@@ -8,16 +8,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sparsehash
-PKG_VERSION:=1.6
-PKG_RELEASE:=1
+PKG_VERSION:=2.0.3
+PKG_RELEASE:=2
+PKG_REV:=sparsehash-2.0.3
 
-PKG_SOURCE:=sparsehash-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://google-sparsehash.googlecode.com/files/
-PKG_MD5SUM:=054fc9626730cd866ea15fe26b9462c6
-PKG_BUILD_DIR:=$(BUILD_DIR)/sparsehash-$(PKG_VERSION)
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=git://github.com/sparsehash/sparsehash.git
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_REV)
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
 define Package/sparsehash
@@ -25,7 +29,7 @@ define Package/sparsehash
   CATEGORY:=Libraries
   TITLE:=Sparsehash
   BUILDONLY:=1
-  URL:=http://code.google.com/p/google-sparsehash/
+  URL:=https://github.com/sparsehash/sparsehash
 endef
 
 define Package/sparsehash/description
