@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Process user commands
+#
+
+case "$1" in
+  start)
+	[ -f /etc/rc.local ] && sh /etc/rc.local
+	;;
+  stop)
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

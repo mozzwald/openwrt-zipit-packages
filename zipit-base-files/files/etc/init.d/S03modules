@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Load kernel modules
+#
+
+moddir="/lib/modules/$(uname -r)"
+
+case "$1" in
+  start)
+	echo "Loading modules..."
+	[ -d /etc/modules.d ] && {
+		cd /etc/modules.d
+		sed 's/^[^#]/modprobe &/' * | ash 2>&- || :
+		#sed "s#^[^#]#insmod $moddir/&#" * | sed "s/$/\.ko/" | ash 2>&- || :
+	}
+	;;
+  stop)
+#	echo "Unloading modules..."
+#	[ -d /etc/modules.d ] && {
+#		cd /etc/modules.d
+#		sed 's/^[^#]/modprobe -r &/' * | ash 2>&- || :
+#		#sed "s#^[^#]#rmmod $moddir/&#" * | sed "s/$/\.ko/" | ash 2>&- || :
+#	}
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

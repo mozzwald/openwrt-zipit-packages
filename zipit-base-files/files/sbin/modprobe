@@ -1,0 +1,16 @@
+#!/bin/ash
+# https://www.mail-archive.com/openwrt-devel@lists.openwrt.org/msg18035.html
+
+local arguments="$*"
+local module=""
+[[ -z "$arguments" ]] && exit
+
+
+while test $# -gt 0
+do
+    local line="$1"
+    [ ${line:0:1} == "#" ] && shift
+    [ ${line:0:1} == "-" ] && shift
+    recursive_insmod $1
+    shift
+done
