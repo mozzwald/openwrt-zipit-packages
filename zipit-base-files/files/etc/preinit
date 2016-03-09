@@ -34,7 +34,15 @@ do_pivot() { # <new_root> <old_root>
 /bin/mknod /dev/mmcblk0p1 b 179 1
 /bin/mknod /dev/mmcblk0p2 b 179 2
 
-#TODO: If we are booting from sd, skip overlay mount since it doesn make sense
+# If booting from SD Card, mount squashfs and jffs, skip overlay mount
+# and continue to regular init
+/bin/grep -q "root=/dev/mmcblk0p" /proc/cmdline
+if [ $? -eq 0 ]; then
+	mount -o remount,rw /
+	mount -t squashfs /dev/mtdblock3 /rom
+	mount -t jffs2 /dev/mtdblock4 /overlay
+	exec /sbin/init
+fi
 
 # Make sure root is read only
 /bin/mount -o remount,ro /
@@ -54,7 +62,7 @@ if [ -f "/rom/overlay/upper/etc/overlay.conf" ]; then
 	. /rom/overlay/upper/etc/overlay.conf
 	# Unmount jffs
 	/bin/umount /rom/overlay
-	#TODO: Check fs for errors before mount
+	#TODO: if fs is ext2-4, check for errors before mount
 	# Mount the filesystem from our modified config
 	/bin/mount -t $fstype -o rw,noatime $overlaydev /rom/overlay
 	configret=$?
@@ -71,15 +79,9 @@ fi
 # Mount the overlay
 /bin/mount -t overlay "/overlay" -o lowerdir=/,upperdir=/rom/overlay/$upperdir,workdir=/rom/overlay/$workdir /mnt
 
-# Show our mounts before pivot for testing
-#/bin/mount &> /dev/tty1
-
 # pivot root
 do_pivot /mnt /rom
 
-# Show our mounts after pivot for testing
-#/bin/mount &> /dev/tty1
-
-# Continue to real init..
+# Continue to regular init
 exec /sbin/init
 

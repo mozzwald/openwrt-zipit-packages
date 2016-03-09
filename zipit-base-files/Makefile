@@ -3,6 +3,8 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=zipit-files
 PKG_VERSION:=1
 
+PKG_BUILD_DEPENDS:=usign/host
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/zipit-base-files
@@ -19,8 +21,24 @@ endef
 define Build/Compile
 endef
 
+ifdef CONFIG_SIGNED_PACKAGES
+  define Build/Configure
+	[ -s $(BUILD_KEY) -a -s $(BUILD_KEY).pub ] || \
+		$(STAGING_DIR_HOST)/bin/usign -G -s $(BUILD_KEY) -p $(BUILD_KEY).pub -c "Local build key"
+
+  endef
+
+  define Package/zipit-base-files/install-key
+	mkdir -p $(1)/etc/opkg/keys
+	$(CP) $(BUILD_KEY).pub $(1)/etc/opkg/keys/`$(STAGING_DIR_HOST)/bin/usign -F -p $(BUILD_KEY).pub`
+
+  endef
+endif
+
 define Package/zipit-base-files/install
 	$(CP) ./files/* $(1)/
+
+	$(Package/zipit-base-files/install-key)
 
 	mkdir -p $(1)/dev
 	mkdir -p $(1)/lib
