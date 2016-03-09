@@ -26,7 +26,7 @@ define Package/libsdl-ttf
   CATEGORY:=Libraries
   TITLE:=Simple DirectMedia Layer True Font
   URL:=http://www.libsdl.org/projects/SDL_ttf/
-  DEPENDS:=+libsdl $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  DEPENDS:=+libsdl $(ICONV_DEPENDS) $(INTL_DEPENDS) +libfreetype
 endef
 
 define Package/libsdl-ttf/description
