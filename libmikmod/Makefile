@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libmikmod
-PKG_VERSION:=3.1.12
-PKG_RELEASE:=3
+PKG_VERSION:=3.1.19
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://prdownloads.sourceforge.net/mikmod
-PKG_MD5SUM:=9f3c740298260d5f88981fc0d51f6f16
+PKG_MD5SUM:=e1863371d386aeaed9b6d9dbe7295786
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
