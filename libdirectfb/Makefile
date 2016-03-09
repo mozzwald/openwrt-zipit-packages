@@ -36,10 +36,16 @@ endef
 TARGET_LDFLAGS+="-Wl,-rpath-link=$(STAGING_DIR)/usr/lib"
 CONFIGURE_CMD=./autogen.sh
 
-define Feature/DirectFB
+#define Feature/DirectFB
+#  TARGET_NAME:=drawing-backend
+#  TARGET_TITLE:=Drawing Backend
+#  NAME:=DirectFB
+#endef
+
+define Feature/None
   TARGET_NAME:=drawing-backend
   TARGET_TITLE:=Drawing Backend
-  NAME:=DirectFB
+  NAME:=None
 endef
 
 define Build/Configure
@@ -115,5 +121,5 @@ define Package/directfb/install
 		$(1)/usr/lib/directfb-1.4-0/inputdrivers/
 endef
 
-$(eval $(call Feature,DirectFB))
+#$(eval $(call Feature,DirectFB))
 $(eval $(call BuildPackage,directfb))
