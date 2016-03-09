@@ -40,7 +40,7 @@ do_pivot() { # <new_root> <old_root>
 if [ $? -eq 0 ]; then
 	mount -o remount,rw /
 	mount -t squashfs /dev/mtdblock3 /rom
-	mount -t jffs2 /dev/mtdblock4 /overlay
+	#mount -t jffs2 /dev/mtdblock4 /overlay
 	exec /sbin/init
 fi
 
