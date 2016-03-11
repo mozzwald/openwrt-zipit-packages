@@ -1,0 +1,8 @@
+Package: gmenu2x-tmux
+Version: 1-1
+Depends: libc, tmux
+Source: feeds/zipit_packages/gmenu2x-launchers
+Section: opt
+Architecture: pxa
+Installed-Size: 2193
+Description:  tmux launcher for gmenu2x
