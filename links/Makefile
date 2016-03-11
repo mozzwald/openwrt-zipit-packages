@@ -28,7 +28,7 @@ define Package/links
     SECTION:=net
     CATEGORY:=Network
     URL:=http://links.twibright.com/
-    DEPENDS:=+libpng +libtiff +libopenssl +libsdl +libjpeg
+    DEPENDS:=+libpng +libtiff +libopenssl +libsdl +libjpeg +libbz2
 endef
 
 define Package/links/description
