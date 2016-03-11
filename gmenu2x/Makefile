@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gmenu2x-zipit
-PKG_VERSION:=34a5603cf1
-PKG_REV:=34a5603cf1a0cdbd401937eed30abddbdbbb816e
-PKG_RELEASE:=2
+PKG_VERSION:=2016mar
+PKG_REV:=testing
+PKG_RELEASE:=3
 PKG_INSTALL:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=git://github.com/engine12/gmenu2x-zipit.git
+PKG_SOURCE_URL:=git://github.com/mozzwald/gmenu2x-zipit.git
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
@@ -44,10 +44,8 @@ TARGET_LDFLAGS+= \
 	-Wl,--gc-sections
 
 define Package/gmenu2x
-  SECTION:=xorg-apps
-  CATEGORY:=Xorg
-  SUBMENU:=app
-  TITLE:=Gmenu2x
+  CATEGORY:=GMenu2X
+  TITLE:=GMenu2x frontend/launcher app
   URL:=http://projects.qi-hardware.com/index.php/p/gmenu2x/
   DEPENDS:=+libsdl +libpng +libsdl-ttf +libstdcpp +libsdl-gfx
 endef
