@@ -27,4 +27,5 @@
 ::shutdown:/bin/umount -a -r
 
 ttyS2::askfirst:/bin/ash --login
-tty1::respawn:/sbin/getty -L  tty1 0 linux
+#tty1::respawn:/sbin/getty -L  tty1 0 linux
+tty1::respawn:/usr/bin/z2-shell

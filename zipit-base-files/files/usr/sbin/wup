@@ -12,3 +12,4 @@ wpa_supplicant -B -D wext -i wlan0 -c /etc/wpa.conf
 sleep 1
 udhcpc -i wlan0
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+htpdate -4 -s -t google.com yahoo.com kernel.org &>/dev/null &
