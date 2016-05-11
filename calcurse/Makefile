@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=calcurse
-PKG_VERSION:=2.8
+PKG_VERSION:=4.1.0
 PKG_RELEASE:=1
 
-PKG_SOURCE:=get.cgi?calcurse-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://culot.org/cgi-bin
-PKG_MD5SUM:=124d40c0912b12021996220f02b759cc
+PKG_SOURCE:=calcurse-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=http://calcurse.org/files/
+PKG_MD5SUM:=baf0b0f736b6ee6609701ef50ea588ad
 PKG_CAT:=zcat
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/calcurse-$(PKG_VERSION)
@@ -17,8 +17,8 @@ define Package/calcurse
 	SECTION:=utils
 	CATEGORY:=Utilities
 	TITLE:=Calcurse
-	DEPENDS:=+libncurses +libreadline
-	URL:=http://culot.org/calcurse
+	DEPENDS:=+libncurses +libreadline +libncursesw +libpthread
+	URL:=http://calcurse.org
 endef
 
 define Package/calcurse/description
