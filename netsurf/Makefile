@@ -23,7 +23,7 @@ define Package/netsurf
 	CATEGORY:=Network
 	TITLE:=netsurf
 	URL:=http://www.netsurf-browser.org/
-	DEPENDS:=+libsdl +libcss +libdom +libhubbub +libparserutils +libnsfb +libnsgif +libnsbmp +libutf8proc +libnsutils +libxml2 +libcurl +libfreetype +liberation-fonts-ttf $(ICONV_DEPENDS)
+	DEPENDS:=+libjpeg +libpng +libsdl +libcss +libdom +libhubbub +libparserutils +libnsfb +libnsgif +libnsbmp +libutf8proc +libnsutils +libxml2 +libcurl +libfreetype +liberation-fonts-ttf $(ICONV_DEPENDS)
 	PKG_BUILD_DEPENDS:=+netsurf-buildsystem
 endef
 
