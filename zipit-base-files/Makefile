@@ -1,6 +1,6 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=zipit-files
+PKG_NAME:=zipit-base-files
 PKG_VERSION:=1
 
 PKG_BUILD_DEPENDS:=usign/host
