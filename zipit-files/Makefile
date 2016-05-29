@@ -10,6 +10,7 @@ define Package/zipit-files
     TITLE:=ZipIt Z2 Files
     SECTION:=utils
     CATEGORY:=Utilities
+    DEPENDS:=@BROKEN
 endef
 
 define Package/Prepare
