@@ -11,15 +11,7 @@ PKG_NAME:=gmenu2x-launchers
 PKG_VERSION:=1
 PKG_RELEASE:=1
 
-PKG_BUILD_DIR:=$(PKG_NAME)
-
-#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-#PKG_SOURCE_URL:=git://github.com/mozzwald/gmenu2x-zipit.git
-#PKG_SOURCE_PROTO:=git
-#PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-#PKG_SOURCE_VERSION:=$(PKG_REV)
-
-#PKG_BUILD_DEPENDS:=sparsehash
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(BUILD_VARIANT)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -31,6 +23,7 @@ define Package/gmenu2x-tmux
   CATEGORY:=GMenu2X
   TITLE:=tmux launcher for gmenu2x
   DEPENDS:=+tmux
+  VARIANT:=gmenu2x-tmux
 endef
 
 define Package/gmenu2x-tmux/install
@@ -43,3 +36,22 @@ define Package/gmenu2x-tmux/install
 endef
 
 $(eval $(call BuildPackage,gmenu2x-tmux))
+
+define Package/gmenu2x-ohboy
+  CATEGORY:=GMenu2X
+  TITLE:=ohboy launcher for gmenu2x
+  DEPENDS:=+ohboy
+  VARIANT:=gmenu2x-ohboy
+endef
+
+define Package/gmenu2x-ohboy/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/ohboy/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-ohboy))
+

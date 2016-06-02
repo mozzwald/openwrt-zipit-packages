@@ -1,5 +1,5 @@
 #!/bin/sh
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/share/gmenu2x/scripts
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/share/gmenu2x/scripts
 export HOME=$(grep -e "^${USER:-root}:" /etc/passwd | cut -d ":" -f 6)
 export HOME=${HOME:-/root}
 export PS1='\u@\h:\w\$ '
