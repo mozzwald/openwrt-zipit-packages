@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Start dropbear
+#
+
+case "$1" in
+  start)
+	if [ ! -s /etc/dropbear/dropbear_rsa_host_key ]; then
+		# Make sure rsa key is not empty or you won't
+		# be able to connect via ssh
+		rm /etc/dropbear/dropbear_rsa_host_key
+	fi
+	/usr/sbin/dropbear -R
+	;;
+  stop)
+	killall dropbear
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

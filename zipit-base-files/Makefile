@@ -54,7 +54,11 @@ define Package/zipit-base-files/install
 	mkdir -p $(1)/usr/lib
 	mkdir -p $(1)/usr/bin
 	mkdir -p $(1)/usr/sbin
+	mkdir -p $(1)/usr/local
+	mkdir -p $(1)/usr/local/bin
+	mkdir -p $(1)/usr/local/sbin
 	mkdir -p $(1)/usr/share
+	mkdir -p $(1)/usr/share/sounds
 	rm -f $(1)/var
 	$(LN) /tmp $(1)/var
 	$(LN) /tmp/resolv.conf $(1)/etc/
