@@ -11,7 +11,7 @@ PKG_FETCH:=1.9.1
 PKG_VERSION:=1.9.2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_FETCH).tar.gz
-PKG_SOURCE_URL:=http://perso.b2b2c.ca/sarrazip/dev/
+PKG_SOURCE_URL:=http://mozzwald.com/zipit/src/
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_RELEASE:=1

@@ -10,7 +10,7 @@ PKG_VERSION:=0.1.6
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://perso.b2b2c.ca/sarrazip/dev/
+PKG_SOURCE_URL:=http://mozzwald.com/zipit/src/
 
 include $(INCLUDE_DIR)/package.mk
 
