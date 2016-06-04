@@ -19,7 +19,7 @@ define Package/supertux
   SECTION:=games
   CATEGORY:=Games
   URL:=http://supertux.lethargik.org
-  DEPENDS:=+libsdl +libsdl-image +libmikmod +libsdl-mixer +libstdcpp +libsdl-gfx +libpng
+  DEPENDS:=+libsdl +libsdl-image +libmikmod +libsdl-mixer +libstdcpp +libsdl-gfx +libpng +libjpeg
 endef
 
 define Package/supertux/description
