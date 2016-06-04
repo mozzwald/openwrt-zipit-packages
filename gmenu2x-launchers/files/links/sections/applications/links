@@ -1,0 +1,4 @@
+title=links
+icon=skin:icons/links.png
+exec=/usr/bin/links
+params=-g

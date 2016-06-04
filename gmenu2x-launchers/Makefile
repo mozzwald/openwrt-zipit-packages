@@ -22,17 +22,21 @@ endef
 define Package/gmenu2x-tmux
   CATEGORY:=GMenu2X
   TITLE:=tmux launcher for gmenu2x
-  DEPENDS:=+tmux
+  DEPENDS:=+gmenu2x +tmux
   VARIANT:=gmenu2x-tmux
 endef
 
 define Package/gmenu2x-tmux/install
 	$(INSTALL_DIR) \
-		$(1)/usr/share/gmenu2x/ \
-
+		$(1)/usr/share/gmenu2x/ 
 	$(CP) \
-		./files/tmux/* \
+		./files/tmux/gmenu2x/* \
 		$(1)/usr/share/gmenu2x/
+
+	$(INSTALL_DIR) $(1)/etc/ 
+	$(CP) \
+		./files/tmux/tmux.conf \
+		$(1)/etc/tmux.conf
 endef
 
 $(eval $(call BuildPackage,gmenu2x-tmux))
@@ -40,7 +44,7 @@ $(eval $(call BuildPackage,gmenu2x-tmux))
 define Package/gmenu2x-ohboy
   CATEGORY:=GMenu2X
   TITLE:=ohboy launcher for gmenu2x
-  DEPENDS:=+ohboy
+  DEPENDS:=+gmenu2x +ohboy
   VARIANT:=gmenu2x-ohboy
 endef
 
@@ -55,3 +59,38 @@ endef
 
 $(eval $(call BuildPackage,gmenu2x-ohboy))
 
+define Package/gmenu2x-links
+  CATEGORY:=GMenu2X
+  TITLE:=links launcher for gmenu2x
+  DEPENDS:=+gmenu2x +links
+  VARIANT:=gmenu2x-links
+endef
+
+define Package/gmenu2x-links/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/links/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-links))
+
+define Package/gmenu2x-gmu
+  CATEGORY:=GMenu2X
+  TITLE:=GMU launcher for gmenu2x
+  DEPENDS:=+gmenu2x +gmu
+  VARIANT:=gmenu2x-gmu
+endef
+
+define Package/gmenu2x-gmu/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/gmu/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-gmu))
