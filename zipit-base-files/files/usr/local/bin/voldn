@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # decrease the volume
 
 #how much in %
