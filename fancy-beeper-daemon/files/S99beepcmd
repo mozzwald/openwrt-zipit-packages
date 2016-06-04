@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Start fancy beeper daemon (beepcmd)
+#
+
+case "$1" in
+  start)
+	/usr/bin/beepcmd '/usr/bin/aplay /usr/share/sounds/z2beep.wav &>/dev/null' &
+	;;
+  stop)
+	killall beepcmd
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
