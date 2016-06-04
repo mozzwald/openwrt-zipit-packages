@@ -113,3 +113,20 @@ endef
 
 $(eval $(call BuildPackage,gmenu2x-burgerspace))
 
+define Package/gmenu2x-supertux
+  CATEGORY:=GMenu2X
+  TITLE:=Supertux launcher for gmenu2x
+  DEPENDS:=+gmenu2x +supertux
+  VARIANT:=gmenu2x-supertux
+endef
+
+define Package/gmenu2x-supertux/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/supertux/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-supertux))
