@@ -94,3 +94,22 @@ define Package/gmenu2x-gmu/install
 endef
 
 $(eval $(call BuildPackage,gmenu2x-gmu))
+
+define Package/gmenu2x-burgerspace
+  CATEGORY:=GMenu2X
+  TITLE:=Burgerspace launcher for gmenu2x
+  DEPENDS:=+gmenu2x +burgerspace
+  VARIANT:=gmenu2x-burgerspace
+endef
+
+define Package/gmenu2x-burgerspace/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/burgerspace/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-burgerspace))
+
