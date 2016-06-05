@@ -130,3 +130,22 @@ define Package/gmenu2x-supertux/install
 endef
 
 $(eval $(call BuildPackage,gmenu2x-supertux))
+
+define Package/gmenu2x-netsurf
+  CATEGORY:=GMenu2X
+  TITLE:=Netsurf launcher for gmenu2x
+  DEPENDS:=+gmenu2x +netsurf
+  VARIANT:=gmenu2x-netsurf
+endef
+
+define Package/gmenu2x-netsurf/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/netsurf/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-netsurf))
+
