@@ -1,0 +1,5 @@
+#!/bin/sh
+# Run freedoom 1
+
+/usr/bin/prboom -iwad /usr/games/freedoom/freedoom1.wad -width 320 -height 240
+
