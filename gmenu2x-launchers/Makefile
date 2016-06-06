@@ -149,3 +149,38 @@ endef
 
 $(eval $(call BuildPackage,gmenu2x-netsurf))
 
+define Package/gmenu2x-freedoom1
+  CATEGORY:=GMenu2X
+  TITLE:=FreeDoom1 launcher for gmenu2x
+  DEPENDS:=+gmenu2x +freedoom1
+  VARIANT:=gmenu2x-freedoom1
+endef
+
+define Package/gmenu2x-freedoom1/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/freedoom1/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-freedoom1))
+
+define Package/gmenu2x-freedoom2
+  CATEGORY:=GMenu2X
+  TITLE:=FreeDoom2 launcher for gmenu2x
+  DEPENDS:=+gmenu2x +freedoom2
+  VARIANT:=gmenu2x-freedoom2
+endef
+
+define Package/gmenu2x-freedoom2/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/freedoom2/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-freedoom2))
