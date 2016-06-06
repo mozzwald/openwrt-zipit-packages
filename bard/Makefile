@@ -9,7 +9,7 @@ PKG_NAME:=bard
 PKG_VERSION:=0.7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-current.tar.bz2
-PKG_SOURCE_URL:=http://festvox.org/bard/
+PKG_SOURCE_URL:=http://festvox.org/bard/old/0.7/
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-current/
 PKG_RELEASE:=1
