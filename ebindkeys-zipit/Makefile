@@ -25,7 +25,7 @@ define Package/ebindkeys-zipit
   SECTION:=utilities
   CATEGORY:=Utilities
   TITLE:=bind a key or key combo to a command
-  DEPENDS:=+kmod-input-userlevel +kmod-input-evdev +libpthread
+  DEPENDS:=+kmod-input-uinput +kmod-input-evdev +libpthread
   URL:=http://home.vay8.net/doku.php?id=ebindkeys-zipit
 endef
 
