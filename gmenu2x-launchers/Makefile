@@ -184,3 +184,21 @@ define Package/gmenu2x-freedoom2/install
 endef
 
 $(eval $(call BuildPackage,gmenu2x-freedoom2))
+
+define Package/gmenu2x-nano
+  CATEGORY:=GMenu2X
+  TITLE:=Nano launcher for gmenu2x
+  DEPENDS:=+gmenu2x +nano
+  VARIANT:=gmenu2x-nano
+endef
+
+define Package/gmenu2x-nano/install
+	$(INSTALL_DIR) \
+		$(1)/usr/share/gmenu2x/ \
+
+	$(CP) \
+		./files/nano/* \
+		$(1)/usr/share/gmenu2x/
+endef
+
+$(eval $(call BuildPackage,gmenu2x-nano))
