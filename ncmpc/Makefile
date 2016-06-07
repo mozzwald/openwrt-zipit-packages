@@ -13,7 +13,7 @@ PKG_VERSION:=0.18
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://downloads.sourceforge.net/musicpd/
+PKG_SOURCE_URL:=http://pkgs.fedoraproject.org/repo/pkgs/ncmpc/ncmpc-0.18.tar.bz2/9f07e8289b710c7c41b3c80ba73fed76/
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
