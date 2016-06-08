@@ -11,7 +11,7 @@ PKG_NAME:=fbgrab
 PKG_VERSION:=1.0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://hem.bredband.net/gmogmo/fbgrab/
+PKG_SOURCE_URL:=http://www.mucross.com/downloads/tonga-demo/sources/GPL/fbgrab/
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 

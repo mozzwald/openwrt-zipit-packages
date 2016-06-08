@@ -1,0 +1,47 @@
+#!/bin/sh
+# lcd and key brightness change
+
+script=`basename $0`
+
+if [ "$script" == "lcdb" ]; then
+	bl=display
+elif [ "$script" == "keyb" ]; then
+	bl=keyboard
+else
+	exit 1
+fi
+
+curr=`cat /sys/class/backlight/pxabus:"$bl"-backlight/brightness`
+
+case "$1" in
+    off)
+	echo 0 > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	;;
+    min)
+	echo 1 > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	;;
+    low)
+	echo 3 > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	;;
+    med)
+	echo 5 > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	;;
+    high)
+	echo 7 > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	;;
+    max)
+	echo 9 > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	;;
+    +)
+	if [ $curr -lt 9 ]; then
+		let curr++
+		echo $curr > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	fi
+	;;
+    -)
+	if [ $curr -gt 0 ]; then
+		let curr--
+		echo $curr > /sys/class/backlight/pxabus:"$bl"-backlight/brightness
+	fi
+	;;
+esac

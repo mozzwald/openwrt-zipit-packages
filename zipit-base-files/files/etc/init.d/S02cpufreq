@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Load conservative cpu governor first to help speed up boot
+#
+
+case "$1" in
+  start)
+	grep -q "cpufreq_conservative" /proc/modules
+	if [ $? -ne 0 ]; then
+		/sbin/insmod /lib/modules/$(/bin/uname -r)/cpufreq_conservative.ko
+	fi
+	echo "conservative" > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+	echo "60" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold
+	echo "5" > /sys/devices/system/cpu/cpufreq/conservative/freq_step
+	echo "1" > /sys/devices/system/cpu/cpufreq/conservative/ignore_nice_load
+	echo "2" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor
+	echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate
+	# echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate_min
+	echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold
+	;;
+  stop)
+	echo "userspace" > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+	echo "208000" > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

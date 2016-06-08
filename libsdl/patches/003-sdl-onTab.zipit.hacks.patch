@@ -1,0 +1,47 @@
+--- ./src/video/fbcon/SDL_fbevents.c  2013-01-29 11:28:10.164149000 -0800
++++ ./src/video/fbcon/SDL_fbevents.c	2013-01-29 08:06:59.416212000 -0800
+@@ -1020,6 +1020,44 @@ static void handle_keyboard(_THIS)
+ 				}
+ 				break;
+ 			}
++						
++		// Handle Alt-tab -- this is a ZipIt hack to assist with switching between running apps
++		//the logic to drop to the prior vt is ok, unless the vt being switched to is a console app, it will then get 
++		//skipped over when the onAltTab handler is called and the vt is decremented again
++		//I suppose we could write a flag to /tmp and let the console konw that it was handled....
++			case SDLK_TAB:
++			if (SDL_GetModState() & KMOD_ALT) {
++				if ( pressed ) {
++					switch_vt(this, current_vt-1);
++				}
++				break;
++			}
++			else if (SDL_GetModState() & KMOD_CTRL) {
++				//this is part of the 'onHome' hack for the ZipIt that will break out of 
++				//the graphical terminal and then return to Gmenu2x
++				if ( pressed ) {
++					switch_vt(this, 1);
++				}
++				break;
++			}
++			
++			/*
++			case SDLK_LEFT:
++			if (SDL_GetModState() & KMOD_ALT) {
++				if ( pressed ) {
++					switchvt(this, current_vt-1);
++				}
++				break;
++			}
++
++			case SDLK_RIGHT:
++			if (SDL_GetModState() & KMOD_ALT) {
++				if ( pressed ) {
++					switchvt(this, current_vt+1);
++				}
++				break;
++			}
++			*/
+ 			/* Fall through to normal processing */
+ 		    default:
+ 			posted += SDL_PrivateKeyboard(pressed, &keysym);

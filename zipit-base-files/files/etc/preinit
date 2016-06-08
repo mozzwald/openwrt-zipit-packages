@@ -1,0 +1,87 @@
+#! /bin/sh
+# Zipit Z2 SquashFS with overlay preinit script
+
+# pivot root function
+do_pivot() { # <new_root> <old_root>
+	cd $1
+	/bin/mount -o noatime,move /proc $1/proc && \
+	/sbin/pivot_root $1 $1$2 && {
+		/bin/mount -o noatime,move $2/dev /dev
+		/bin/mount -o noatime,move $2/tmp /tmp
+		/bin/mount -o noatime,move $2/sys /sys
+		/bin/mount -o noatime,move $2/overlay /overlay
+	}
+	cd /
+}
+
+# Setup proc, sys & tmp
+/bin/mount -t proc proc /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t tmpfs none /tmp
+
+# Setup minimal dev
+/bin/mount -t tmpfs -o size=64k,mode=0755 none /dev
+/bin/mkdir -p /dev/pts
+/bin/mount -t devpts devpts /dev/pts
+/bin/mkdir -p /dev/shm
+/bin/mknod /dev/tty1 c 4 1
+/bin/mknod /dev/console c 5 1
+/bin/mknod /dev/null c 1 3
+/bin/mknod /dev/fb0 c 29 0
+/bin/mknod /dev/mtdblock3 b 31 3
+/bin/mknod /dev/mtdblock4 b 31 4
+/bin/mknod /dev/mmcblk0   b 179 0
+/bin/mknod /dev/mmcblk0p1 b 179 1
+/bin/mknod /dev/mmcblk0p2 b 179 2
+
+# If booting from SD Card, mount squashfs and jffs, skip overlay mount
+# and continue to regular init
+/bin/grep -q "root=/dev/mmcblk0p" /proc/cmdline
+if [ $? -eq 0 ]; then
+	mount -o remount,rw /
+	mount -t squashfs /dev/mtdblock3 /rom
+	#mount -t jffs2 /dev/mtdblock4 /overlay
+	exec /sbin/init
+fi
+
+# Make sure root is read only
+/bin/mount -o remount,ro /
+
+# Make temporary rootfs
+/bin/mount -t tmpfs none /rom
+/bin/mkdir -p /rom/overlay
+/bin/mkdir -p /mnt
+
+# Mount the jffs
+/bin/mount -t jffs2 -o rw,noatime /dev/mtdblock4 /rom/overlay
+jffsret=$?
+
+#TODO,MAYBE: implement overlay from loop device? (ie, image file from fat sd card)
+if [ -f "/rom/overlay/upper/etc/overlay.conf" ]; then
+	# Source overlay.conf from jffs if available
+	. /rom/overlay/upper/etc/overlay.conf
+	# Unmount jffs
+	/bin/umount /rom/overlay
+	#TODO: if fs is ext2-4, check for errors before mount
+	# Mount the filesystem from our modified config
+	/bin/mount -t $fstype -o rw,noatime $overlaydev /rom/overlay
+	configret=$?
+else
+	. /etc/overlay.conf
+fi
+
+#TODO: if jffs or configured overlay mount fails, something went wrong. do tmpfs overlay? just boot read only root?
+
+# Make our required overlay directories if they do not exist
+/bin/mkdir -p /rom/overlay/$upperdir
+/bin/mkdir -p /rom/overlay/$workdir
+
+# Mount the overlay
+/bin/mount -t overlay "/overlay" -o lowerdir=/,upperdir=/rom/overlay/$upperdir,workdir=/rom/overlay/$workdir /mnt
+
+# pivot root
+do_pivot /mnt /rom
+
+# Continue to regular init
+exec /sbin/init
+

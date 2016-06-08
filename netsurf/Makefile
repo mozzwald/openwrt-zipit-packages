@@ -23,7 +23,10 @@ define Package/netsurf
 	CATEGORY:=Network
 	TITLE:=netsurf
 	URL:=http://www.netsurf-browser.org/
-	DEPENDS:=+libsdl +libcss +libdom +libhubbub +libparserutils +libnsfb +libnsgif +libnsbmp +libutf8proc +libnsutils +libxml2 +libcurl +libfreetype +liberation-fonts-ttf $(ICONV_DEPENDS)
+	DEPENDS:=+libjpeg +libpng +libsdl +libcss +libdom +libhubbub \
+		+libparserutils +libnsfb +libnsgif +libnsbmp +libutf8proc \
+		+libnsutils +libxml2 +libcurl +libfreetype +liberation-fonts-ttf \
+		+libopenssl $(ICONV_DEPENDS)
 	PKG_BUILD_DEPENDS:=+netsurf-buildsystem
 endef
 
@@ -62,10 +65,6 @@ define Package/netsurf/install
 		$(PKG_INSTALL_DIR)/usr/share/netsurf/* \
 		$(1)/usr/share/netsurf/
 
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
-		$(INSTALL_BIN) ./files/netsurf.gmenu $(1)/usr/share/gmenu2x/sections/applications/netsurf.gmenu
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
-		$(INSTALL_BIN) ./files/netsurf.png $(1)/usr/share/gmenu2x/skins/Default/icons
 
 	$(CP) $(FILES_DIR)/Choices $(1)/usr/share/netsurf/
 	$(CP) $(FILES_DIR)/Cookies $(1)/usr/share/netsurf/

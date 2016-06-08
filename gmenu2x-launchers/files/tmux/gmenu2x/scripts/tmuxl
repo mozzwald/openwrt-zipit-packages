@@ -1,0 +1,14 @@
+#!/bin/sh
+# Attach to tmux if running
+
+session_list=`tmux list-sessions`
+if [ $? -eq 0 ]; then
+        # tmux is running, attach to the first available session
+	session=`echo $session_list | sed 's#:.*##'`
+        tmux attach -t $session -d
+else
+        # start new tmux session
+	cd ~
+        tmux
+fi
+

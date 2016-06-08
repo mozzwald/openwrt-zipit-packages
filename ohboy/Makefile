@@ -42,10 +42,6 @@ define Package/ohboy/install
 		$(INSTALL_BIN) $(PKG_BUILD_DIR)/ohboy $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/etc
 		$(INSTALL_DATA) $(PKG_BUILD_DIR)/ohboy.rc $(1)/etc
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons/
-		$(INSTALL_DATA) ./files/ohboy.png $(1)/usr/share/gmenu2x/skins/Default/icons/
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/games
-		$(INSTALL_DATA) ./files/ohboy.gmenu $(1)/usr/share/gmenu2x/sections/games/ohboy
 endef
 
 $(eval $(call BuildPackage,ohboy))

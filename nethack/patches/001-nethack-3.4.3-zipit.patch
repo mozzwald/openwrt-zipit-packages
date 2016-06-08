@@ -61,8 +61,8 @@ Index: nethack-3.4.3/sys/unix/Makefile.src
  #
  #	For cross-compiling, eg. with gcc on Linux (see also CXX further down):
  # CC = arm-linux-gcc
-+CC = arm-openwrt-linux-uclibcgnueabi-gcc
-+LD = arm-openwrt-linux-uclibcgnueabi-ld
++CC = arm-openwrt-linux-gcc
++LD = arm-openwrt-linux-ld
  #
  #
  # if you're debugging and want gcc to check as much as possible, use:
@@ -80,12 +80,12 @@ Index: nethack-3.4.3/sys/unix/Makefile.src
  # the C++ libraries linked in.
  CXXFLAGS = $(CFLAGS) -I. -I$(QTDIR)/include
 -CXX=g++
-+CXX=arm-openwrt-linux-uclibcgnueabi-g++
++CXX=arm-openwrt-linux-g++
  #LINK=g++
  #	For cross-compiling, eg. with gcc on Linux (see also CC further up):
  #CXX=arm-linux-g++
 -#LINK=arm-linux-gcc
-+LINK=arm-openwrt-linux-uclibcgnueabi-g++
++LINK=arm-openwrt-linux-g++
  
  # Set the WINSRC, WINOBJ, and WINLIB lines to correspond to your desired
  # combination of windowing systems.  Also set windowing systems in config.h.
@@ -161,8 +161,8 @@ Index: nethack-3.4.3/sys/unix/Makefile.utl
  #
  #	For HP/UX 10.20 with GCC:
  # CC = gcc -D_POSIX_SOURCE
-+CC = arm-openwrt-linux-uclibcgnueabi-gcc
-+CXX = arm-openwrt-linux-uclibcgnueabi-g++
++CC = arm-openwrt-linux-gcc
++CXX = arm-openwrt-linux-g++
  #
  # if your make doesn't define a default SHELL properly, you may need
  #    the line below (Atari users will need a bourne work-alike)

@@ -8,9 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bldaemon-zipit
-PKG_VERSION:=20130312
-PKG_RELEASE:=1
-PKG_REV:=b74ece896ff2d3db429da7a86583bd51d23d2e4a
+PKG_VERSION:=20160226
+PKG_RELEASE:=2
+PKG_REV:=config
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REV).tar.gz
 PKG_SOURCE_URL:=git://github.com/mozzwald/bldaemon-zipit.git
@@ -26,7 +26,7 @@ define Package/bldaemon-zipit
   CATEGORY:=Utilities
   TITLE:=bldaemon-zipit
   URL:=http://github.com/mozzwald/bldaemon-zipit
-  DEPENDS:=+librt
+  DEPENDS:=+librt +confuse
 endef
 
 define Package/bldaemon-zipit/description
@@ -37,7 +37,9 @@ define Package/bldaemon-zipit/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 		$(INSTALL_BIN) $(PKG_BUILD_DIR)/bldaemon $(1)/usr/sbin/bldaemon
 	$(INSTALL_DIR) $(1)/etc/init.d
-		$(INSTALL_BIN) ./files/z2-bldaemon $(1)/etc/init.d/z2-bldaemon
+		$(INSTALL_BIN) ./files/z2-bldaemon $(1)/etc/init.d/S10z2-bldaemon
+	$(INSTALL_DIR) $(1)/etc/
+		$(INSTALL_BIN) $(PKG_BUILD_DIR)/bldaemon.conf $(1)/etc/
 endef
 
 $(eval $(call BuildPackage,bldaemon-zipit))

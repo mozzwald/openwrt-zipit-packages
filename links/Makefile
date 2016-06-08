@@ -28,7 +28,7 @@ define Package/links
     SECTION:=net
     CATEGORY:=Network
     URL:=http://links.twibright.com/
-    DEPENDS:=+libpng +libtiff +libopenssl +libsdl +libjpeg
+    DEPENDS:=+libpng +libtiff +libopenssl +libsdl +libjpeg +libbz2
 endef
 
 define Package/links/description
@@ -71,10 +71,6 @@ define Package/links/install
 		$(INSTALL_BIN) ./files/links.cfg $(1)/root/.links/
 		$(INSTALL_BIN) ./files/html.cfg $(1)/root/.links/
 		$(INSTALL_BIN) ./files/linkskeys.txt $(1)/root/.links/
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/applications
-		$(INSTALL_BIN) ./files/links.gmenu $(1)/usr/share/gmenu2x/sections/applications/links
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons
-		$(INSTALL_BIN) ./files/links.png $(1)/usr/share/gmenu2x/skins/Default/icons/links.png
 endef
 
 $(eval $(call BuildPackage,links))

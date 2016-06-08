@@ -1,0 +1,5 @@
+title=tmux
+icon=skin:icons/tmux.png
+exec=/usr/share/gmenu2x/scripts/tmuxl
+params=
+

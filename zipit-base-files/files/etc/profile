@@ -1,0 +1,27 @@
+#!/bin/sh
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/share/gmenu2x/scripts
+export HOME=$(grep -e "^${USER:-root}:" /etc/passwd | cut -d ":" -f 6)
+export HOME=${HOME:-/root}
+export PS1='\u@\h:\w\$ '
+export TERM=xterm-color
+
+export SDL_NOMOUSE=1
+export SDL_VIDEO_FBCON_ROTATION=CCW
+export SDL_AUDIODRIVER=alsa
+
+[ -f /etc/banner ] && cat /etc/banner
+[ -e /tmp/.failsafe ] && cat /etc/banner.failsafe
+fgrep -sq '/ overlay ro,' /proc/mounts && {
+	echo 'Your JFFS2-partition seems full and overlayfs is mounted read-only.'
+	echo 'Please try to remove files from /overlay/upper/... and reboot!'
+}
+
+[ -x /bin/more ] || alias more=less
+[ -x /usr/bin/vim ] && alias vi=vim || alias vim=vi
+
+[ -n "$FAILSAFE" ] || {
+	for FILE in /etc/profile.d/*.sh; do
+		[ -e "$FILE" ] && . "$FILE"
+	done
+	unset FILE
+}

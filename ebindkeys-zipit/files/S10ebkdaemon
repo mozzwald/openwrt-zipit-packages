@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Start ebindkeys daemon
+#
+
+case "$1" in
+  start)
+	/usr/sbin/ebindkeys -f /etc/ebindkeysrc
+	;;
+  stop)
+	killall ebindkeys
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

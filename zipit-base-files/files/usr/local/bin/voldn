@@ -1,0 +1,10 @@
+#!/bin/sh
+# decrease the volume
+
+#how much in %
+PERCENT=1
+#which volume?
+CONTROL=PCM
+
+amixer set $CONTROL $PERCENT%- >/dev/null
+

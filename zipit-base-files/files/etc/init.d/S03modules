@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Load kernel modules
+#
+
+# Define the module directory
+moddir="/lib/modules/$(uname -r)"
+
+# Run depmod if modules.dep is empty or non existant
+if [ ! -s "$moddir/modules.dep" ]; then
+	echo -n "No modules.dep found, running depmod..."
+	depmod
+	echo "done"
+fi
+
+case "$1" in
+  start)
+	echo "Loading modules..."
+	[ -d /etc/modules.d ] && {
+		for file in /etc/modules.d/* ; do
+			while read module; do
+				modprobe $module 2>/dev/null
+			done < "$file"
+		done
+	}
+	;;
+  stop)
+	echo "Unloading modules..."
+	[ -d /etc/modules.d ] && {
+		for file in /etc/modules.d/* ; do
+			while read module; do
+				modprobe -r $module 2>/dev/null
+			done < "$file"
+		done
+	}
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

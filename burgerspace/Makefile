@@ -11,7 +11,7 @@ PKG_FETCH:=1.9.1
 PKG_VERSION:=1.9.2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_FETCH).tar.gz
-PKG_SOURCE_URL:=http://perso.b2b2c.ca/sarrazip/dev/
+PKG_SOURCE_URL:=http://mozzwald.com/zipit/src/
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_RELEASE:=1
@@ -43,10 +43,6 @@ define Package/burgerspace/install
 		$(INSTALL_BIN) ./files/burgers $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/usr/share/sounds/burgerspace/
 		$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/sounds/*.wav $(1)/usr/share/sounds/burgerspace/
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/sections/games/
-		$(INSTALL_DATA) ./files/burgerspace.gmenu $(1)/usr/share/gmenu2x/sections/games/
-	$(INSTALL_DIR) $(1)/usr/share/gmenu2x/skins/Default/icons/
-		$(INSTALL_DATA) ./files/burgerspace.png $(1)/usr/share/gmenu2x/skins/Default/icons
 endef
 
 $(eval $(call BuildPackage,burgerspace))

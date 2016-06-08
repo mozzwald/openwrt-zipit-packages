@@ -1,12 +1,20 @@
-#!/bin/sh /etc/rc.common
-# Start Zipit Z2 Backlight Daemon
+#!/bin/sh
+#
+# Start Zipit Z2 Backlight daemon
+#
 
-START=19
-
-start() {
+case "$1" in
+  start)
 	/usr/sbin/bldaemon &
-}
-
-stop() {
+	;;
+  stop)
 	killall bldaemon
-}
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

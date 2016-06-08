@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Setup Zipit Z2 LED's
+#
+
+case "$1" in
+  start)
+	echo "mmc0" > /sys/class/leds/z2\:green\:wifi/trigger
+	echo "Z2-full" > /sys/class/leds/z2\:green\:charged/trigger
+	echo "Z2-charging" > /sys/class/leds/z2\:amber\:charging/trigger
+	STAT=`cat /sys/class/power_supply/Z2/status)`
+	if [ "$STAT" == "Charging" ]; then
+		echo "255" > /sys/class/leds/z2\:amber\:charging/brightness
+	elif [ "$STAT" == "Full" ]; then
+		echo "255" > /sys/class/leds/z2\:green\:charged/brightness
+	fi
+	;;
+  stop)
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

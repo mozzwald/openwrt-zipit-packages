@@ -8,9 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ebindkeys-zipit
-PKG_VERSION:=2012.06.28
-PKG_RELEASE:=1
-PKG_REV:=1046e3ba02387edf6313ebdb83cfe82c42ca0543
+PKG_VERSION:=2016.06.02
+PKG_RELEASE:=2
+PKG_REV:=bldaemon
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REV).tar.gz
 PKG_SOURCE_URL:=git://github.com/mozzwald/ebindkeys-zipit.git
@@ -25,12 +25,12 @@ define Package/ebindkeys-zipit
   SECTION:=utilities
   CATEGORY:=Utilities
   TITLE:=bind a key or key combo to a command
-  DEPENDS:=+kmod-input-userlevel +kmod-input-evdev +libpthread +zipit-files
+  DEPENDS:=+kmod-input-uinput +kmod-input-evdev +libpthread
   URL:=http://home.vay8.net/doku.php?id=ebindkeys-zipit
 endef
 
 define Package/ebindkeys-zipit/description
-	ebindkeys-zipit lets you bind a key or key-combo to a command, now with keymouse
+	ebindkeys-zipit lets you bind a key or key-combo to a command, now with keymouse and bldaemon
 endef
 
 define Package/ebindkeys-zipit/install
@@ -46,9 +46,8 @@ define Package/ebindkeys-zipit/install
 		$(INSTALL_DATA) $(PKG_BUILD_DIR)/README $(1)/usr/share/ebindkeys/
 	$(INSTALL_DIR) $(1)/etc
 		$(INSTALL_DATA) ./files/ebindkeysrc $(1)/etc/ebindkeysrc
-		$(INSTALL_DATA) ./files/ebindpwrbtn $(1)/etc/ebindpwrbtn
 	$(INSTALL_DIR) $(1)/etc/init.d
-		$(INSTALL_BIN) ./files/z2-ebindkeys $(1)/etc/init.d/z2-ebindkeys
+		$(INSTALL_BIN) ./files/S10ebkdaemon $(1)/etc/init.d/S10ebkdaemon
 endef
 
 $(eval $(call BuildPackage,ebindkeys-zipit))

@@ -1,0 +1,33 @@
+--- ./src/video/fbcon/SDL_fbevents.c  2009-10-12 16:07:15.000000000 -0700
++++ ./src/video/fbcon/SDL_fbevents.c	2013-01-20 08:42:29.474898578 -0800
+@@ -1028,6 +1028,11 @@ static void handle_keyboard(_THIS)
+ 	}
+ }
+ 
++void FB_IconifyWindow(_THIS)
++{
++	switch_vt(this, 1);
++}
++
+ void FB_PumpEvents(_THIS)
+ {
+ 	fd_set fdset;
+--- ./src/video/fbcon/SDL_fbevents_c.h	2009-10-12 16:07:15.000000000 -0700
++++ ./src/video/fbcon/SDL_fbevents_c.h	2013-01-20 08:42:53.783999296 -0800
+@@ -36,3 +36,4 @@ extern void FB_LeaveGraphicsMode(_THIS);
+ 
+ extern void FB_InitOSKeymap(_THIS);
+ extern void FB_PumpEvents(_THIS);
++extern void FB_IconifyWindow(_THIS);
+\ No newline at end of file
+--- ./src/video/fbcon/SDL_fbvideo.c	2009-10-12 16:07:15.000000000 -0700
++++ ./src/video/fbcon/SDL_fbvideo.c	2013-01-04 15:17:32.843441000 -0800
+@@ -264,7 +264,7 @@ static SDL_VideoDevice *FB_CreateDevice(
+ 	this->FreeHWSurface = FB_FreeHWSurface;
+ 	this->SetCaption = NULL;
+ 	this->SetIcon = NULL;
+-	this->IconifyWindow = NULL;
++	this->IconifyWindow = FB_IconifyWindow;
+ 	this->GrabInput = NULL;
+ 	this->GetWMInfo = NULL;
+ 	this->InitOSKeymap = FB_InitOSKeymap;

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Z2 Battery Percentage (average)
+
+SUM=0
+for i in 1 2 3 4
+do
+	MAX=`cat /sys/class/i2c-dev/i2c-1/device/1-0055/power_supply/Z2/voltage_max`
+	MIN=`cat /sys/class/i2c-dev/i2c-1/device/1-0055/power_supply/Z2/voltage_min`
+	NOW=`cat /sys/class/i2c-dev/i2c-1/device/1-0055/power_supply/Z2/voltage_now`
+	let SUM+=$(( ($NOW-$MIN)*100/($MAX-$MIN) ))
+done
+echo "$(( ($SUM+4/2)/4 ))%"

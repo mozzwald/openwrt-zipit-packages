@@ -1,6 +1,39 @@
-# Zipit keypad input device
+# Default Zipit Z2 ebindkeys with backlight daemon configuration
+
+# Keyboard input device
 dev = "/dev/input/event0"
 
+# Power Button input device
+pwrdev = "/dev/input/event1"
+
+# Command to run when power button is pressed
+pwrcmd = "/usr/sbin/suspend"
+
+# Command to run when shutdown timer completes
+onpwrdown = "/usr/local/sbin/onPowerDown"
+
+# Linux 3.x sysfs backlight paths, trailing slash required!!
+#scrbfile = "/sys/class/backlight/pwm-backlight.0/"           # screen backlight
+#keybfile = "/sys/class/backlight/pwm-backlight.1/"           # keyboard backlight
+
+# Linux 4.x sysfs backlight paths, trailing slash required!!
+scrbfile = "/sys/class/backlight/pxabus:display-backlight/"   # screen backlight
+keybfile = "/sys/class/backlight/pxabus:keyboard-backlight/"  # keyboard backlight
+
+# Linux 3.x brightness values are 0-1023
+# Linux 4.x brightness values are 0-9
+
+brightscrb = 8	        # screen brightness on AC
+brightkeyb = 2	        # keyboard brightness on AC
+
+dimscrb = 3		# screen brightness on Battery
+dimkeyb = 1		# keyboard brightness on Battery
+
+# Timeout is = seconds * 100; 5 seconds = 500, 60 seconds = 6000
+lcdtimeout = 6000       # screen off timeout on Battery
+keytimeout = 500        # keyboard off timeout on Battery
+
+# Keyboard events
 event
 {
 	# CTRL-Options: Turns on/off ebindkeys
@@ -18,53 +51,53 @@ event
 
 event
 {
-        # alt+tab
-        action = "/usr/local/sbin/onAltTab"
-        keys = {0x38,0xf}
+	# alt+tab
+	action = "/usr/local/sbin/onAltTab"
+	keys = {0x38,0xf}
 }
 
 
 event
 {
-        # right side - far flipper
-        action = "/usr/local/bin/voldn"
-        keys = {0x4a}
+	# right side - far flipper
+	action = "/usr/local/bin/voldn"
+	keys = {0x4a}
 }
 
 event
 {
-        # right side - near flipper
-        action = "/usr/local/bin/volup"
-        keys = {0x4e}
+	# right side - near flipper
+	action = "/usr/local/bin/volup"
+	keys = {0x4e}
 }
 
 event
 {
 	# CTRL-right side - far flipper: Increase LCD Brightness
-	action = "/usr/local/sbin/lcdb +300"
+	action = "/usr/bin/lcdb +"
 	keys = {0x1d,0x4a}
 }
 
 event
 {
-        # CTRL-right side - near flipper: Decrease LCD Brightness
-        action = "/usr/local/sbin/lcdb -300"
-        keys = {0x1d,0x4e}
+	# CTRL-right side - near flipper: Decrease LCD Brightness
+	action = "/usr/bin/lcdb -"
+	keys = {0x1d,0x4e}
 }
 
 event
 {
-        # Shift-right side - far flipper: Increase KEY Brightness
-        action = "/usr/local/sbin/keyb +300"
-        keys = {0x2a,0x4a}
+	# Shift-right side - far flipper: Increase KEY Brightness
+	action = "/usr/bin/keyb +"
+	keys = {0x2a,0x4a}
 }
 
 
 event
 {
-        # Shift-right side - near flipper: Decrease KEY Brightness
-        action = "/usr/local/sbin/keyb -300"
-        keys = {0x2a,0x4e}
+	# Shift-right side - near flipper: Decrease KEY Brightness
+	action = "/usr/bin/keyb -"
+	keys = {0x2a,0x4e}
 }
 
 

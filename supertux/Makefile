@@ -19,7 +19,7 @@ define Package/supertux
   SECTION:=games
   CATEGORY:=Games
   URL:=http://supertux.lethargik.org
-  DEPENDS:=+libsdl +libsdl-image +libmikmod +libsdl-mixer +libstdcpp +libsdl-gfx
+  DEPENDS:=+libsdl +libsdl-image +libmikmod +libsdl-mixer +libstdcpp +libsdl-gfx +libpng +libjpeg
 endef
 
 define Package/supertux/description
@@ -78,14 +78,6 @@ define Package/supertux/install
 	ln -s \
 		SALCON-fast.MOD \
 		$(1)/usr/share/supertux/music/salcon-fast.mod
-
-	$(INSTALL_DATA) \
-		./files/supertux.gmenu \
-		$(1)/usr/share/gmenu2x/sections/games/supertux
-
-	$(INSTALL_DATA) \
-		./files/supertux.png \
-		$(1)/usr/share/gmenu2x/skins/Default/icons/supertux.png
 endef
 
 $(eval $(call RequireCommand,pngcrush,Please install pngcrush.))

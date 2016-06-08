@@ -1,7 +1,0 @@
-no-deinit-check
-
-mode=320x240
-
-# log-file=/root/.directfb.log
-# no-cursor
-# debug
